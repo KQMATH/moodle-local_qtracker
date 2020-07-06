@@ -27,7 +27,8 @@ namespace local_qtracker\output;
 
 defined('MOODLE_INTERNAL') || die;
 
-use mod_quiz\local\structure\slot_random;
+use local_qtracker\form\view\issue_registration_form;
+use moodle_url;
 use renderable;
 use renderer_base;
 use templatable;
@@ -43,13 +44,13 @@ use stdClass;
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class issue_registration_block implements renderable, templatable {
-    
+
     /** @var \question_definition[] Array of {@link \question_definition} */
     public $questions = array();
 
     /** @var int User ID */
     public $userid;
-    
+
     /** @var array of stdclass strings to display */
     public $slots = array();
 
@@ -77,24 +78,46 @@ class issue_registration_block implements renderable, templatable {
      * @return stdClass Data to be used for the template
      */
     public function export_for_template(renderer_base $output) {
-
+        global $PAGE;
+        $url = $PAGE->url;
         $data = new stdClass();
         $data->userid = $this->userid;
-        $data->lol = "lol this is a test";
-        $data->name = "test";
-        $data->id = "test0";
-        $data->size = 3;
-        
-        $value = 22;
-        $name = "OK";
 
-        foreach ($this->questions as $key => $question) {
-            $questions[] = [
-                'name' => $question->name,
-                'selected' => true
-            ];
+
+        if (count($this->questions) > 1) {
+            $data->hasmultiple = true;
+
+            $select = new stdClass();
+            $options = array();
+            $select->name = "questionid";
+            $select->formid = "fjndfsndf";
+            $select->label = "fmdifj";
+            foreach ($this->questions as $question) {
+                $questions[] = [
+                    'name' => $question->name,
+                    'selected' => true
+                ];
+
+                $option = new stdClass();
+                $option->value = $question->id;
+                $option->name = $question->name;
+                array_push($options, $option);
+            }
+            $select->options = $options;
+            $data->select = $select;
+
+        } else {
+            $data->hasmultiple = false;
+            $data->questionid = $this->questions[0]->id;
         }
-            $data->questions = $questions;
+
+        $data->action = $url;
+        $data->tooltip = "This is a tooltip";
+
+        // TODO: Fix this as both the button and the select gets this. Wrap in separate mustashe templates.
+        $data->label = "Send feedback";
+
+        //$data->questions = $questions;
         return $data;
     }
 }

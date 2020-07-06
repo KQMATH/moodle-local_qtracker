@@ -1,27 +1,13 @@
 <?php
     $capabilities = array(
- 
-    'local/qtracker:myaddinstance' => array(
+
+    'local/qtracker:createissue' => array(
+        'riskbitmask' => RISK_SPAM,
         'captype' => 'write',
-        'contextlevel' => CONTEXT_SYSTEM,
+        'contextlevel' => CONTEXT_COURSE,
         'archetypes' => array(
             'user' => CAP_ALLOW
         ),
- 
-        'clonepermissionsfrom' => 'moodle/my:manageblocks'
-    ),
- 
-    'local/qtracker:addinstance' => array(
-        'riskbitmask' => RISK_SPAM | RISK_XSS,
- 
-        'captype' => 'write',
-        'contextlevel' => CONTEXT_BLOCK,
-        'archetypes' => array(
-            'editingteacher' => CAP_ALLOW,
-            'manager' => CAP_ALLOW
-        ),
- 
-        'clonepermissionsfrom' => 'moodle/site:manageblocks'
     ),
 
 );

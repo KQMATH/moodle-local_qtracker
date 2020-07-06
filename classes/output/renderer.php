@@ -16,6 +16,8 @@
 
 namespace local_qtracker\output;
 
+use Error;
+use moodle_url;
 use plugin_renderer_base;
 use templatable;
 
@@ -31,6 +33,10 @@ defined('MOODLE_INTERNAL') || die();
 class renderer extends plugin_renderer_base
 {
 
+    public function render_issue_table(templatable $block) {
+
+    }
+
     /**
      * Renders a block.
      *
@@ -38,9 +44,24 @@ class renderer extends plugin_renderer_base
      * @return string
      * @throws \moodle_exception
      */
-    public function render_block(templatable $block)
-    {
+    public function render_block(templatable $block) {
+
+        $content = '';
+        //$editor = \editors_get_preferred_editor(); // This gets the default editor for your site
+        //$editor->use_editor("someidhere"); // This is used to set the id of the html element
+        // This creates the html element
+        //$content.= \html_writer::tag('textarea', 'somedefaultvalue',
+        //array('id' => "someidhere", 'name' => 'somenamehere', 'rows' => 5, 'cols' => 10));
+        /*$formdata = $form->get_data();
+        if ($formdata) {
+            $this->process_rating_configuration($formdata);
+        }
+        */
+
+        $content.= \html_writer::tag('div', 'oYESSSSSSkokok');
         $data = $block->export_for_template($this);
-        return $this->render_from_template('local_qtracker/issue_creation_block', $data);
+
+        $content .= $this->render_from_template('local_qtracker/issue_registration_block', $data);
+        return $content;
     }
 }

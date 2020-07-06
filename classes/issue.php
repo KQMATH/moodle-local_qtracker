@@ -1,6 +1,5 @@
 <?php
-// This file is part of Moodle - http://moodle.org/
-//
+
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -15,17 +14,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package     local_qtracker
- * @author      André Storhaug <andr3.storhaug@gmail.com>
- * @copyright   2020 NTNU
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * External Web Service Template
+ *
+ * @package    localwstemplate
+ * @copyright  2011 Moodle Pty Ltd (http://moodle.com)
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+require_once($CFG->libdir . "/externallib.php");
 
-defined('MOODLE_INTERNAL') || die();
+class issue {
 
-$plugin->version = 2020062410;
-$plugin->requires = 2016120500;
-$plugin->cron = 0;
-$plugin->component = 'local_qtracker';
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->release = '0.0.1';
+    // TODO create issue class here... See the db fields...
+}

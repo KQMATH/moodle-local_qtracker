@@ -33,3 +33,6 @@ $string['descconfig'] = 'Description of the config section';
 $string['descfoo'] = 'Config description';
 $string['headerconfig'] = 'Config section header';
 $string['labelfoo'] = 'Config label';
+
+$string['question_problem_details'] = 'If you have feedback for this question, please type it below.';
+$string['cannotcreateissue'] = 'You cannot create a new question issue.';

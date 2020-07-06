@@ -30,29 +30,47 @@
         "name": "test",
         "id": "test0",
         "size": "3",
-        "options": [ { "name": "Option 1", "value": "V", "selected": true },
-                     { "name": "Option 2", "value": "V", "selected": true } ]
+        "hasmultiple": true,
+        "select": {
+            "name": "questionid",
+            "options": [
+                { "name": "Option 1", "value": "V", "selected": true },
+                { "name": "Option 2", "value": "V", "selected": true }
+                ]
+            }
     }
 }}
+{{!
+    @template mod_capquiz/configure_badge_rating
 
-
+    Example context (json):
+    {
+        "form": "raw html for the form"
+    }
+}}
 <div>
 Userid: {{userid}}
 </div>
-<div>
-{{name}}
-</div>
 
+<p>{{#str}} question_problem_details, local_qtracker {{/str}}</p>
 <div class="form-select">
-    {{#questions}}
-        <div>
-            {{name}}
-            <input type="text" name="{{name}}[xxxxx]" value="1">
-        </div>
-    {{/questions}}
+    <form class="capquiz-response-form" method="post" action="{{action}}" data-action="newissue"  enctype="multipart/form-data" accept-charset="utf-8">
+        {{#hasmultiple}}
+            {{#select}}
+                {{disabled}}
+                {{> core/single_select }}
+            {{/select}}
+        {{/hasmultiple}}
+        {{^hasmultiple}}
+            <input type="hidden" name="questionid" value="{{questionid}}">
+        {{/hasmultiple}}
+            <br>
+                <textarea name="issuedescription" placeholder="{{#str}} enter_comment_here, capquiz {{/str}}"></textarea>
+                {{>core/single_button}}
+    </form>
 </div>
-
-
-<div>
-{{lol}}
-</div>
+{{#js}}
+require(['jquery', 'local_qtracker/newissue'], function($, NewIssue) {
+    NewIssue.init('[data-action=newissue]');
+});
+{{/js}}
