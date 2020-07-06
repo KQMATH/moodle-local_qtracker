@@ -15,28 +15,13 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template block_rss_client/footer
-
-    Template which defines an item in an RSS Feed
-
-    Classes required for JS:
-    * none
-
-    Data attributes required for JS:
-    * none
-
-    Context variables required for this template:
-    * channellink - string: The channel URL. Must be escaped.
+    @template local_qtracker/question_issues
 
     Example context (json):
     {
-        "channellink": "https://www.example.com/feeds/rss"
+        "questionissues": "raw html"
     }
 }}
-{{#channellink}}
-    <a href="{{{channellink}}}">{{#str}} clientchannellink, block_rss_client {{/str}}</a>
-    {{#hasfailedfeeds}}<br>{{/hasfailedfeeds}}
-{{/channellink}}
-{{#hasfailedfeeds}}
-    <a href="{{{manageurl}}}">{{#str}} failedfeeds, block_rss_client {{/str}}</a>
-{{/hasfailedfeeds}}
+<div>
+        {{{questionissues}}}
+</div>

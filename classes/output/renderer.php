@@ -33,8 +33,16 @@ defined('MOODLE_INTERNAL') || die();
 class renderer extends plugin_renderer_base
 {
 
-    public function render_issue_table(templatable $block) {
-
+    /**
+     * Render the review page for the deletion of expired contexts.
+     *
+     * @param question_issues_page $page
+     * @return string html for the page
+     * @throws moodle_exception
+     */
+    public function render_question_issues_page(question_issues_page $page) {
+        $data = $page->export_for_template($this);
+        return parent::render_from_template('local_qtracker/question_issues', $data);
     }
 
     /**
