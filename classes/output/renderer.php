@@ -53,22 +53,8 @@ class renderer extends plugin_renderer_base
      * @throws \moodle_exception
      */
     public function render_block(templatable $block) {
-
         $content = '';
-        //$editor = \editors_get_preferred_editor(); // This gets the default editor for your site
-        //$editor->use_editor("someidhere"); // This is used to set the id of the html element
-        // This creates the html element
-        //$content.= \html_writer::tag('textarea', 'somedefaultvalue',
-        //array('id' => "someidhere", 'name' => 'somenamehere', 'rows' => 5, 'cols' => 10));
-        /*$formdata = $form->get_data();
-        if ($formdata) {
-            $this->process_rating_configuration($formdata);
-        }
-        */
-
-        $content.= \html_writer::tag('div', 'oYESSSSSSkokok');
         $data = $block->export_for_template($this);
-
         $content .= $this->render_from_template('local_qtracker/issue_registration_block', $data);
         return $content;
     }

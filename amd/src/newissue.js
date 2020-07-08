@@ -7,8 +7,8 @@
  * @copyright  2017 Damyon Wiese <damyon@moodle.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/fragment', 'core/ajax', 'core/yui'],
-        function($, Str, ModalFactory, ModalEvents, Fragment, Ajax, Y) {
+define(['jquery', 'core/str', 'core/templates', 'core/modal_events', 'core/fragment', 'core/ajax', 'core/yui'],
+        function($, Str, Templates, ModalEvents, Fragment, Ajax, Y, ) {
 
     /**
      * Constructor
@@ -67,8 +67,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
      * @private
      * @return {Promise}
      */
-    NewIssue.prototype.handleFormSubmissionResponse = function(formData, responce) {
-        console.log("Success!", formData, responce)
+    NewIssue.prototype.handleFormSubmissionResponse = function(formData, response) {
+        console.log("Success!", formData, response)
         // We could trigger an event instead.
         // Yuk.
         Y.use('moodle-core-formchangechecker', function() {
@@ -82,11 +82,11 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
      * @private
      * @return {Promise}
      */
-    NewIssue.prototype.handleFormSubmissionFailure = function(data) {
+    NewIssue.prototype.handleFormSubmissionFailure = function(data, response) {
         // Oh noes! Epic fail :(
         // Ah wait - this is normal. We need to re-display the form with errors!
         console.error("An error occured");
-        console.error(data);
+        console.error(response);
     };
 
     /**
@@ -99,6 +99,8 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
     NewIssue.prototype.submitFormAjax = function(e) {
         // We don't want to do a real form submission.
         e.preventDefault();
+
+
 
 
         var changeEvent = document.createEvent('HTMLEvents');
@@ -125,13 +127,16 @@ define(['jquery', 'core/str', 'core/modal_factory', 'core/modal_events', 'core/f
         }
 
         // Convert all the form elements values to a serialised string.
-        var formData = this.form.serialize();
-
+        //var formData = this.form.serialize();
+        var formData = new FormData(this.form[0]);
         // Now we can continue...
         Ajax.call([{
             methodname: 'local_qtracker_new_issue',
-            //args: {jsonformdata: JSON.stringify(formData)},
-            args: {},
+            args: {
+                questionid: formData.get('questionid'),
+                issuetitle: formData.get('issuetitle'),
+                issuedescription: formData.get('issuedescription'),
+            },
             done: this.handleFormSubmissionResponse.bind(this, formData),
             fail: this.handleFormSubmissionFailure.bind(this, formData)
         }]);

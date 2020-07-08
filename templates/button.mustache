@@ -19,13 +19,14 @@
 
     Example context (json):
     {
-        "method": "post",
-        "url": "",
         "primary": true,
         "tooltip": "A button.",
         "label": "Button"
     }
 }}
-{{#button}}
-    {{>core/single_button}}
-{{/button}}
+<div class="{{classes}}">
+        <button type="submit" class="btn {{#primary}}btn-primary{{/primary}}{{^primary}}btn-default{{/primary}}"
+            id="{{id}}"
+            title={{#quote}}{{tooltip}}{{/quote}}
+            {{#disabled}}disabled{{/disabled}}>{{label}}</button>
+</div>

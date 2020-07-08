@@ -36,3 +36,9 @@ $string['labelfoo'] = 'Config label';
 
 $string['question_problem_details'] = 'If you have feedback for this question, please type it below.';
 $string['cannotcreateissue'] = 'You cannot create a new question issue.';
+$string['question'] = 'Question';
+$string['question_help'] = 'Select the question you want to register a new issue for.';
+
+$string['unknownquestionidnumber'] = 'Unknown question ID "{$a}"';
+$string['title'] = 'Title';
+$string['leavecomment'] = 'Leave a comment';

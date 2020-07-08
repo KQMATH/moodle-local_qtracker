@@ -31,9 +31,9 @@ class local_qtracker_external extends external_api {
     public static function new_issue_parameters() {
         return new external_function_parameters(
             array(
-                'questionid' => new external_value(PARAM_INT, 'question id', VALUE_REQUIRED),
-                'issuetitle' => new external_value(PARAM_TEXT, 'issue title', VALUE_REQUIRED),
-                'issuedescription' => new external_value(PARAM_TEXT, 'issue description', VALUE_REQUIRED),
+                'questionid' => new external_value(PARAM_INT, 'question id'),
+                'issuetitle' => new external_value(PARAM_TEXT, 'issue title'),
+                'issuedescription' => new external_value(PARAM_TEXT, 'issue description'),
             )
         );
     }
@@ -43,18 +43,22 @@ class local_qtracker_external extends external_api {
      * @return string welcome message
      */
     public static function new_issue($questionid, $issuetitle, $issuedescription) {
-        global $USER;
+        global $USER, $DB;
+
+        $added = false;
+        $warnings = array();
 
         //Parameter validation
         $params = self::validate_parameters(self::new_issue_parameters(),
             array(
-                'questionid' => $questionid,
+                'questionid' => (int) $questionid,
                 'issuetitle' => $issuetitle,
                 'issuedescription' => $issuedescription,
             )
         );
 
         //Context validation
+        // TODO: ensure proper validation....
         $context = \context_user::instance($USER->id);
         self::validate_context($context);
 
@@ -64,7 +68,32 @@ class local_qtracker_external extends external_api {
             throw new moodle_exception('cannotcreateissue', 'local_qtracker');
         }
 
-        return $params;
+        // Check if question exists.
+        $question = $DB->get_record('question', array('id' => $questionid));
+        if ($question === false) {
+            $warnings[] = array(
+                            'item' => 'question',
+                            'itemid' => $questionid,
+                            'warningcode' => 'unknownquestionidnumber',
+                            'message' => 'Unknown question ID ' . $questionid
+                        );
+        } else { // Insert new issue
+            $dataobject = new \stdClass;
+            $dataobject->questionid = $questionid;
+            $dataobject->title = $issuetitle;
+            $dataobject->description = $issuedescription;
+            $dataobject->userid = $USER->id;
+            $time = time();
+            $dataobject->timecreated = $time;
+            $DB->insert_record('qtracker_issue', $dataobject);
+            $added = true;
+        }
+
+        $result = array();
+        $result['status'] = $added;
+        $result['warnings'] = $warnings;
+
+        return $result;
     }
 
     /**
@@ -72,6 +101,11 @@ class local_qtracker_external extends external_api {
      * @return external_description
      */
     public static function new_issue_returns() {
-        return new external_value(PARAM_TEXT, 'The welcome message + user first name');
+        return new external_single_structure(
+            array(
+                'status' => new external_value(PARAM_BOOL, 'status: true if success'),
+                'warnings' => new external_warnings()
+            )
+        );
     }
 }

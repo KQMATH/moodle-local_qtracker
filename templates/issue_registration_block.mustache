@@ -48,25 +48,29 @@
         "form": "raw html for the form"
     }
 }}
-<div>
-Userid: {{userid}}
-</div>
-
-<p>{{#str}} question_problem_details, local_qtracker {{/str}}</p>
 <div class="form-select">
     <form class="capquiz-response-form" method="post" action="{{action}}" data-action="newissue"  enctype="multipart/form-data" accept-charset="utf-8">
         {{#hasmultiple}}
             {{#select}}
-                {{disabled}}
-                {{> core/single_select }}
+            <div class="form-group">
+                {{> local_qtracker/select }}
+            </div>
             {{/select}}
         {{/hasmultiple}}
         {{^hasmultiple}}
-            <input type="hidden" name="questionid" value="{{questionid}}">
+            <div class="form-group">
+                <input type="hidden" name="questionid" value="{{questionid}}">
+            </div>
         {{/hasmultiple}}
-            <br>
-                <textarea name="issuedescription" placeholder="{{#str}} enter_comment_here, capquiz {{/str}}"></textarea>
-                {{>core/single_button}}
+            <div class="form-group">
+                <input type="text" name="issuetitle" class="form-control" size=50 placeholder="{{#str}} title, local_qtracker {{/str}}">
+            </div>
+            <div class="form-group">
+                <textarea name="issuedescription" rows="5" class="form-control" placeholder="{{#str}} leavecomment, local_qtracker {{/str}}"></textarea>
+            </div>
+            <div class="form-group">
+                {{>local_qtracker/button}}
+            </div>
     </form>
 </div>
 {{#js}}

@@ -33,6 +33,7 @@ use renderable;
 use renderer_base;
 use templatable;
 use stdClass;
+use help_icon;
 
 
 /**
@@ -54,6 +55,9 @@ class issue_registration_block implements renderable, templatable {
     /** @var array of stdclass strings to display */
     public $slots = array();
 
+    /** @var help_icon The help icon. */
+    protected $helpicon;
+
     /**
      * Construct the contents of the block
      * @param \question_definition[] $questions The questions that can be filed issues for.
@@ -69,6 +73,7 @@ class issue_registration_block implements renderable, templatable {
                 throw new \coding_exception('The number of questions and slots does not match.');
             }
         }
+        $this->helpicon = new help_icon('question', 'local_qtracker');
     }
 
     /**
@@ -90,17 +95,13 @@ class issue_registration_block implements renderable, templatable {
             $select = new stdClass();
             $options = array();
             $select->name = "questionid";
-            $select->formid = "fjndfsndf";
-            $select->label = "fmdifj";
-            foreach ($this->questions as $question) {
-                $questions[] = [
-                    'name' => $question->name,
-                    'selected' => true
-                ];
+            $select->label = "Question";
+            $select->helpicon = $this->helpicon->export_for_template($output);
 
+            foreach ($this->questions as $key => $question) {
                 $option = new stdClass();
                 $option->value = $question->id;
-                $option->name = $question->name;
+                $option->name = $this->slots[$key];
                 array_push($options, $option);
             }
             $select->options = $options;
@@ -115,7 +116,7 @@ class issue_registration_block implements renderable, templatable {
         $data->tooltip = "This is a tooltip";
 
         // TODO: Fix this as both the button and the select gets this. Wrap in separate mustashe templates.
-        $data->label = "Send feedback";
+        $data->label = "Submit new issue";
 
         //$data->questions = $questions;
         return $data;

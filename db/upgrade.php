@@ -26,8 +26,22 @@ defined('MOODLE_INTERNAL') || die();
 function xmldb_local_qtracker_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
-    
-    //TODO perform upgrades here...
 
+    //TODO perform upgrades here...
+    if ($oldversion < 2020070800) {
+        // Define table capquiz_user_rating to be created.
+        $table = new xmldb_table('qtracker_issue');
+
+        $field = new xmldb_field(
+            'userid', XMLDB_TYPE_INTEGER, 10, null, XMLDB_NOTNULL, null, -1);
+        $key = new xmldb_key(
+            'userid', XMLDB_KEY_FOREIGN, array('userid'), 'user', array('id'));
+
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+            $dbman->add_key($table, $key);
+        }
+        upgrade_mod_savepoint(true, 2020070800, 'capquiz');
+    }
     return true;
 }

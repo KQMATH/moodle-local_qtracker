@@ -43,6 +43,7 @@ $functions = array(
         'ajax'         => true,
         //'capabilities' => 'moodle/course:managegroups',
         'capabilities' => array(),   // capabilities required by the function.
+        'loginrequired' => true,
 
     )
 );
