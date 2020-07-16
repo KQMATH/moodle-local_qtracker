@@ -165,6 +165,7 @@ class question_issues_table extends table_sql {
      * @return array containing sql to use and an array of params.
      */
     public function setup_sql_queries() {
+        
         // TODO: Write SQL to retrieve all rows...
         $fields = 'DISTINCT';
         $fields .= '*';
