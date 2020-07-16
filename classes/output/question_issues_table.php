@@ -50,7 +50,6 @@ class question_issues_table extends table_sql {
     public function __construct($uniqueid, $url) {
         global $CFG;
         parent::__construct($uniqueid);
-
         // TODO: determine which context to use...
         $context = context_system::instance();
 
