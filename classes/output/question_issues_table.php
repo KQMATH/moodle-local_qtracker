@@ -53,7 +53,6 @@ class question_issues_table extends table_sql {
 
         // TODO: determine which context to use...
         $context = context_system::instance();
-        $this->context = $context;
 
         // This object should not be used without the right permissions.
         require_capability('moodle/role:manage', $context); // DO WE NEED THIS?
