@@ -34,5 +34,12 @@ $string['descfoo'] = 'Config description';
 $string['headerconfig'] = 'Config section header';
 $string['labelfoo'] = 'Config label';
 
+// question issues table
+$string['id'] = 'ID';
+$string['questionid'] = 'Question ID';
+$string['title'] = 'Title';
+$string['description'] = 'Description';
+$string['datecreated'] = 'Created Time';
+
 $string['question_problem_details'] = 'If you have feedback for this question, please type it below.';
 $string['cannotcreateissue'] = 'You cannot create a new question issue.';
