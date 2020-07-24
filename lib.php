@@ -22,18 +22,41 @@
  */
 
 
- /**
- * Adds module specific settings to the settings block
+/**
+ * This function extends the navigation with the report items
  *
- * @param settings_navigation $settings The settings navigation object
- * @param navigation_node $choicenode The node to add module settings to
+ * @param navigation_node $navigation The navigation node to extend
+ * @param stdClass $course The course to object for the report
+ * @param stdClass $context The context of the course
  */
-function local_qtracker_extend_navigation($navigation){
-        $pluginname = 'I\'m in navigation!';
-        $url = new moodle_url('/local/localplugin/index.php');
-        //$navigation->add($pluginname, $url, navigation_node::TYPE_SETTING);
+function local_qtracker_extend_navigation_course($navigation, $course, $context) {
+    global $CFG;
+
+
+    if ($context->contextlevel == CONTEXT_COURSE) {
+        $params = array('courseid' => $context->instanceid);
+    } else if ($context->contextlevel == CONTEXT_MODULE) {
+        $params = array('cmid' => $context->instanceid);
+    } else {
+        return;
     }
 
-function qtracker_get_view($calendar, $view, $includenavigation = true, bool $skipevents = false) {
+    $qtrackernode = $navigation->add(
+        get_string('pluginname', 'local_qtracker'),
+        null,
+        navigation_node::TYPE_CONTAINER,
+        null,
+        'qtracker'
+    );
 
+    //$contexts = new question_edit_contexts($context);
+    //if ($contexts->have_one_edit_tab_cap('questions')) {
+    $qtrackernode->add(get_string('issues', 'local_qtracker'), new moodle_url(
+        $CFG->wwwroot . '/local/qtracker/view.php',
+        $params
+    ), navigation_node::TYPE_SETTING, null, 'issues');
+    //}
+}
+
+function qtracker_get_view($calendar, $view, $includenavigation = true, bool $skipevents = false) {
 }

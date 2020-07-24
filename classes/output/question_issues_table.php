@@ -15,10 +15,11 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for question issues.
+ * Table of question issues.
  *
  * @package    local_qtracker
- * @copyright  2020 André Storhaug
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -140,11 +141,11 @@ class question_issues_table extends table_sql {
             'questionid' => get_string('questionid', 'local_qtracker'),
             'title' => get_string('title', 'local_qtracker'),
             'description' => get_string('description', 'local_qtracker'),
-            'datecreated' => get_string('datecreated', 'local_qtracker')
+            'timecreated' => get_string('timecreated', 'local_qtracker')
         );
 
         // Add remaining headers.
-        $cols = array_merge($cols, array('actions' => get_string('actions')));
+        //$cols = array_merge($cols, array('actions' => get_string('actions')));
 
         $this->define_columns(array_keys($cols));
         $this->define_headers(array_values($cols));

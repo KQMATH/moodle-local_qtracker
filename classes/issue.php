@@ -14,15 +14,184 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External Web Service Template
+ * @package     mod_capquiz
+ * @author      Aleksander Skrede <aleksander.l.skrede@ntnu.no>
+ * @author      Sebastian S. Gundersen <sebastian@sgundersen.com>
+ * @copyright   2019 NTNU
+ * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace local_qtracker;
+
+defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Question issue class.
  *
- * @package    localwstemplate
- * @copyright  2011 Moodle Pty Ltd (http://moodle.com)
+ * @package    local_qtracker
+ * @copyright  2020 André Storhaug
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once($CFG->libdir . "/externallib.php");
-
 class issue {
 
-    // TODO create issue class here... See the db fields...
+    /**
+     * @var \stdClass
+     */
+    protected $issue = null;
+
+    /**
+     * Constructor.
+     *
+     * @param int|\stdClass $issue
+     * @return void
+     */
+    public function __construct($issue) {
+        global $DB;
+        if (is_scalar($issue)) {
+            $issue = $DB->get_record('qtracker_issue', array('id' => $issue), '*', MUST_EXIST);
+            if (!$issue) {
+                throw new \moodle_exception('errorunexistingmodel', 'analytics', '', $issue);
+            }
+        }
+        $this->issue = $issue;
+    }
+
+    /**
+     * Returns the issue id.
+     *
+     * @return int
+     */
+    public function get_id() {
+        return $this->issue->id;
+    }
+
+    /**
+     * Returns the issue title.
+     *
+     * @return int
+     */
+    public function get_title() {
+        return $this->issue->title;
+    }
+
+    /**
+     * Returns the issue description.
+     *
+     * @return int
+     */
+    public function get_description() {
+        return $this->issue->description;
+    }
+
+    /**
+     * Returns the issue questionusageid.
+     *
+     * @return int
+     */
+    public function get_qubaid() {
+        return $this->issue->questionusageid;
+    }
+
+    /**
+     * Returns the issue questionid.
+     *
+     * @return int
+     */
+    public function get_questionid() {
+        return $this->issue->questionid;
+    }
+
+    /**
+     * Returns the issue slot.
+     *
+     * @return int
+     */
+    public function get_slot() {
+        return $this->issue->slot;
+    }
+
+    /**
+     * Returns the issue userid.
+     *
+     * @return int
+     */
+    public function get_userid() {
+        return $this->issue->userid;
+    }
+
+    /**
+     * Returns the issue timecreated.
+     *
+     * @return int
+     */
+    public function get_timecreated() {
+        return $this->issue->timecreated;
+    }
+
+    /**
+     * Returns a plain \stdClass with the issue data.
+     *
+     * @return \stdClass
+     */
+    public function get_issue_obj() {
+        return $this->issue;
+    }
+
+    public static function load(int $issueid) {
+        global $DB;
+        $issueobj = $DB->get_record('qtracker_issue', ['id' => $issueid]);
+        if ($issueobj === false) {
+            return null;
+        }
+        return new issue($issueobj);
+    }
+
+    /**
+     * Creates a new issue.
+     *
+     * @return issue
+     */
+    public static function create($title, $description, \question_definition $question, $quba = null, $slot = null) {
+        global $USER, $DB;
+
+        $issueobj = new \stdClass();
+        $issueobj->title = $title;
+        $issueobj->description = $description;
+        $issueobj->questionid = $question->id;
+        $issueobj->questionusageid = $quba->get_id();
+        $issueobj->slot = $slot;
+        $issueobj->userid = $USER->id;
+        $time = time();
+        $issueobj->timecreated = $time;
+        //$issueobj->timemodified = $time;
+        //$issueobj->usermodified = $USER->id;
+
+        $id = $DB->insert_record('qtracker_issue', $issueobj);
+        $issueobj->id = $id;
+
+        $issue = new issue($issueobj);
+        return $issue;
+    }
+
+    /**
+     * Delete this issue.
+     *
+     * @return void
+     */
+    public function delete() {
+        global $DB;
+        return $DB->delete_records('qtracker_issue', array('id' => $this->get_id()));
+    }
+
+    public function set_title($title) {
+        global $DB;
+        $this->issue->title = $title;
+        $DB->update_record('qtracker_issue', $this->issue);
+    }
+
+    public function set_description($title) {
+        global $DB;
+        $this->issue->description = $title;
+        $DB->update_record('qtracker_issue', $this->issue);
+    }
 }

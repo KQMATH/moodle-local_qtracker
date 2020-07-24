@@ -15,7 +15,7 @@ if (!$course = $DB->get_record('course', array('id' => $courseid))) {
 }
 
 require_login($course);
-$url = new moodle_url('/local/qtracker/view.php', array('id' => $courseid));
+$url = new moodle_url('/local/qtracker/view.php', array('courseid' => $courseid));
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('standard');
@@ -35,5 +35,3 @@ $questionissuespage = new \local_qtracker\output\question_issues_page($table);
 echo $renderer->render($questionissuespage);
 
 echo $OUTPUT->footer();
-
-?>

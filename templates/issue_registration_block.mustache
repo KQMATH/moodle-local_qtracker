@@ -35,7 +35,7 @@
             "name": "questionid",
             "options": [
                 { "name": "Option 1", "value": "V", "selected": true },
-                { "name": "Option 2", "value": "V", "selected": true }
+                { "name": "Option 2", "value": "V", "quba": "10", "slot": "2", "selected": true }
                 ]
             }
     }
@@ -49,7 +49,7 @@
     }
 }}
 <div class="form-select">
-    <form class="capquiz-response-form" method="post" action="{{action}}" data-action="newissue"  enctype="multipart/form-data" accept-charset="utf-8">
+    <form class="needs-validation novalidate" method="post" action="{{action}}" data-action="newissue"  enctype="multipart/form-data" accept-charset="utf-8">
         {{#hasmultiple}}
             {{#select}}
             <div class="form-group">
@@ -58,23 +58,30 @@
             {{/select}}
         {{/hasmultiple}}
         {{^hasmultiple}}
-            <div class="form-group">
-                <input type="hidden" name="questionid" value="{{questionid}}">
-            </div>
+            <input type="hidden" name="slot" value="{{slot}}">
         {{/hasmultiple}}
+            <input type="hidden" name="qubaid" value="{{qubaid}}">
             <div class="form-group">
-                <input type="text" name="issuetitle" class="form-control" size=50 placeholder="{{#str}} title, local_qtracker {{/str}}">
+                <input type="text" name="issuetitle" id="qtracker-title-{{uniqid}}" class="form-control" placeholder="{{#str}} title, local_qtracker {{/str}}">
+                <div class="invalid-feedback">
+                    {{#str}} validtitle, local_qtracker {{/str}}
+                </div>
             </div>
             <div class="form-group">
-                <textarea name="issuedescription" rows="5" class="form-control" placeholder="{{#str}} leavecomment, local_qtracker {{/str}}"></textarea>
+                <textarea name="issuedescription" id="qtracker-description-{{uniqid}}" rows="5" class="form-control" placeholder="{{#str}} leavecomment, local_qtracker {{/str}}"></textarea>
+                <div class="invalid-feedback">
+                    {{#str}} validdescription, local_qtracker {{/str}}
+                </div>
             </div>
-            <div class="form-group">
+            {{#button}}
+            <div class="form-row">
                 {{>local_qtracker/button}}
             </div>
+            {{/button}}
     </form>
 </div>
 {{#js}}
-require(['jquery', 'local_qtracker/newissue'], function($, NewIssue) {
-    NewIssue.init('[data-action=newissue]');
+require(['jquery', 'local_qtracker/block_form_manager'], function($, BlockFormManager) {
+    BlockFormManager.init('[data-action=newissue]', '{{{issueids}}}');
 });
 {{/js}}

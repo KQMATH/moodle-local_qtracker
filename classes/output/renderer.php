@@ -14,24 +14,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_qtracker\output;
+/**
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
-use Error;
-use moodle_url;
-use plugin_renderer_base;
-use templatable;
+namespace local_qtracker\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+use plugin_renderer_base;
+use templatable;
+
 /**
- * @package     local_qtracker
- * @author      Aleksander Skrede <aleksander.l.skrede@ntnu.no>
- * @author      Sebastian S. Gundersen <sebastian@sgundersen.com>
- * @copyright   2019 NTNU
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * Question Tracker renderer.
+ *
+ * @package    local_qtracker
+ * @copyright  2020 André Storhaug
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class renderer extends plugin_renderer_base
-{
+class renderer extends plugin_renderer_base {
 
     /**
      * Render the review page for the deletion of expired contexts.

@@ -41,7 +41,29 @@ function xmldb_local_qtracker_upgrade($oldversion) {
             $dbman->add_field($table, $field);
             $dbman->add_key($table, $key);
         }
-        upgrade_mod_savepoint(true, 2020070800, 'capquiz');
+        upgrade_plugin_savepoint(true, 2020070800, 'local', 'qtracker');
+
+    }
+
+    if ($oldversion < 2020071000) {
+        // Define table capquiz_user_rating to be created.
+        $table = new xmldb_table('qtracker_issue');
+
+        $qufield = new xmldb_field(
+            'questionusageid', XMLDB_TYPE_INTEGER, 10);
+        $qukey = new xmldb_key(
+            'questionusageid', XMLDB_KEY_FOREIGN, array('questionusageid'), 'question_usages', array('id'));
+        $slotfield = new xmldb_field(
+            'slot', XMLDB_TYPE_INTEGER, 10);
+
+        if (!$dbman->field_exists($table, $qufield)) {
+            $dbman->add_field($table, $qufield);
+            $dbman->add_key($table, $qukey);
+        }
+        if (!$dbman->field_exists($table, $slotfield)) {
+            $dbman->add_field($table, $slotfield);
+        }
+        upgrade_plugin_savepoint(true, 2020071000, 'local', 'qtracker');
     }
     return true;
 }

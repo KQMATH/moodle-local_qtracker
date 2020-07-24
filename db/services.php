@@ -35,24 +35,61 @@ defined('MOODLE_INTERNAL') || die;
 // We defined the web service functions to install.
 $functions = array(
     'local_qtracker_new_issue' => array(
-        'classname'   => 'local_qtracker_external',
+        'classname'   => 'local_qtracker\external\newissue',
         'methodname'  => 'new_issue',
-        'classpath'   => 'local/qtracker/externallib.php',
+        'classpath'   => '',
         'description' => 'Register a new question issue.',
         'type'        => 'write',
         'ajax'         => true,
         //'capabilities' => 'moodle/course:managegroups',
         'capabilities' => array(),   // capabilities required by the function.
         'loginrequired' => true,
-
+    ),
+    'local_qtracker_edit_issue' => array(
+        'classname'   => 'local_qtracker\external\editissue',
+        'methodname'  => 'edit_issue',
+        'classpath'   => '',
+        'description' => 'Edit an existing question issue.',
+        'type'        => 'write',
+        'ajax'         => true,
+        //'capabilities' => 'moodle/course:managegroups',
+        'capabilities' => array(),   // capabilities required by the function.
+        'loginrequired' => true,
+    ),
+    'local_qtracker_delete_issue' => array(
+        'classname'   => 'local_qtracker\external\deleteissue',
+        'methodname'  => 'delete_issue',
+        'classpath'   => '',
+        'description' => 'Delete an existing question issue.',
+        'type'        => 'write',
+        'ajax'         => true,
+        //'capabilities' => 'moodle/course:managegroups',
+        'capabilities' => array(),   // capabilities required by the function.
+        'loginrequired' => true,
+    ),
+    'local_qtracker_get_issue' => array(
+        'classname'   => 'local_qtracker\external\getissue',
+        'methodname'  => 'get_issue',
+        'classpath'   => '',
+        'description' => 'Get an existing question issue.',
+        'type'        => 'read',
+        'ajax'         => true,
+        //'capabilities' => 'moodle/course:managegroups',
+        'capabilities' => array(),   // capabilities required by the function.
+        'loginrequired' => true,
     )
 );
 
 // We define the services to install as pre-build services. A pre-build service is not editable by administrator.
 $services = array(
     'Question tracker service' => array(
-            'functions' => array ('local_qtracker_new_issue'),
-            'restrictedusers' => 0,
-            'enabled'=>1,
+        'functions' => array(
+            'local_qtracker_new_issue',
+            'local_qtracker_edit_issue',
+            'local_qtracker_delete_issue',
+            'local_qtracker_get_issue'
+        ),
+        'restrictedusers' => 0,
+        'enabled' => 1,
     )
 );

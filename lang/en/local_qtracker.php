@@ -39,13 +39,27 @@ $string['id'] = 'ID';
 $string['questionid'] = 'Question ID';
 $string['title'] = 'Title';
 $string['description'] = 'Description';
-$string['datecreated'] = 'Created Time';
+$string['timecreated'] = 'Created Time';
 
 $string['question_problem_details'] = 'If you have feedback for this question, please type it below.';
-$string['cannotcreateissue'] = 'You cannot create a new question issue.';
+$string['cannotcreateissue'] = 'Cannot create a new question issue.';
+$string['cannoteditissue'] = 'Cannot edit question issue with ID {$a}.';
+$string['cannotdeleteissue'] = 'Cannot delete question issue with ID {$a}.';
+$string['cannotgetissue'] = 'Cannot get q¨uestion issue with ID {$a}.';
 $string['question'] = 'Question';
 $string['question_help'] = 'Select the question you want to register a new issue for.';
 
 $string['unknownquestionidnumber'] = 'Unknown question ID "{$a}"';
+$string['unknownqubaidnumber'] = 'Unknown question usage ID "{$a}"';
 $string['title'] = 'Title';
-$string['leavecomment'] = 'Leave a comment';
+$string['leavecomment'] = 'Leave A comment';
+
+$string['issuecreated'] = 'Issue successfully created.';
+$string['issueupdated'] = 'Issue successfully updated.';
+$string['issuedeleted'] = 'Issue successfully deleted.';
+
+$string['issues'] = 'Issues';
+
+$string['submitnewissue'] = 'Submit new issue';
+$string['validtitle'] = 'Please provide a valid title.';
+$string['validdescription'] = 'Please provide a valid description.';

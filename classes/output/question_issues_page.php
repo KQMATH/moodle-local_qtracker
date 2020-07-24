@@ -15,28 +15,28 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Class containing data for question issues.
+ * Renderable for issues page
  *
  * @package    local_qtracker
- * @copyright  2020 André Storhaug
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
+
 namespace local_qtracker\output;
+
 defined('MOODLE_INTERNAL') || die();
 
 use coding_exception;
 use dml_exception;
 use moodle_exception;
-use moodle_url;
 use renderable;
 use renderer_base;
-use single_select;
 use stdClass;
 use templatable;
 
-
 /**
- * Class containing data for question issues.
+ * Class containing data for question issues page.
  *
  * @copyright  2020 André Storhaug
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later

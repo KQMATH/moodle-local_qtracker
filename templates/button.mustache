@@ -25,7 +25,7 @@
     }
 }}
 <div class="{{classes}}">
-        <button type="submit" class="btn {{#primary}}btn-primary{{/primary}}{{^primary}}btn-default{{/primary}}"
+        <button type="{{#type}}{{type}}{{/type}}{{^type}}submit{{/type}}" class="btn {{#primary}}btn-primary{{/primary}}{{^primary}}btn-default{{/primary}}"
             id="{{id}}"
             title={{#quote}}{{tooltip}}{{/quote}}
             {{#disabled}}disabled{{/disabled}}>{{label}}</button>

@@ -17,9 +17,9 @@
 /**
  * Renderable for block
  *
- * @package    block_studiosity
- * @author     Andrew Madden <andrewmadden@catalyst-au.net>
- * @copyright  2019 Catalyst IT
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
@@ -27,8 +27,6 @@ namespace local_qtracker\output;
 
 defined('MOODLE_INTERNAL') || die;
 
-use local_qtracker\form\view\issue_registration_form;
-use moodle_url;
 use renderable;
 use renderer_base;
 use templatable;
@@ -37,11 +35,11 @@ use help_icon;
 
 
 /**
- * Studiosity block class.
+ * Question issue registration block class.
  *
- * @package    block_studiosity
- * @author     Andrew Madden <andrewmadden@catalyst-au.net>
- * @copyright  2019 Catalyst IT
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class issue_registration_block implements renderable, templatable {
@@ -49,14 +47,19 @@ class issue_registration_block implements renderable, templatable {
     /** @var \question_definition[] Array of {@link \question_definition} */
     public $questions = array();
 
-    /** @var int User ID */
-    public $userid;
+    /** @var \question_usage_by_activity */
+    protected $quba;
 
     /** @var array of stdclass strings to display */
     public $slots = array();
 
+    /** @var array of existing issue ids display */
+    public $issueids = array();
+
     /** @var help_icon The help icon. */
     protected $helpicon;
+
+    // TODO: create an alternative (class) for registering issues  that are not linked to an attempt....
 
     /**
      * Construct the contents of the block
@@ -64,16 +67,27 @@ class issue_registration_block implements renderable, templatable {
      * @param int $userid The id of the user.
      * @throws \coding_exception If called at incorrect times
      */
-    public function __construct(array $questions, $userid, $slots=null) {
-        $this->questions = $questions;
-        $this->userid = $userid;
+    public function __construct(\question_usage_by_activity $quba, $slots) {
+
+        $this->quba = $quba;
         $this->slots = $slots;
-        if (!is_null($slots)) {
-            if (count($questions) != count($slots)) {
-                throw new \coding_exception('The number of questions and slots does not match.');
-            }
+
+        //Todo  remove questions.....
+        foreach ($this->slots as $slot) {
+            $this->questions[] = $this->quba->get_question($slot);
         }
+        $this->load_issues();
         $this->helpicon = new help_icon('question', 'local_qtracker');
+    }
+
+    private function load_issues() {
+        global $DB;
+
+        $queryparams = ['questionusageid' => $this->quba->get_id()];
+        list($sql, $params) = $DB->get_in_or_equal($this->slots, SQL_PARAMS_NAMED);
+        $queryparams += $params;
+        $where = 'questionusageid = :questionusageid AND slot ' . $sql;
+        $this->issueids = $DB->get_fieldset_select('qtracker_issue', 'id', $where, $queryparams);
     }
 
     /**
@@ -86,37 +100,43 @@ class issue_registration_block implements renderable, templatable {
         global $PAGE;
         $url = $PAGE->url;
         $data = new stdClass();
-        $data->userid = $this->userid;
 
 
+        //TODO: only check if questions exists... otherwise i dont need them...
         if (count($this->questions) > 1) {
             $data->hasmultiple = true;
 
             $select = new stdClass();
             $options = array();
-            $select->name = "questionid";
+            $select->name = "slot";;
             $select->label = "Question";
             $select->helpicon = $this->helpicon->export_for_template($output);
 
             foreach ($this->questions as $key => $question) {
                 $option = new stdClass();
-                $option->value = $question->id;
+                $option->value = $this->slots[$key];
                 $option->name = $this->slots[$key];
                 array_push($options, $option);
             }
             $select->options = $options;
             $data->select = $select;
-
         } else {
             $data->hasmultiple = false;
-            $data->questionid = $this->questions[0]->id;
+            $data->slot = $this->slots[0];
         }
 
+        $data->qubaid = $this->quba->get_id();
         $data->action = $url;
         $data->tooltip = "This is a tooltip";
 
+        $button = new stdClass();
+        $button->type = "submit";
+        $button->classes = "col-auto";
+        $button->label = "Submit new issue";
+        $data->button = $button;
+        $data->issueids = json_encode($this->issueids);
+
         // TODO: Fix this as both the button and the select gets this. Wrap in separate mustashe templates.
-        $data->label = "Submit new issue";
 
         //$data->questions = $questions;
         return $data;

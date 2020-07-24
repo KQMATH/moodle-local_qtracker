@@ -14,24 +14,39 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External Web Service Template
+ * External (web service) function calls for editing a question issue.
  *
- * @package    localwstemplate
- * @copyright  2011 Moodle Pty Ltd (http://moodle.com)
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-require_once($CFG->libdir . "/externallib.php");
 
-class local_qtracker_external extends external_api {
+namespace local_qtracker\external;
+
+defined('MOODLE_INTERNAL') || die();
+
+require_once($CFG->libdir . "/externallib.php");
+require_once($CFG ->libdir . '/questionlib.php');
+
+use external_value;
+use external_function_parameters;
+use moodle_exception;
+use external_single_structure;
+use external_warnings;
+use local_qtracker\issue;
+
+
+class editissue extends \external_api {
 
     /**
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function new_issue_parameters() {
+    public static function edit_issue_parameters() {
         return new external_function_parameters(
             array(
-                'questionid' => new external_value(PARAM_INT, 'question id'),
+                'issueid' => new external_value(PARAM_INT, 'issue id'),
                 'issuetitle' => new external_value(PARAM_TEXT, 'issue title'),
                 'issuedescription' => new external_value(PARAM_TEXT, 'issue description'),
             )
@@ -42,16 +57,16 @@ class local_qtracker_external extends external_api {
      * Returns welcome message
      * @return string welcome message
      */
-    public static function new_issue($questionid, $issuetitle, $issuedescription) {
+    public static function edit_issue($issueid, $issuetitle, $issuedescription) {
         global $USER, $DB;
 
         $added = false;
         $warnings = array();
 
         //Parameter validation
-        $params = self::validate_parameters(self::new_issue_parameters(),
+        $params = self::validate_parameters(self::edit_issue_parameters(),
             array(
-                'questionid' => (int) $questionid,
+                'issueid' => (int) $issueid,
                 'issuetitle' => $issuetitle,
                 'issuedescription' => $issuedescription,
             )
@@ -63,34 +78,46 @@ class local_qtracker_external extends external_api {
         self::validate_context($context);
 
         //Capability checking
-        //OPTIONAL but in most web service it should present
         if (!has_capability('local/qtracker:createissue', $context)) {
-            throw new moodle_exception('cannotcreateissue', 'local_qtracker');
+            throw new \moodle_exception('cannoteditissue', 'local_qtracker');
         }
 
-        // Check if question exists.
-        $question = $DB->get_record('question', array('id' => $questionid));
-        if ($question === false) {
+        if (!$DB->record_exists_select('qtracker_issue', 'id = :issueid AND userid = :userid',
+            array(
+                'issueid' => $params['issueid'],
+                'userid' => $USER->id
+            )
+        )) {
+            throw new \moodle_exception('cannoteditissue', 'local_qtracker', '', $params['issueid']);
+        }
+
+        if (empty($params['issuetitle'])){
             $warnings[] = array(
-                            'item' => 'question',
-                            'itemid' => $questionid,
-                            'warningcode' => 'unknownquestionidnumber',
-                            'message' => 'Unknown question ID ' . $questionid
-                        );
-        } else { // Insert new issue
-            $dataobject = new \stdClass;
-            $dataobject->questionid = $questionid;
-            $dataobject->title = $issuetitle;
-            $dataobject->description = $issuedescription;
-            $dataobject->userid = $USER->id;
-            $time = time();
-            $dataobject->timecreated = $time;
-            $DB->insert_record('qtracker_issue', $dataobject);
+                'item' => 'issuetitle',
+                'itemid' => 0,
+                'warningcode' => 'fielderror',
+                'message' => 'Empty issue title.'
+            );
+        }
+
+        if (empty($params['issuedescription'])) {
+            $warnings[] = array(
+                'item' => 'issuedescription',
+                'itemid' => 0,
+                'warningcode' => 'fielderror',
+                'message' => 'Empty issue description.',
+            );
+        }
+        if (empty($warnings)) {
+            $issue = issue::load($params['issueid']);
+            $issue->set_title($params['issuetitle']);
+            $issue->set_description($params['issuedescription']);
             $added = true;
         }
 
         $result = array();
         $result['status'] = $added;
+        $result['issueid'] = $params['issueid'];
         $result['warnings'] = $warnings;
 
         return $result;
@@ -100,10 +127,11 @@ class local_qtracker_external extends external_api {
      * Returns description of method result value
      * @return external_description
      */
-    public static function new_issue_returns() {
+    public static function edit_issue_returns() {
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),
+                'issueid' => new external_value(PARAM_INT, 'The id of the new issue'),
                 'warnings' => new external_warnings()
             )
         );
