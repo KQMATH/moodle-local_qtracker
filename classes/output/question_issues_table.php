@@ -50,10 +50,8 @@ class question_issues_table extends table_sql {
     public function __construct($uniqueid, $url) {
         global $CFG;
         parent::__construct($uniqueid);
-
         // TODO: determine which context to use...
         $context = context_system::instance();
-        $this->context = $context;
 
         // This object should not be used without the right permissions.
         require_capability('moodle/role:manage', $context); // DO WE NEED THIS?
@@ -69,19 +67,59 @@ class question_issues_table extends table_sql {
     }
 
     /**
-     * Something name column.
-     *
-     * @param object $data Row data.
-     * @return string
+     * Generate the display of the id column.
+     * @param object $data the table row being output.
+     * @return string HTML content to go inside the td.
      */
-    protected function col_something($data) {
-        // TODO: implement one of these for questionid, title, description, and user.
-        return $data->something;
+    public function col_id($data) {
+        if ($data->id) {
+            return $data->id;
+        } else {
+            return '-';
+        }
+    }
+
+    /**
+     * Generate the display of the question name column.
+     * @param object $data the table row being output.
+     * @return string HTML content to go inside the td.
+     */
+    protected function col_questionid($data) {
+        if ($data->questionid) {
+            return $data->questionid;
+        } else {
+            return '-';
+        }
+    }
+
+    /**
+     * Generate the display of the title.
+     * @param object $data the table row being output.
+     * @return string HTML content to go inside the td.
+     */
+    protected function col_title($data) {
+        if ($data->title) {
+            return $data->title;
+        } else {
+            return '-';
+        }
+    }
+
+    /**
+     * Generate the display of the description.
+     * @param object $data the table row being output.
+     * @return string HTML content to go inside the td.
+     */
+    protected function col_description($data) {
+        if ($data->description) {
+            return $data->description;
+        } else {
+            return '-';
+        }
     }
 
     /**
      * The timecreated column.
-     *
      * @param stdClass $data The row data.
      * @return string
      */
@@ -98,10 +136,11 @@ class question_issues_table extends table_sql {
         // Define headers and columns.
         //TODO: define strings in lang file.
         $cols = array(
+            'id' => get_string('id', 'local_qtracker'),
             'questionid' => get_string('questionid', 'local_qtracker'),
-            'title' => get_string('issuetitle', 'local_qtracker'),
-            'description' => get_string('issuedescription', 'local_qtracker'),
-            'datecreated' => get_string('datecreated', 'local_qtracker'),
+            'title' => get_string('title', 'local_qtracker'),
+            'description' => get_string('description', 'local_qtracker'),
+            'datecreated' => get_string('datecreated', 'local_qtracker')
         );
 
         // Add remaining headers.
@@ -126,13 +165,31 @@ class question_issues_table extends table_sql {
      * @return array containing sql to use and an array of params.
      */
     public function setup_sql_queries() {
-
         // TODO: Write SQL to retrieve all rows...
-        $fields = '';
-        $from = '';
-        $where = '';
+        $fields = 'DISTINCT';
+        $fields .= '*';
+        $from = '{qtracker_issue} qs';
+        $where = '1=1';
         $params = array(); // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
 
+        // The WHERE clause is vital here, because some parts of tablelib.php will expect to
+        // add bits like ' AND x = 1' on the end, and that needs to leave to valid SQL.
+        $this->set_count_sql("SELECT COUNT(1) FROM (SELECT $fields FROM $from WHERE $where) temp WHERE 1 = 1", $params);
+
+        list($fields, $from, $where, $params) = $this->update_sql_after_count($fields, $from, $where, $params);
         $this->set_sql($fields, $from, $where, $params);
+    }
+
+    /**
+     * A chance for subclasses to modify the SQL after the count query has been generated,
+     * and before the full query is constructed.
+     * @param string $fields SELECT list.
+     * @param string $from JOINs part of the SQL.
+     * @param string $where WHERE clauses.
+     * @param array $params Query params.
+     * @return array with 4 elements ($fields, $from, $where, $params) as from base_sql.
+     */
+    protected function update_sql_after_count($fields, $from, $where, $params) {
+        return [$fields, $from, $where, $params];
     }
 }
