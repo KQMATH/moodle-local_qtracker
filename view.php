@@ -29,9 +29,9 @@ $editnode->make_active();
 echo $OUTPUT->header();
 
 // Get table renderer and display table here....
-$table = new \local_qtracker\output\question_issues_table(uniqid(), $url);
+$table = new \local_qtracker\output\questions_table(uniqid(), $url);
 $renderer = $PAGE->get_renderer('local_qtracker');
-$questionissuespage = new \local_qtracker\output\question_issues_page($table);
-echo $renderer->render($questionissuespage);
+$questionspage = new \local_qtracker\output\questions_page($table);
+echo $renderer->render($questionspage);
 
 echo $OUTPUT->footer();
