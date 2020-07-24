@@ -65,5 +65,16 @@ function xmldb_local_qtracker_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2020071000, 'local', 'qtracker');
     }
+    if ($oldversion < 2020072400) {
+        // Define table capquiz_user_rating to be created.
+        $table = new xmldb_table('qtracker_issue');
+
+        $field = new xmldb_field(
+            'slot', XMLDB_TYPE_TEXT);
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2020072400, 'local', 'qtracker');
+    }
     return true;
 }
