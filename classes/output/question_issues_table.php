@@ -144,9 +144,6 @@ class question_issues_table extends table_sql {
             'timecreated' => get_string('timecreated', 'local_qtracker')
         );
 
-        // Add remaining headers.
-        //$cols = array_merge($cols, array('actions' => get_string('actions')));
-
         $this->define_columns(array_keys($cols));
         $this->define_headers(array_values($cols));
     }

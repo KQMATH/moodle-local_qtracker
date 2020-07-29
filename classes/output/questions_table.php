@@ -68,19 +68,6 @@ class questions_table extends table_sql {
     }
 
     /**
-     * Generate the display of the id column.
-     * @param object $data the table row being output.
-     * @return string HTML content to go inside the td.
-     */
-    public function col_id($data) {
-        if ($data->id) {
-            return $data->id;
-        } else {
-            return '-';
-        }
-    }
-
-    /**
      * Generate the display of the question name column.
      * @param object $data the table row being output.
      * @return string HTML content to go inside the td.
@@ -101,31 +88,50 @@ class questions_table extends table_sql {
     protected function col_title($data) {
         if ($data->title) {
             return $data->title;
+            //need to change it to correct link
+            //return '<a href="/user/profile.php?id='.$data->questionid.'">'.$data->title.'</a>';
         } else {
             return '-';
         }
     }
 
     /**
-     * Generate the display of the description.
+     * Generate the display of the new.
      * @param object $data the table row being output.
      * @return string HTML content to go inside the td.
      */
-    protected function col_description($data) {
-        if ($data->description) {
-            return $data->description;
+    protected function col_new($data) {
+        if ($data->new) {
+            return $data->new;
         } else {
             return '-';
         }
     }
 
     /**
-     * The timecreated column.
-     * @param stdClass $data The row data.
-     * @return string
+     * Generate the display of the open.
+     * @param object $data the table row being output.
+     * @return string HTML content to go inside the td.
      */
-    public function col_timecreated($data) {
-        return userdate($data->timecreated);
+    protected function col_open($data) {
+        if ($data->open) {
+            return $data->open;
+        } else {
+            return '-';
+        }
+    }
+
+    /**
+     * Generate the display of the close.
+     * @param object $data the table row being output.
+     * @return string HTML content to go inside the td.
+     */
+    protected function col_close($data) {
+        if ($data->close) {
+            return $data->close;
+        } else {
+            return '-';
+        }
     }
 
     /**
@@ -137,19 +143,17 @@ class questions_table extends table_sql {
         // Define headers and columns.
         //TODO: define strings in lang file.
         $cols = array(
-            'id' => get_string('id', 'local_qtracker'),
             'questionid' => get_string('questionid', 'local_qtracker'),
             'title' => get_string('title', 'local_qtracker'),
-            'description' => get_string('description', 'local_qtracker'),
-            'timecreated' => get_string('timecreated', 'local_qtracker')
+            'new' => get_string('new', 'local_qtracker'),
+            'open' => get_string('open', 'local_qtracker'),
+            'close' => get_string('close', 'local_qtracker')
         );
-
-        // Add remaining headers.
-        //$cols = array_merge($cols, array('actions' => get_string('actions')));
 
         $this->define_columns(array_keys($cols));
         $this->define_headers(array_values($cols));
     }
+
 
     /**
      * Define table configs.
@@ -169,6 +173,9 @@ class questions_table extends table_sql {
         // TODO: Write SQL to retrieve distinct all rows...
         $fields = 'DISTINCT';
         $fields .= '*';
+        $fields .= "COUNT(IF(state='new',1, NULL)) 'new',
+                    COUNT(IF(state='open',1, NULL)) 'open',
+                    COUNT(IF(state='close',1, NULL)) 'close'";
         $from = '{qtracker_issue} qs';
         $where = '1=1';
         $params = array(); // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
