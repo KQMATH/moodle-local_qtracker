@@ -64,7 +64,3 @@ $string['submitnewissue'] = 'Submit new issue';
 $string['validtitle'] = 'Please provide a valid title.';
 $string['validdescription'] = 'Please provide a valid description.';
 
-//issues open,close, new
-$string['new'] = 'New';
-$string['open'] = 'Open';
-$string['close'] = 'Close';

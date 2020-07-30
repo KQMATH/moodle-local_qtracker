@@ -96,41 +96,21 @@ class questions_table extends table_sql {
     }
 
     /**
-     * Generate the display of the new.
-     * @param object $data the table row being output.
-     * @return string HTML content to go inside the td.
+     * Generate the display of the new, open and close column
+     * @param $cols extra_colums (new, open and close)
+     * @param $data the table row being output
+     * @return |null string html content to go inside the td.
      */
-    protected function col_new($data) {
-        if ($data->new) {
-            return $data->new;
-        } else {
-            return '-';
-        }
-    }
-
-    /**
-     * Generate the display of the open.
-     * @param object $data the table row being output.
-     * @return string HTML content to go inside the td.
-     */
-    protected function col_open($data) {
-        if ($data->open) {
-            return $data->open;
-        } else {
-            return '-';
-        }
-    }
-
-    /**
-     * Generate the display of the close.
-     * @param object $data the table row being output.
-     * @return string HTML content to go inside the td.
-     */
-    protected function col_close($data) {
-        if ($data->close) {
-            return $data->close;
-        } else {
-            return '-';
+    public function other_cols($cols, $data) {
+        switch ($cols) {
+            case 'new':
+                return $data->new;
+            case 'open':
+                return $data->open;
+            case 'close':
+                return $data->close;
+            default:
+                return null;
         }
     }
 
@@ -144,10 +124,7 @@ class questions_table extends table_sql {
         //TODO: define strings in lang file.
         $cols = array(
             'questionid' => get_string('questionid', 'local_qtracker'),
-            'title' => get_string('title', 'local_qtracker'),
-            'new' => get_string('new', 'local_qtracker'),
-            'open' => get_string('open', 'local_qtracker'),
-            'close' => get_string('close', 'local_qtracker')
+            'title' => get_string('title', 'local_qtracker')
         );
 
         $this->define_columns(array_keys($cols));
@@ -173,9 +150,9 @@ class questions_table extends table_sql {
         // TODO: Write SQL to retrieve distinct all rows...
         $fields = 'DISTINCT';
         $fields .= '*';
-        $fields .= "COUNT(IF(state='new',1, NULL)) 'new',
-                    COUNT(IF(state='open',1, NULL)) 'open',
-                    COUNT(IF(state='close',1, NULL)) 'close'";
+        $fields .= "COUNT(1) filter (where qs.state = 'new') AS new,
+                    COUNT(1) filter (where qs.state = 'open') AS open,
+                    COUNT(1) filter (where qs.state = 'close') AS close";
         $from = '{qtracker_issue} qs';
         $where = '1=1';
         $params = array(); // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
