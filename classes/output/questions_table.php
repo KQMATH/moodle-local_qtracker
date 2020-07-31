@@ -87,8 +87,9 @@ class questions_table extends table_sql {
      */
     protected function col_title($data) {
         if ($data->title) {
-            return $data->title;
-            //need to change it to correct link
+            $id = $data->id;
+            $title = \html_writer::link("#", $data->title, array('onclick' => "showIssuesInPane($id);return false;"));
+            return $title;            //need to change it to correct link
             //return '<a href="/user/profile.php?id='.$data->questionid.'">'.$data->title.'</a>';
         } else {
             return '-';
@@ -122,12 +123,12 @@ class questions_table extends table_sql {
     }
 
     /**
-     * Generate the display of the close.
+     * Generate the display of the closed.
      * @param object $data the table row being output.
      * @return string HTML content to go inside the td.
      */
-    protected function col_close($data) {
-        if ($data->close) {
+    protected function col_closed($data) {
+        if ($data->d) {
             return $data->close;
         } else {
             return '-';
@@ -147,7 +148,7 @@ class questions_table extends table_sql {
             'title' => get_string('title', 'local_qtracker'),
             'new' => get_string('new', 'local_qtracker'),
             'open' => get_string('open', 'local_qtracker'),
-            'close' => get_string('close', 'local_qtracker')
+            'closed' => get_string('closed', 'local_qtracker')
         );
 
         $this->define_columns(array_keys($cols));
@@ -175,14 +176,14 @@ class questions_table extends table_sql {
         $fields .= '*';
         $fields .= "COUNT(IF(state='new',1, NULL)) 'new',
                     COUNT(IF(state='open',1, NULL)) 'open',
-                    COUNT(IF(state='close',1, NULL)) 'close'";
+                    COUNT(IF(state='closed',1, NULL)) 'closed'";
         $from = '{qtracker_issue} qs';
         $where = '1=1';
         $params = array(); // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
 
         // The WHERE clause is vital here, because some parts of tablelib.php will expect to
         // add bits like ' AND x = 1' on the end, and that needs to leave to valid SQL.
-        $this->set_count_sql("SELECT COUNT(1) FROM (SELECT $fields FROM $from WHERE $where) temp WHERE 1 = 1", $params);
+        //$this->set_count_sql("SELECT COUNT(1) FROM (SELECT $fields FROM $from WHERE $where) temp WHERE 1 = 1", $params);
 
         list($fields, $from, $where, $params) = $this->update_sql_after_count($fields, $from, $where, $params);
         $this->set_sql($fields, $from, $where, $params);
@@ -199,5 +200,32 @@ class questions_table extends table_sql {
      */
     protected function update_sql_after_count($fields, $from, $where, $params) {
         return [$fields, $from, $where, $params];
+    }
+
+
+    public function wrap_html_start() {
+        if ($this->is_downloading()) {
+            return;
+        }
+
+        //echo '<div id="questions-table-wrapper" class="push-pane-over">';
+        echo '<div id="questions-table-wrapper">';
+        echo '<div id="questions-table-sidebar"></div>';
+        echo '<div class="border-bottom">';
+        echo '<div class="no-overflow">';
+        echo '<div class="questions-table">';
+
+    }
+
+    public function wrap_html_finish() {
+        global $PAGE;
+        if ($this->is_downloading()) {
+            return;
+        }
+
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
+        echo '</div>';
     }
 }

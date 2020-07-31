@@ -45,7 +45,8 @@ $string['question_problem_details'] = 'If you have feedback for this question, p
 $string['cannotcreateissue'] = 'Cannot create a new question issue.';
 $string['cannoteditissue'] = 'Cannot edit question issue with ID {$a}.';
 $string['cannotdeleteissue'] = 'Cannot delete question issue with ID {$a}.';
-$string['cannotgetissue'] = 'Cannot get q¨uestion issue with ID {$a}.';
+$string['cannotgetissue'] = 'Cannot get question issue with ID {$a}.';
+$string['cannotgetissues'] = 'Cannot get question issues.';
 $string['question'] = 'Question';
 $string['question_help'] = 'Select the question you want to register a new issue for.';
 
@@ -64,7 +65,8 @@ $string['submitnewissue'] = 'Submit new issue';
 $string['validtitle'] = 'Please provide a valid title.';
 $string['validdescription'] = 'Please provide a valid description.';
 
+$string['commentedon'] = 'commented on ';
 //issues open,close, new
 $string['new'] = 'New';
 $string['open'] = 'Open';
-$string['close'] = 'Close';
+$string['closed'] = 'Closed';
