@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package     local_qtracker
- * @author      André Storhaug <andr3.storhaug@gmail.com>
- * @copyright   2020 NTNU
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -46,6 +46,7 @@ $string['cannotcreateissue'] = 'Cannot create a new question issue.';
 $string['cannoteditissue'] = 'Cannot edit question issue with ID {$a}.';
 $string['cannotdeleteissue'] = 'Cannot delete question issue with ID {$a}.';
 $string['cannotgetissue'] = 'Cannot get question issue with ID {$a}.';
+$string['cannotgetquestion'] = 'Cannot get question with ID {$a}.';
 $string['cannotgetissues'] = 'Cannot get question issues.';
 $string['question'] = 'Question';
 $string['question_help'] = 'Select the question you want to register a new issue for.';
@@ -53,12 +54,13 @@ $string['question_help'] = 'Select the question you want to register a new issue
 $string['unknownquestionidnumber'] = 'Unknown question ID "{$a}"';
 $string['unknownqubaidnumber'] = 'Unknown question usage ID "{$a}"';
 $string['title'] = 'Title';
-$string['leavecomment'] = 'Leave A comment';
+$string['leavecomment'] = 'Leave a comment';
 
 $string['issuecreated'] = 'Issue successfully created.';
 $string['issueupdated'] = 'Issue successfully updated.';
 $string['issuedeleted'] = 'Issue successfully deleted.';
 
+$string['issue'] = 'Issue';
 $string['issues'] = 'Issues';
 
 $string['submitnewissue'] = 'Submit new issue';
@@ -66,7 +68,8 @@ $string['validtitle'] = 'Please provide a valid title.';
 $string['validdescription'] = 'Please provide a valid description.';
 
 $string['commentedon'] = 'commented on ';
-//issues open,close, new
+$string['name'] = 'Name';
+
 $string['new'] = 'New';
 $string['open'] = 'Open';
 $string['closed'] = 'Closed';

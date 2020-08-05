@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Table of question issues.
+ * Table of questions with registered issues.
  *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
@@ -48,12 +48,11 @@ class questions_table extends table_sql {
      * @param string $uniqueid Unique id of table.
      * @param moodle_url $url The base URL.
      */
-    public function __construct($uniqueid, $url) {
+    public function __construct($uniqueid, $url, $context) {
         global $CFG;
         parent::__construct($uniqueid);
         // TODO: determine which context to use...
-        $context = context_system::instance();
-
+        $this->context = $context;
         // This object should not be used without the right permissions.
         require_capability('moodle/role:manage', $context); // DO WE NEED THIS?
 
@@ -72,9 +71,9 @@ class questions_table extends table_sql {
      * @param object $data the table row being output.
      * @return string HTML content to go inside the td.
      */
-    protected function col_questionid($data) {
-        if ($data->questionid) {
-            return $data->questionid;
+    protected function col_id($data) {
+        if ($data->id) {
+            return $data->id;
         } else {
             return '-';
         }
@@ -85,11 +84,11 @@ class questions_table extends table_sql {
      * @param object $data the table row being output.
      * @return string HTML content to go inside the td.
      */
-    protected function col_title($data) {
-        if ($data->title) {
+    protected function col_name($data) {
+        if ($data->name) {
             $id = $data->id;
-            $title = \html_writer::link("#", $data->title, array('onclick' => "showIssuesInPane($id);return false;"));
-            return $title;            //need to change it to correct link
+            $name = \html_writer::link("#", $data->name, array('onclick' => "showIssuesInPane($id);return false;"));
+            return $name;            //need to change it to correct link
             //return '<a href="/user/profile.php?id='.$data->questionid.'">'.$data->title.'</a>';
         } else {
             return '-';
@@ -97,41 +96,25 @@ class questions_table extends table_sql {
     }
 
     /**
-     * Generate the display of the new.
-     * @param object $data the table row being output.
-     * @return string HTML content to go inside the td.
+     * Generate the display of the new, open and close column
+     * @param $cols extra_colums (new, open and close)
+     * @param $data the table row being output
+     * @return |null string html content to go inside the td.
      */
-    protected function col_new($data) {
-        if ($data->new) {
-            return $data->new;
-        } else {
-            return '-';
-        }
-    }
-
-    /**
-     * Generate the display of the open.
-     * @param object $data the table row being output.
-     * @return string HTML content to go inside the td.
-     */
-    protected function col_open($data) {
-        if ($data->open) {
-            return $data->open;
-        } else {
-            return '-';
-        }
-    }
-
-    /**
-     * Generate the display of the closed.
-     * @param object $data the table row being output.
-     * @return string HTML content to go inside the td.
-     */
-    protected function col_closed($data) {
-        if ($data->d) {
-            return $data->close;
-        } else {
-            return '-';
+    public function other_cols($cols, $data) {
+        switch ($cols) {
+            case 'new':
+            case 'open':
+            case 'closed':
+                $nrofstate = $data->{$cols};
+                if ($nrofstate < 1) {
+                    return $nrofstate;
+                }
+                $id = $data->id;
+                $closed = \html_writer::link("#", $nrofstate, array('onclick' => "showIssuesInPane($id, '$cols');return false;"));
+                return $closed;
+            default:
+                return null;
         }
     }
 
@@ -144,8 +127,8 @@ class questions_table extends table_sql {
         // Define headers and columns.
         //TODO: define strings in lang file.
         $cols = array(
-            'questionid' => get_string('questionid', 'local_qtracker'),
-            'title' => get_string('title', 'local_qtracker'),
+            'id' => get_string('questionid', 'local_qtracker'),
+            'name' => get_string('name', 'local_qtracker'),
             'new' => get_string('new', 'local_qtracker'),
             'open' => get_string('open', 'local_qtracker'),
             'closed' => get_string('closed', 'local_qtracker')
@@ -171,19 +154,32 @@ class questions_table extends table_sql {
      * @return array containing sql to use and an array of params.
      */
     public function setup_sql_queries() {
-        // TODO: Write SQL to retrieve distinct all rows...
-        $fields = 'DISTINCT';
-        $fields .= '*';
-        $fields .= "COUNT(IF(state='new',1, NULL)) 'new',
-                    COUNT(IF(state='open',1, NULL)) 'open',
-                    COUNT(IF(state='closed',1, NULL)) 'closed'";
-        $from = '{qtracker_issue} qs';
-        $where = '1=1';
-        $params = array(); // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
+        global $DB;
+
+        $contextids = explode('/', trim($this->context->path, '/'));
+        // Get all child contexts.
+        $children = $this->context->get_child_contexts();
+        foreach ($children as $c) {
+            $contextids[] = $c->id;
+        }
+
+        list($insql, $inarams) = $DB->get_in_or_equal($contextids, SQL_PARAMS_NAMED);
+
+        $fields = 'q.id,
+                    q.name,';
+        $fields .= "COUNT(case qi.state when 'new' then 1 else null end) AS new,
+                    COUNT(case qi.state when 'open' then 1 else null end) AS open,
+                    COUNT(case qi.state when 'closed' then 1 else null end) AS closed";
+        $from = '{qtracker_issue} qi';
+        $from .= "\nJOIN {question} q ON q.id = qi.questionid";
+        $from .= "\nJOIN {context} ctx ON qi.contextid = ctx.id";
+        $where = "\nctx.id $insql";
+        $where .= "\nGROUP BY q.id";
+        $params = $inarams; // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
 
         // The WHERE clause is vital here, because some parts of tablelib.php will expect to
         // add bits like ' AND x = 1' on the end, and that needs to leave to valid SQL.
-        //$this->set_count_sql("SELECT COUNT(1) FROM (SELECT $fields FROM $from WHERE $where) temp WHERE 1 = 1", $params);
+        $this->set_count_sql("SELECT COUNT(1) FROM (SELECT $fields FROM $from WHERE $where) temp WHERE 1 = 1", $params);
 
         list($fields, $from, $where, $params) = $this->update_sql_after_count($fields, $from, $where, $params);
         $this->set_sql($fields, $from, $where, $params);
@@ -209,11 +205,11 @@ class questions_table extends table_sql {
         }
 
         //echo '<div id="questions-table-wrapper" class="push-pane-over">';
-        echo '<div id="questions-table-wrapper">';
-        echo '<div id="questions-table-sidebar"></div>';
-        echo '<div class="border-bottom">';
-        echo '<div class="no-overflow">';
-        echo '<div class="questions-table">';
+        //echo '<div id="questions-table-wrapper">';
+        //echo '<div id="questions-table-sidebar"></div>';
+        //echo '<div class="border-bottom">';
+        //echo '<div class="no-overflow">';
+        //echo '<div class="questions-table">';
 
     }
 
@@ -223,9 +219,9 @@ class questions_table extends table_sql {
             return;
         }
 
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
-        echo '</div>';
+        //echo '</div>';
+        //echo '</div>';
+        //echo '</div>';
+        //echo '</div>';
     }
 }
