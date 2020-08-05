@@ -50,11 +50,12 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
          *
          * Each call to init gets it's own instance of this class.
          */
-        var BlockFormManager = function (selector, issueids) {
+        var BlockFormManager = function (selector, issueids, contextid) {
+            this.contextid = contextid;
             this.form = $(selector);
             this.form.closest('.card-text').prepend('<span class="notifications" id="qtracker-notifications"></span>');
             this.issueManager = new IssueManager();
-            this.init(selector, JSON.parse(issueids));
+            this.init(JSON.parse(issueids));
         };
 
         /**
@@ -94,17 +95,19 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
          * @private
          * @return {Promise}
          */
-        BlockFormManager.prototype.init = function (selector, issueids) {
+        BlockFormManager.prototype.init = function (issueids = []) {
             // Init all slots
             let slots = $(SELECTORS.SLOT_SELECT_OPTION);
             if (slots.length == 0) slots = $(SELECTORS.SLOT);
             slots.map((index, option) => {
-                let issue = new Issue(null, parseInt(option.value));
-                issue.changeState(Issue.STATES.NEW);
+                let issue = new Issue(null, parseInt(option.value), this.contextid);
+                issue.isSaved = false;//changeState(Issue.STATES.NEW);
                 this.issueManager.addIssue(issue);
             });
 
+
             this.issueManager.loadIssues(issueids).then(() => {
+
                 var formData = new FormData(this.form[0]);
                 this.issueManager.setActiveIssue(parseInt(formData.get('slot')));
 
@@ -150,11 +153,10 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
 
         BlockFormManager.prototype.reflectFormState = function () {
             let issue = this.issueManager.getActiveIssue();
-            var state = issue.getState();
-            if (state === Issue.STATES.EXISTING) {
+            if (issue.isSaved === true) { //state === Issue.STATES.EXISTING) {
                 this.toggleDeleteButton(true);
                 this.toggleUpdateButton(true);
-            } else if (state === Issue.STATES.NEW) {
+            } else if (issue.isSaved === false) {//state === Issue.STATES.NEW) {
                 this.clearForm();
             }
 
@@ -173,6 +175,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
 
             // We could trigger an event instead.
             // Yuk.
+            console.log("jijjijij")
             Y.use('moodle-core-formchangechecker', function () {
                 M.core_formchangechecker.reset_form_dirty_state();
             });
@@ -257,7 +260,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                         };
                         this.notify(notification);
                     }.bind(this));
-                    this.issueManager.getActiveIssue().changeState(Issue.STATES.NEW);;
+                    this.issueManager.getActiveIssue().isSaved = false;//changeState(Issue.STATES.NEW);;
                     this.clearForm();
                 }.bind(this),
                 fail: this.handleFormSubmissionFailure.bind(this)
@@ -277,6 +280,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                 args: {
                     qubaid: formData.get('qubaid'),
                     slot: formData.get('slot'),
+                    contextid: this.contextid,
                     issuetitle: formData.get('issuetitle'),
                     issuedescription: formData.get('issuedescription'),
                 },
@@ -289,7 +293,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                         };
                         this.notify(notification);
                     }.bind(this));
-                    this.issueManager.getActiveIssue().changeState(Issue.STATES.EXISTING)
+                    this.issueManager.getActiveIssue().isSaved = true;//changeState(Issue.STATES.EXISTING)
                     //this.setAction(ACTION.EDITISSUE);
                     // TODO: add delete button.
                     this.toggleUpdateButton(true);
@@ -416,6 +420,13 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                 return;
             }
 
+
+            if (this.issueManager.getActiveIssue().isSaved === true) {
+                this.editIssue();
+            } else {
+                this.createIssue();
+            }
+/*
             var state = this.issueManager.getActiveIssue().getState();
             switch (state) {
                 case Issue.STATES.NEW:
@@ -430,7 +441,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                     break;
                 default:
                     break;
-            }
+            }*/
         };
 
         BlockFormManager.prototype.validateForm = function () {
@@ -476,8 +487,8 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
              * @param {string} issueids The ids of existing issues to load.
              * @return {BlockFormManager}
              */
-            init: function (selector, issueids) {
-                return new BlockFormManager(selector, issueids);
+            init: function (selector, issueids, contextid) {
+                return new BlockFormManager(selector, issueids, contextid);
             }
         };
     });

@@ -1,0 +1,73 @@
+#issues-pane {
+    width: 100%;
+    z-index: 30;
+    border: 1px solid #dee2e6;
+}
+
+.issues-pane-header {
+    padding: .75rem;
+    font-size: 1em;
+    top: 0;
+}
+
+.issues-pane-footer {
+    padding: .75rem;
+    font-size: 1em;
+    bottom: 0;
+}
+
+.qtracker-container {
+    position: relative;
+    min-height: 400px;
+}
+
+.qtracker-container .icon {
+    height: 20px;
+    font-size: 20px;
+    width: auto;
+}
+
+.push-pane-over {
+    padding-right: 0;
+}
+
+#questions-table-wrapper {
+    position: relative;
+    min-height: 360px;
+}
+
+.questions-table {
+    width: 100%;
+}
+
+.flex-grow {
+    flex: 1 0 auto;
+}
+
+@media (min-width: 768px) {
+    #issues-pane {
+        position: absolute;
+        top: calc(-1.25rem - 2px);
+        right: calc(-1.25rem);
+        height: calc(100% + 2*1.25rem + 2px);
+        border: unset;
+        border-left: 1px solid #dee2e6;
+        box-shadow: -3px 0 5px rgba(36, 41, 46, .05);
+        width: calc(40% - -1.25rem);
+        z-index: 30;
+        animation: show-pane .2s cubic-bezier(0, 0, 0, 1);
+    }
+    .push-pane-over {
+        padding-right: 40%;
+        transition: padding 0.2s;
+    }
+}
+
+@keyframes show-pane {
+    from {
+        right: calc(-400px - 1.25rem);
+    }
+    to {
+        right: -1.25rem;
+    }
+}

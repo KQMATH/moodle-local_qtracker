@@ -23,7 +23,7 @@
  * @copyright  2020 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'local_qtracker/events', 'local_qtracker/issue'], function ($, qtrackerEvents, Issue) {
+define(['jquery', 'local_qtracker/issue'], function ($, Issue) {
 
     /**
      * Constructor
@@ -33,7 +33,7 @@ define(['jquery', 'local_qtracker/events', 'local_qtracker/issue'], function ($,
      *
      * Each call to init gets it's own instance of this class.
      */
-    var IssueManager = function () { };
+    var IssueManager = function () {};
 
     /**
      * @var {Form} form
@@ -43,7 +43,6 @@ define(['jquery', 'local_qtracker/events', 'local_qtracker/issue'], function ($,
 
     IssueManager.prototype.activeIssue = null;
 
-
     IssueManager.prototype.getActiveIssue = function () {
         return this.activeIssue;
     };
@@ -51,9 +50,6 @@ define(['jquery', 'local_qtracker/events', 'local_qtracker/issue'], function ($,
     IssueManager.prototype.setActiveIssue = function (slot) {
         let newIssue = this.getIssueBySlot(slot);
         this.activeIssue = newIssue;
-        /* if (newIssue) {
-            $(document).trigger(qtrackerEvents.ISSUEMANAGER_ACTIVEISSUE_CHANGED)
-        } */
         return newIssue;
     };
 
@@ -81,9 +77,10 @@ define(['jquery', 'local_qtracker/events', 'local_qtracker/issue'], function ($,
         this.issues.set(issue.getSlot(), issue);
     };
 
-    IssueManager.prototype.loadIssues = function (issueids) {
-        var promises = [];
-        for (const id of issueids) {
+    IssueManager.prototype.loadIssues = function (issueids = []) {
+        let promises = [];
+        for (let i = 0; i < issueids.length; i++) {
+            const id = issueids[i];
             let promise = Issue.load(id).then((response) => {
                 let issue = this.getIssueBySlot(response.issue.slot)
                 if (!issue) {
@@ -92,12 +89,11 @@ define(['jquery', 'local_qtracker/events', 'local_qtracker/issue'], function ($,
                 issue.setId(response.issue.id);
                 issue.setTitle(response.issue.title);
                 issue.setDescription(response.issue.description);
-                issue.changeState(Issue.STATES.EXISTING);
+                issue.isSaved = true;//changeState(Issue.STATES.EXISTING);
                 this.addIssue(issue);
             });
             promises.push(promise);
         }
-
         return Promise.all(promises);
     };
 

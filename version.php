@@ -15,17 +15,17 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package     local_qtracker
- * @author      André Storhaug <andr3.storhaug@gmail.com>
- * @copyright   2020 NTNU
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2020072400;
+$plugin->version = 2020072414;
 $plugin->requires = 2016120500;
 $plugin->cron = 0;
 $plugin->component = 'local_qtracker';
-$plugin->maturity = MATURITY_ALPHA;
-$plugin->release = '0.0.1';
+$plugin->maturity = MATURITY_STABLE;
+$plugin->release = '0.1.0';

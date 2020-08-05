@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External (web service) function calls for editing a question issue.
+ * External (web service) function calls for creating a new question issue.
  *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
@@ -28,6 +28,7 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/externallib.php");
 require_once($CFG ->libdir . '/questionlib.php');
+require_once($CFG->dirroot . '/local/qtracker/lib.php');
 
 use external_value;
 use external_function_parameters;
@@ -37,16 +38,18 @@ use external_warnings;
 use local_qtracker\issue;
 
 
-class editissue extends \external_api {
+class new_issue extends \external_api {
 
     /**
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function edit_issue_parameters() {
+    public static function new_issue_parameters() {
         return new external_function_parameters(
             array(
-                'issueid' => new external_value(PARAM_INT, 'issue id'),
+                'qubaid' => new external_value(PARAM_INT, 'question usage id'),
+                'slot' => new external_value(PARAM_INT, 'slot'),
+                'contextid' => new external_value(PARAM_INT, 'issue context'),
                 'issuetitle' => new external_value(PARAM_TEXT, 'issue title'),
                 'issuedescription' => new external_value(PARAM_TEXT, 'issue description'),
             )
@@ -57,16 +60,18 @@ class editissue extends \external_api {
      * Returns welcome message
      * @return string welcome message
      */
-    public static function edit_issue($issueid, $issuetitle, $issuedescription) {
+    public static function new_issue($qubaid, $slot, $contextid, $issuetitle, $issuedescription) {
         global $USER, $DB;
 
         $added = false;
         $warnings = array();
 
         //Parameter validation
-        $params = self::validate_parameters(self::edit_issue_parameters(),
+        $params = self::validate_parameters(self::new_issue_parameters(),
             array(
-                'issueid' => (int) $issueid,
+                'qubaid' => (int) $qubaid,
+                'slot' => (int) $slot,
+                'contextid' => (int) $contextid,
                 'issuetitle' => $issuetitle,
                 'issuedescription' => $issuedescription,
             )
@@ -74,21 +79,12 @@ class editissue extends \external_api {
 
         //Context validation
         // TODO: ensure proper validation....
-        $context = \context_user::instance($USER->id);
+        $context = \context::instance_by_id($params['contextid']);
         self::validate_context($context);
 
         //Capability checking
-        if (!has_capability('local/qtracker:createissue', $context)) {
-            throw new \moodle_exception('cannoteditissue', 'local_qtracker');
-        }
-
-        if (!$DB->record_exists_select('qtracker_issue', 'id = :issueid AND userid = :userid',
-            array(
-                'issueid' => $params['issueid'],
-                'userid' => $USER->id
-            )
-        )) {
-            throw new \moodle_exception('cannoteditissue', 'local_qtracker', '', $params['issueid']);
+        if (!has_capability('local/qtracker:addissue', $context)) {
+            throw new moodle_exception('cannotcreateissue', 'local_qtracker');
         }
 
         if (empty($params['issuetitle'])){
@@ -108,16 +104,28 @@ class editissue extends \external_api {
                 'message' => 'Empty issue description.',
             );
         }
+
+        $quba = \question_engine::load_questions_usage_by_activity($params['qubaid']);
+        $question = $quba->get_question($params['slot']);
+
+        $issueid = 0;
+
         if (empty($warnings)) {
-            $issue = issue::load($params['issueid']);
-            $issue->set_title($params['issuetitle']);
-            $issue->set_description($params['issuedescription']);
+            $issue = issue::create(
+                $params['issuetitle'],
+                $params['issuedescription'],
+                $question,
+                $params['contextid'],
+                $quba,
+                $params['slot']
+            );
+            $issueid = $issue->get_id();
             $added = true;
         }
 
         $result = array();
         $result['status'] = $added;
-        $result['issueid'] = $params['issueid'];
+        $result['issueid'] = $issueid;
         $result['warnings'] = $warnings;
 
         return $result;
@@ -127,7 +135,7 @@ class editissue extends \external_api {
      * Returns description of method result value
      * @return external_description
      */
-    public static function edit_issue_returns() {
+    public static function new_issue_returns() {
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),

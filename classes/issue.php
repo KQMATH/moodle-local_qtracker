@@ -14,11 +14,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package     mod_capquiz
- * @author      Aleksander Skrede <aleksander.l.skrede@ntnu.no>
- * @author      Sebastian S. Gundersen <sebastian@sgundersen.com>
- * @copyright   2019 NTNU
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 namespace local_qtracker;
@@ -84,6 +83,15 @@ class issue {
     }
 
     /**
+     * Returns the issue description.
+     *
+     * @return int
+     */
+    public function get_state() {
+        return $this->issue->state;
+    }
+
+    /**
      * Returns the issue questionusageid.
      *
      * @return int
@@ -108,6 +116,15 @@ class issue {
      */
     public function get_slot() {
         return $this->issue->slot;
+    }
+
+    /**
+     * Returns the issue contextid.
+     *
+     * @return int
+     */
+    public function get_contextid() {
+        return $this->issue->contextid;
     }
 
     /**
@@ -151,7 +168,7 @@ class issue {
      *
      * @return issue
      */
-    public static function create($title, $description, \question_definition $question, $quba = null, $slot = null) {
+    public static function create($title, $description, \question_definition $question, $contextid, $quba = null, $slot = null) {
         global $USER, $DB;
 
         $issueobj = new \stdClass();
@@ -160,6 +177,8 @@ class issue {
         $issueobj->questionid = $question->id;
         $issueobj->questionusageid = $quba->get_id();
         $issueobj->slot = $slot;
+        $issueobj->contextid = $contextid;
+        $issueobj->state = 'new';
         $issueobj->userid = $USER->id;
         $time = time();
         $issueobj->timecreated = $time;

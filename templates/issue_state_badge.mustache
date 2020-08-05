@@ -15,23 +15,23 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_qtracker/button
+    @template local_qtracker/issue_state_badge
 
-    Button template.
+    Issue state badge template.
 
     Example context (json):
     {
-        "classes": "",
-        "type": "submit",
-        "primary": true,
-        "tooltip": "A button.",
-        "label": "Button",
-        "disabled": false
+        "new": true
     }
 }}
-<div class="{{classes}}">
-        <button type="{{#type}}{{type}}{{/type}}{{^type}}submit{{/type}}" class="btn {{#primary}}btn-primary{{/primary}}{{^primary}}btn-default{{/primary}}"
-            id="{{id}}"
-            title={{#quote}}{{tooltip}}{{/quote}}
-            {{#disabled}}disabled{{/disabled}}>{{label}}</button>
-</div>
+<h5>
+{{#new}}
+   <span class="badge badge-primary">{{#str}} new, local_qtracker {{/str}}</span>
+{{/new}}
+{{#open}}
+   <span class="badge badge-success">{{#str}} open, local_qtracker {{/str}}</span>
+{{/open}}
+{{#closed}}
+   <span class="badge badge-danger">{{#str}} closed, local_qtracker {{/str}}</span>
+{{/closed}}
+</h5>

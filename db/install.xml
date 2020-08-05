@@ -12,7 +12,9 @@
         <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The question identifier for the question bank"/>
         <FIELD NAME="questionusageid" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Foreign key, references question_usages.id"/>
         <FIELD NAME="slot" TYPE="int" LENGTH="10" NOTNULL="false" SEQUENCE="false" COMMENT="Used to number the questions in one attempt sequentially."/>
+        <FIELD NAME="state" TYPE="text" NOTNULL="false" SEQUENCE="false" COMMENT="The current state of the issue."/>
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The user that created this issue"/>
+        <FIELD NAME="contextid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The id of the context that the issue was created in."/>
         <FIELD NAME="timecreated" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The time this record was created"/>
       </FIELDS>
       <KEYS>

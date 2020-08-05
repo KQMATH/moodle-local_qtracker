@@ -15,12 +15,15 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package     local_qtracker
- * @author      André Storhaug <andr3.storhaug@gmail.com>
- * @copyright   2020 NTNU
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
+use local_qtracker\issue;
 
 /**
  * This function extends the navigation with the report items
@@ -49,8 +52,9 @@ function local_qtracker_extend_navigation_course($navigation, $course, $context)
         'qtracker'
     );
 
-    //$contexts = new question_edit_contexts($context);
-    //if ($contexts->have_one_edit_tab_cap('questions')) {
+    //TODO: Check if the user has ANY question issue context capabilities.
+    //$contexts = new issue_edit_contexts($context);
+    //if ($contexts->have_one_edit_tab_cap('issues')) {
     $qtrackernode->add(get_string('issues', 'local_qtracker'), new moodle_url(
         $CFG->wwwroot . '/local/qtracker/view.php',
         $params
@@ -58,5 +62,50 @@ function local_qtracker_extend_navigation_course($navigation, $course, $context)
     //}
 }
 
-function qtracker_get_view($calendar, $view, $includenavigation = true, bool $skipevents = false) {
+/**
+ * Check capability on category
+ *
+ * @param mixed $issueorid object or id. If an object is passed, it should include ->contextid and ->userid.
+ * @param string $cap 'add', 'edit', 'view'.
+ * @param integer $notused no longer used.
+ * @return boolean this user has the capability $cap for this issue $issue?
+ */
+function issue_has_capability_on($issueorid, $cap) {
+    global $USER;
+
+    if (is_numeric($issueorid)) {
+        $issue = issue::load((int)$issueorid);
+    } else if (is_object($issueorid)) {
+        if (isset($issueorid->contextid) && isset($issueorid->userid)) {
+            $issue = $issueorid;
+        }
+
+        if (!isset($issue) && isset($issueorid->id) && $issueorid->id != 0) {
+            $issue = issue::load($issueorid->id)->get_issue_obj();
+        }
+    } else {
+        throw new coding_exception('$issueorid parameter needs to be an integer or an object.');
+    }
+
+    $context = context::instance_by_id($issue->contextid);
+    // These are existing issues capabilities.
+    // Each of these has a 'mine' and 'all' version that is appended to the capability name.
+    $capabilitieswithallandmine = ['edit' => 1, 'view' => 1];
+
+    if (!isset($capabilitieswithallandmine[$cap])) {
+        return has_capability('local/qtracker:' . $cap, $context);
+    } else {
+        return has_capability('local/qtracker:' . $cap . 'all', $context) ||
+            ($issue->userid == $USER->id && has_capability('local/qtracker:' . $cap . 'mine', $context));
+    }
+}
+
+/**
+ * Require capability on issue.
+ */
+function issue_require_capability_on($issue, $cap) {
+    if (!issue_has_capability_on($issue, $cap)) {
+        print_error('nopermissions', '', '', $cap);
+    }
+    return true;
 }

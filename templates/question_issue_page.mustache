@@ -15,23 +15,24 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_qtracker/button
+    @template local_qtracker/questions_issue_page
 
-    Button template.
+    Question issue page template.
 
     Example context (json):
     {
-        "classes": "",
-        "type": "submit",
-        "primary": true,
-        "tooltip": "A button.",
-        "label": "Button",
-        "disabled": false
+        "questionissue": {
+            "id": "2",
+            "title": "Issue title",
+            "description": "Issue description",
+        },
     }
 }}
-<div class="{{classes}}">
-        <button type="{{#type}}{{type}}{{/type}}{{^type}}submit{{/type}}" class="btn {{#primary}}btn-primary{{/primary}}{{^primary}}btn-default{{/primary}}"
-            id="{{id}}"
-            title={{#quote}}{{tooltip}}{{/quote}}
-            {{#disabled}}disabled{{/disabled}}>{{label}}</button>
+<div class="qtracker-container">
+    {{#questionissue}}
+        {{id}}
+        {{title}}
+        {{description}}
+    {{/questionissue}}
 </div>
+
