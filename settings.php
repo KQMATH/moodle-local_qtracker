@@ -17,14 +17,14 @@
 /**
  * Main interface to Question Tracker
  *
- * @package     local_qtracker
- * @author      André Storhaug <andr3.storhaug@gmail.com>
- * @copyright   2020 NTNU
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
-/* 
+/*
 $settings->add(new admin_setting_heading('sampleheader',
                                          get_string('headerconfig', 'local_qtracker'),
                                          get_string('descconfig', 'local_qtracker')));

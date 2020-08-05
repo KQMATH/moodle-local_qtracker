@@ -33,15 +33,16 @@ define(['jquery', 'core/str', 'core/ajax'], function ($, Str, Ajax) {
      *
      * Each call to init gets it's own instance of this class.
      */
-    var Issue = function (id = null, slot = null) {
+    var Issue = function (id = null, slot = null, contextid) {
         this.id = id;
         this.slot = slot;
+        this.contextid = contextid;
     };
 
     Issue.STATES = {
         NEW: "new",
-        EXISTING: "existing",
-        DELETED: "deleted",
+        OPEN: "open",
+        CLOSED: "closed",
     }
 
     /**
@@ -68,9 +69,11 @@ define(['jquery', 'core/str', 'core/ajax'], function ($, Str, Ajax) {
      */
     Issue.prototype.description = "";
 
-    Issue.prototype.state = Issue.STATES.NEW;
+    Issue.prototype.contextid = null;
 
-    Issue.prototype.inDB = false;
+    Issue.prototype.isSaved = false;
+
+    Issue.prototype.state = Issue.STATES.NEW;
 
     /**
      * Initialise the class.
@@ -121,6 +124,10 @@ define(['jquery', 'core/str', 'core/ajax'], function ($, Str, Ajax) {
 
     Issue.prototype.getState = function () {
         return this.state;
+    };
+
+    Issue.prototype.getContextid = function () {
+        return this.contextid;
     };
 
     /**

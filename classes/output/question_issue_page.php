@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Renderable for questions page
+ * Renderable for issues page
  *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
@@ -34,27 +34,31 @@ use renderable;
 use renderer_base;
 use stdClass;
 use templatable;
+use local_qtracker\issue;
+use local_qtracker\external\issue_exporter;
 
 /**
- * Class containing data for question page.
+ * Class containing data for question issue page.
  *
  * @copyright  2020 André Storhaug
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class questions_page implements renderable, templatable {
+class question_issue_page implements renderable, templatable {
 
     /** The default number of results to be shown per page. */
     const DEFAULT_PAGE_SIZE = 20;
 
-    protected $questionstable = [];
+    protected $questionissue = null;
+
+    protected $courseid = [];
 
     /**
      * Construct this renderable.
      *
-     * @param \local_qtracker\questions_table $questionstable
+     * @param \local_qtracker\question_issues_table $questionissuestable
      */
-    public function __construct(questions_table $questionstable, $courseid) {
-        $this->questionstable = $questionstable;
+    public function __construct(issue $questionissue, $courseid) {
+        $this->questionissue = $questionissue;
         $this->courseid = $courseid;
     }
 
@@ -68,16 +72,13 @@ class questions_page implements renderable, templatable {
      * @throws moodle_exception
      */
     public function export_for_template(renderer_base $output) {
-        global $PAGE;
         $data = new stdClass();
 
-        ob_start();
-        $this->questionstable->out(self::DEFAULT_PAGE_SIZE, true);
-        $questions = ob_get_contents();
-        ob_end_clean();
-        $data->questions = $questions;
-        $data->courseid = $this->courseid;
-
+        $context = \context_course::instance($this->courseid);
+        $exporter = new issue_exporter($this->questionissue->get_issue_obj(), ['context' => $context]);
+        $issuedetails = $exporter->export($output);
+        $data->questionissue = $issuedetails;
+print_r($data->questionissue);
         return $data;
     }
 }

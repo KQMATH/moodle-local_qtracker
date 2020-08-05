@@ -14,18 +14,23 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace local_qtracker\form\view;
+/**
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
+namespace local_qtracker\form\view;
 
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . '/formslib.php');
 
 /**
- * @package     mod_capquiz
- * @author      Aleksander Skrede <aleksander.l.skrede@ntnu.no>
- * @copyright   2018 NTNU
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_qtracker
+ * @copyright  2020 André Storhaug
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class issue_registration_form extends \moodleform {
 

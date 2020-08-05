@@ -28,14 +28,16 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/externallib.php");
 require_once($CFG ->libdir . '/questionlib.php');
+require_once($CFG->dirroot . '/local/qtracker/lib.php');
 
 use external_value;
 use external_function_parameters;
 use external_single_structure;
 use external_warnings;
 use local_qtracker\issue;
+use local_qtracker\external\helper;
 
-class getissue extends \external_api {
+class get_issue extends \external_api {
 
     /**
      * Returns description of method parameters
@@ -68,16 +70,6 @@ class getissue extends \external_api {
             )
         );
 
-        //Context validation
-        // TODO: ensure proper validation....
-        $context = \context_user::instance($USER->id);
-        self::validate_context($context);
-
-        //Capability checking
-        if (!has_capability('local/qtracker:readissue', $context)) {
-            throw new \moodle_exception('cannotgetissue', 'local_qtracker');
-        }
-
         if (!$DB->record_exists_select('qtracker_issue', 'id = :issueid AND userid = :userid',
             array(
                 'issueid' => $params['issueid'],
@@ -87,12 +79,21 @@ class getissue extends \external_api {
             throw new \moodle_exception('cannotgetissue', 'local_qtracker', '', $params['issueid']);
         }
 
-        if (empty($warnings)) {
-            $issue = issue::load($params['issueid']);
+        $issue = issue::load($params['issueid']);
 
+        //Context validation
+        $context = \context::instance_by_id($issue->get_contextid());
+        self::validate_context($context);
+
+        //Capability checking
+        issue_require_capability_on($issue->get_issue_obj(), 'view');
+
+
+        if (empty($warnings)) {
             $issuedata['id'] = $issue->get_id();
             $issuedata['title'] = $issue->get_title();
             $issuedata['description'] = $issue->get_description();
+            $issuedata['state'] = $issue->get_state();
             $issuedata['questionid'] = $issue->get_questionid();
             $issuedata['questionusageid'] = $issue->get_qubaid();
             $issuedata['slot'] = $issue->get_slot();
@@ -118,18 +119,7 @@ class getissue extends \external_api {
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),
-                'issue' => new external_single_structure(
-                        array(
-                            'id' => new external_value(PARAM_INT, 'The id of the issue'),
-                            'title' => new external_value(PARAM_TEXT, 'The issue title.'),
-                            'description' => new external_value(PARAM_TEXT, 'The issue description.'),
-                            'questionid' => new external_value(PARAM_INT, 'The question id for this issue.'),
-                            'questionusageid' => new external_value(PARAM_INT, 'The question usage id for this issue.'),
-                            'slot' => new external_value(PARAM_INT, 'The issslot for the question for the issue.'),
-                            'userid' => new external_value(PARAM_INT, 'The user id for the user who created the issue.'),
-                            'timecreated' => new external_value(PARAM_INT, 'The time the issue was created.'),
-                        )
-                    ),
+                'issue' => helper::issue_description(),
                 'warnings' => new external_warnings()
             )
         );

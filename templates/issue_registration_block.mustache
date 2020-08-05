@@ -15,37 +15,31 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template core_admin/setting_configmultiselect
+    @template local_qtracker/issue_registration_block
 
-    Admin multiselect setting template.
+    Issue registration block template.
 
     Context variables required for this template:
-    * name - form element name
-    * id - element id
-    * size - element size
+    * action - form element name
+    * name - element id
+    * qubaid - question bank id
     * options - list of options containing name, value, selected
+
+    For a full list of the context for this template see the course_competencies_page renderable
 
     Example context (json):
     {
+        "action": "https://domain.example/file.php",
         "name": "test",
-        "id": "test0",
-        "size": "3",
         "hasmultiple": true,
         "select": {
             "name": "questionid",
             "options": [
-                { "name": "Option 1", "value": "V", "selected": true },
-                { "name": "Option 2", "value": "V", "quba": "10", "slot": "2", "selected": true }
+                { "name": "Option 1", "value": "1", "selected": true },
+                { "name": "Option 2", "value": "2", "selected": false }
                 ]
-            }
-    }
-}}
-{{!
-    @template mod_capquiz/configure_badge_rating
-
-    Example context (json):
-    {
-        "form": "raw html for the form"
+        },
+        "qubaid": "10"
     }
 }}
 <div class="form-select">
@@ -82,6 +76,6 @@
 </div>
 {{#js}}
 require(['jquery', 'local_qtracker/block_form_manager'], function($, BlockFormManager) {
-    BlockFormManager.init('[data-action=newissue]', '{{{issueids}}}');
+    BlockFormManager.init('[data-action=newissue]', '{{{issueids}}}', {{contextid}});
 });
 {{/js}}

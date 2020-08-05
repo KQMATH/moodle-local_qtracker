@@ -33,13 +33,11 @@ use templatable;
 use stdClass;
 use help_icon;
 
-
 /**
  * Question issue registration block class.
  *
  * @package    local_qtracker
- * @author     André Storhaug <andr3.storhaug@gmail.com>
- * @copyright  2020 NTNU
+ * @copyright  2020 André Storhaug
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class issue_registration_block implements renderable, templatable {
@@ -67,10 +65,11 @@ class issue_registration_block implements renderable, templatable {
      * @param int $userid The id of the user.
      * @throws \coding_exception If called at incorrect times
      */
-    public function __construct(\question_usage_by_activity $quba, $slots) {
+    public function __construct(\question_usage_by_activity $quba, $slots, $contextid) {
 
         $this->quba = $quba;
         $this->slots = $slots;
+        $this->contextid = $contextid;
 
         //Todo  remove questions.....
         foreach ($this->slots as $slot) {
@@ -135,6 +134,7 @@ class issue_registration_block implements renderable, templatable {
         $button->label = "Submit new issue";
         $data->button = $button;
         $data->issueids = json_encode($this->issueids);
+        $data->contextid = $this->contextid;
 
         // TODO: Fix this as both the button and the select gets this. Wrap in separate mustashe templates.
 

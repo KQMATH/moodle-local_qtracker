@@ -14,7 +14,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * External (web service) function calls for deleting a question issue.
+ * External (web service) function calls for retrieving a question issue.
  *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
@@ -28,73 +28,64 @@ defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/externallib.php");
 require_once($CFG ->libdir . '/questionlib.php');
+require_once($CFG->dirroot . '/local/qtracker/lib.php');
 
 use external_value;
 use external_function_parameters;
-use moodle_exception;
 use external_single_structure;
 use external_warnings;
-use local_qtracker\issue;
+use local_qtracker\external\helper;
 
-
-class deleteissue extends \external_api {
+class get_question extends \external_api {
 
     /**
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function delete_issue_parameters() {
+    public static function get_question_parameters() {
         return new external_function_parameters(
             array(
-                'issueid' => new external_value(PARAM_INT, 'issue id'),
+                'id' => new external_value(PARAM_INT, 'question id')
             )
         );
     }
+
 
     /**
      * Returns welcome message
      * @return string welcome message
      */
-    public static function delete_issue($issueid) {
-        global $USER, $DB;
+    public static function get_question($questionid) {
+        global $PAGE, $USER;
 
-        $deleted = false;
+        $status = false;
         $warnings = array();
 
         //Parameter validation
-        $params = self::validate_parameters(self::delete_issue_parameters(),
+        $params = self::validate_parameters(self::get_question_parameters(),
             array(
-                'issueid' => (int) $issueid,
+                'id' => (int) $questionid,
             )
         );
 
+        $question = \question_bank::load_question_data($params['id']);
+        if (!$question) {
+            throw new \moodle_exception('cannotgetquestion', 'local_qtracker', '', $params['id']);
+        }
+
         //Context validation
-        // TODO: ensure proper validation....
-        $context = \context_user::instance($USER->id);
+        $context = \context::instance_by_id($question->contextid);
         self::validate_context($context);
 
-        //Capability checking
-        if (!has_capability('local/qtracker:createissue', $context)) {
-            throw new \moodle_exception('cannotdeleteissue', 'local_qtracker');
-        }
+        question_require_capability_on($question, 'view');
 
-        if (!$DB->record_exists_select('qtracker_issue', 'id = :issueid AND userid = :userid',
-            array(
-                'issueid' => $params['issueid'],
-                'userid' => $USER->id
-            )
-        )) {
-            throw new \moodle_exception('cannotdeleteissue', 'local_qtracker', '', $params['issueid']);
-        }
-
-        if (empty($warnings)) {
-            $issue = issue::load($params['issueid']);
-            $deleted = $issue->delete();
-        }
+        $renderer = $PAGE->get_renderer('core');
+        $exporter = new \core_question\external\question_summary_exporter($question, ['context' => $context]);
+        $questionsummary = $exporter->export($renderer);
 
         $result = array();
-        $result['status'] = $deleted;
-        $result['issueid'] = $params['issueid'];
+        $result['status'] = $status;
+        $result['question'] = $questionsummary;
         $result['warnings'] = $warnings;
 
         return $result;
@@ -104,13 +95,14 @@ class deleteissue extends \external_api {
      * Returns description of method result value
      * @return external_description
      */
-    public static function delete_issue_returns() {
+    public static function get_question_returns() {
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),
-                'issueid' => new external_value(PARAM_INT, 'The id of the new issue'),
+                'question' => \core_question\external\question_summary_exporter::get_read_structure(),
                 'warnings' => new external_warnings()
             )
         );
+
     }
 }

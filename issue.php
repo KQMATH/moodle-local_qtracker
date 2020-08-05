@@ -23,6 +23,9 @@
 
 namespace local_qtracker;
 
+use local_qtracker\issue;
+use local_qtracker\output\question_issue_page;
+
 require_once('../../config.php');
 require_once($CFG->dirroot . '/local/qtracker/lib.php');
 
@@ -30,34 +33,45 @@ global $DB, $OUTPUT, $PAGE;
 
 // Check for all required variables.
 $courseid = required_param('courseid', PARAM_INT);
+$issueid = required_param('issueid', PARAM_INT);
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     print_error('invalidcourseid');
 }
-$context = \context_course::instance($course->id);
 
 require_login($course);
-require_capability('local/qtracker:viewall', $context);
 
-$url = new \moodle_url('/local/qtracker/view.php', array('courseid' => $courseid));
+$url = new \moodle_url('/local/qtracker/issue.php');
+$url->param('courseid', $courseid);
+$url->param('issueid', $issueid);
+
+$returnurl = new \moodle_url('/local/qtracker/issues.php');
+$returnurl->param('courseid', $courseid);
 
 $PAGE->set_url($url);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_heading(get_string('pluginname', 'local_qtracker'));
 
-/*
-$settingsnode = $PAGE->settingsnav->add(get_string('frontpagesettings'), null, \navigation_node::TYPE_SETTING, null);
-$editurl = new \moodle_url('/blocks/simplehtml/view.php', array('id' => $id, 'courseid' => $courseid));
-$editnode = $settingsnode->add(get_string('resetpage', 'my'), $editurl);
-$editnode->make_active();
-*/
+// Return to issues list.
+if (optional_param('return', false, PARAM_BOOL)) {
+    redirect($returnurl);
+}
+
+$issuesnode = $PAGE->navbar->add(get_string('pluginname', 'local_qtracker'), null, \navigation_node::TYPE_CONTAINER, null, 'qtracker');
+$issuesnode->add(get_string('issues', 'local_qtracker'),
+new \moodle_url('/local/qtracker/view.php', array('courseid' => $courseid)));
+$issuesnode->add(get_string('issue', 'local_qtracker'));
+
+$issue = issue::load($issueid);
+
+//Capability checking
+issue_require_capability_on($issue->get_issue_obj(), 'view');
 
 echo $OUTPUT->header();
 
-// Get table renderer and display table.
-$table = new \local_qtracker\output\questions_table(uniqid(), $url, $context);
 $renderer = $PAGE->get_renderer('local_qtracker');
-$questionspage = new \local_qtracker\output\questions_page($table, $courseid);
-echo $renderer->render($questionspage);
+
+$questionissuepage = new question_issue_page($issue, $courseid);
+echo $renderer->render($questionissuepage);
 
 echo $OUTPUT->footer();

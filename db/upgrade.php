@@ -15,10 +15,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package     local_qtracker
- * @author      André Storhaug <andr3.storhaug@gmail.com>
- * @copyright   2020 NTNU
- * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
@@ -65,16 +65,27 @@ function xmldb_local_qtracker_upgrade($oldversion) {
         }
         upgrade_plugin_savepoint(true, 2020071000, 'local', 'qtracker');
     }
-    if ($oldversion < 2020072400) {
+    if ($oldversion < 2020072402) {
         // Define table capquiz_user_rating to be created.
         $table = new xmldb_table('qtracker_issue');
 
         $field = new xmldb_field(
-            'slot', XMLDB_TYPE_TEXT);
+            'state', XMLDB_TYPE_TEXT);
         if (!$dbman->field_exists($table, $field)) {
             $dbman->add_field($table, $field);
         }
-        upgrade_plugin_savepoint(true, 2020072400, 'local', 'qtracker');
+        upgrade_plugin_savepoint(true, 2020072402, 'local', 'qtracker');
+    }
+    if ($oldversion < 2020072412) {
+        // Define table capquiz_user_rating to be created.
+        $table = new xmldb_table('qtracker_issue');
+
+        $field = new xmldb_field(
+            'contextid', XMLDB_TYPE_INTEGER, 10, null, null, null, 253 );
+        if (!$dbman->field_exists($table, $field)) {
+            $dbman->add_field($table, $field);
+        }
+        upgrade_plugin_savepoint(true, 2020072412, 'local', 'qtracker');
     }
     return true;
 }

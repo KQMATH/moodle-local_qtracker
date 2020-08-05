@@ -15,28 +15,23 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_qtracker/questions_page
+    @template local_qtracker/issue_state_badge
 
-    Questions page template
+    Issue state badge template.
 
     Example context (json):
     {
-        "questions": "raw html"
+        "new": true
     }
 }}
-<div class="qtracker-container">
-    <div>
-        Lorem ipsum ex nulla officia est et. Anim laboris irure nulla nulla ut do veniam anim eiusmod dolor eu. Excepteur deserunt do labore qui culpa deserunt sint aliqua nostrud occaecat nostrud proident ad.
-    </div>
-    <div id="questions-table-sidebar"></div>
-    <div>
-        <div id="questions-wrapper">
-            {{{questions}}}
-        </div>
-    </div>
-</div>
-{{#js}}
-require(['jquery', 'local_qtracker/questions_table'], function($, QuestionsTable) {
-    new QuestionsTable({{courseid}});
-});
-{{/js}}
+<h5>
+{{#new}}
+   <span class="badge badge-primary">{{#str}} new, local_qtracker {{/str}}</span>
+{{/new}}
+{{#open}}
+   <span class="badge badge-success">{{#str}} open, local_qtracker {{/str}}</span>
+{{/open}}
+{{#closed}}
+   <span class="badge badge-danger">{{#str}} closed, local_qtracker {{/str}}</span>
+{{/closed}}
+</h5>
