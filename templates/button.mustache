@@ -30,8 +30,10 @@
     }
 }}
 <div class="{{classes}}">
-        <button type="{{#type}}{{type}}{{/type}}{{^type}}submit{{/type}}" class="btn {{#primary}}btn-primary{{/primary}}{{^primary}}btn-default{{/primary}}"
-            id="{{id}}"
-            title={{#quote}}{{tooltip}}{{/quote}}
-            {{#disabled}}disabled{{/disabled}}>{{label}}</button>
+    <button type="{{#type}}{{type}}{{/type}}{{^type}}submit{{/type}}" class="btn {{#primary}}btn-primary{{/primary}}{{^primary}}btn-default{{/primary}}"
+        id="{{id}}"
+        name="{{name}}"
+        title={{#quote}}{{tooltip}}{{/quote}}
+        value="{{value}}"
+        {{#disabled}}disabled{{/disabled}}>{{label}}</button>
 </div>

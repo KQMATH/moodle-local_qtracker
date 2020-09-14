@@ -42,12 +42,6 @@ class QuestionsTable {
         this.courseid = courseid;
 
         this.init();
-        //TODO: make sortable open, closed, new...
-        //TODO: make issue.php.. (make the attempt accessable!)
-        //TODO: make it possible to create manual issue....
-        //TODO: Fix sorting......
-
-        //const { html, js } = await Templates.renderForPromise(userGrade.templatename, userGrade.grade);
     }
 
     async init() {
@@ -77,7 +71,6 @@ class QuestionsTable {
             let questionEditUrl = this.getQuestionEditUrl(this.courseid, id);
             let link = $('<a></a>').attr("href", questionEditUrl).html(question.name + " #" + question.id);
             $('.issues-pane-title').html(link);
-
 
             // Get issues data.
             let issuesResponse = await this.loadIssues(id, state);
@@ -178,7 +171,6 @@ class QuestionsTable {
                 values: ids
             }
         }])[0];
-
         return usersData;
     }
 
@@ -189,7 +181,6 @@ class QuestionsTable {
             id: questionid,
             returnurl: returnurl,
         });
-        console.log(new URL(editurl))
         return editurl;
     }
 

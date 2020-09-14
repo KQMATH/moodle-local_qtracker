@@ -58,20 +58,57 @@ if (optional_param('return', false, PARAM_BOOL)) {
 }
 
 $issuesnode = $PAGE->navbar->add(get_string('pluginname', 'local_qtracker'), null, \navigation_node::TYPE_CONTAINER, null, 'qtracker');
-$issuesnode->add(get_string('issues', 'local_qtracker'),
-new \moodle_url('/local/qtracker/view.php', array('courseid' => $courseid)));
+$issuesnode->add(
+    get_string('issues', 'local_qtracker'),
+    new \moodle_url('/local/qtracker/view.php', array('courseid' => $courseid))
+);
 $issuesnode->add(get_string('issue', 'local_qtracker'));
 
+
+
+// Load issue
 $issue = issue::load($issueid);
+
+// TODO: require capability for editing issues
+// Process issue actions
+$commentissue = optional_param('commentissue', false, PARAM_BOOL);
+$commenttext = optional_param('commenteditor', false, PARAM_RAW);
+if ($commentissue) {
+    $issue->create_comment($commenttext);
+    redirect($PAGE->url);
+}
+
+$closeissue = optional_param('closeissue', false, PARAM_BOOL);
+if ($closeissue) {
+    $issue->close();
+    redirect($PAGE->url);
+}
+
+$reopenissue = optional_param('reopenissue', false, PARAM_BOOL);
+if ($reopenissue) {
+    $issue->open();
+    redirect($PAGE->url);
+}
+
+$deletecommentid = optional_param('deletecommentid', null, PARAM_INT);
+if (!is_null($deletecommentid)) {
+    $comment = issue_comment::load($deletecommentid);
+    $comment->delete();
+    redirect($PAGE->url);
+}
 
 //Capability checking
 issue_require_capability_on($issue->get_issue_obj(), 'view');
 
-echo $OUTPUT->header();
-
 $renderer = $PAGE->get_renderer('local_qtracker');
-
 $questionissuepage = new question_issue_page($issue, $courseid);
-echo $renderer->render($questionissuepage);
 
+$data = $renderer->render($questionissuepage);
+
+echo $OUTPUT->header();
+echo $data;
 echo $OUTPUT->footer();
+
+if ($issue->get_state() == 'new') {
+    $issue->open();
+}

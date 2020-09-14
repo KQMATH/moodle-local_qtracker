@@ -45,13 +45,6 @@ $PAGE->set_url($url);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_heading(get_string('pluginname', 'local_qtracker'));
 
-/*
-$settingsnode = $PAGE->settingsnav->add(get_string('frontpagesettings'), null, \navigation_node::TYPE_SETTING, null);
-$editurl = new \moodle_url('/blocks/simplehtml/view.php', array('id' => $id, 'courseid' => $courseid));
-$editnode = $settingsnode->add(get_string('resetpage', 'my'), $editurl);
-$editnode->make_active();
-*/
-
 echo $OUTPUT->header();
 
 // Get table renderer and display table.

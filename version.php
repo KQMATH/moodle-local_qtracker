@@ -23,9 +23,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2020072414;
+$plugin->version = 2020091500;
 $plugin->requires = 2016120500;
 $plugin->cron = 0;
 $plugin->component = 'local_qtracker';
-$plugin->maturity = MATURITY_STABLE;
+$plugin->maturity = MATURITY_BETA;
 $plugin->release = '0.1.0';

@@ -21,13 +21,37 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_qtracker\form\view;
+
 defined('MOODLE_INTERNAL') || die();
 
-function xmldb_local_qtracker_upgrade($oldversion) {
-    global $DB;
-    $dbman = $DB->get_manager();
+require_once($CFG->libdir . '/formslib.php');
 
-    //TODO perform upgrades here...
+/**
+ * @package    local_qtracker
+ * @copyright  2020 André Storhaug
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class question_details_form extends \moodleform {
 
-    return true;
+    public function __construct($question, \moodle_url $url) {
+        $this->question = $question;
+        parent::__construct($url);
+    }
+
+    public function definition() {
+        $mform = $this->_form;
+
+        $mform->addElement('header', 'question' ,
+            get_string('question', 'core') . " - " . $this->question->name);
+
+        $description = \html_writer::start_div();
+        $description .= $this->question->name;
+        $description .= $this->question->questiontext;
+        $description .= \html_writer::end_div();
+
+        $mform->addElement('html', $description);
+        $mform->setExpanded('question', false);
+
+    }
 }

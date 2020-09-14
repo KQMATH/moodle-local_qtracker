@@ -15,26 +15,26 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_qtracker/questions_page
+    @template local_qtracker/issue_description
 
-    Questions page template
+    Issue description template.
 
     Example context (json):
-    {
-        "questions": "raw html"
-    }
+    {}
 }}
-<div class="qtracker-container">
-    <h1>{{#str}} questionissues, local_qtracker {{/str}}</h1>
-    <div id="questions-table-sidebar"></div>
-    <div>
-        <div id="questions-wrapper">
-            {{{questions}}}
+<div class="d-flex flex-row">
+    <span><img class="userpicture" width="35px" height="35px" src="{{profileimageurl}}"/></span>
+    <div class="ml-3 border w-100">
+        <div class="d-flex flex-row p-2 border-bottom">
+            <a class="text-muted bold" href="{{userurl}}">{{fullname}}</a>&nbsp;
+            <div class="text-muted">
+                {{#str}} openedissueon, local_qtracker {{/str}}
+                {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
+            </div>
+            <div class="ml-auto"></div>
+        </div>
+        <div class="p-2">
+            {{{description}}}
         </div>
     </div>
 </div>
-{{#js}}
-require(['jquery', 'local_qtracker/questions_table'], function($, QuestionsTable) {
-    new QuestionsTable({{courseid}});
-});
-{{/js}}

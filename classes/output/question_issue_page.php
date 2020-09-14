@@ -27,6 +27,8 @@ namespace local_qtracker\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->libdir . '/questionlib.php');
+
 use coding_exception;
 use dml_exception;
 use moodle_exception;
@@ -36,6 +38,8 @@ use stdClass;
 use templatable;
 use local_qtracker\issue;
 use local_qtracker\external\issue_exporter;
+use local_qtracker\external\issue_comment_exporter;
+use local_qtracker\form\view\question_details_form;
 
 /**
  * Class containing data for question issue page.
@@ -72,13 +76,104 @@ class question_issue_page implements renderable, templatable {
      * @throws moodle_exception
      */
     public function export_for_template(renderer_base $output) {
+        global $USER, $DB, $PAGE;
         $data = new stdClass();
 
         $context = \context_course::instance($this->courseid);
-        $exporter = new issue_exporter($this->questionissue->get_issue_obj(), ['context' => $context]);
-        $issuedetails = $exporter->export($output);
+        $issueexporter = new issue_exporter($this->questionissue->get_issue_obj(), ['context' => $context]);
+        $issuedetails = $issueexporter->export($output);
+
+        // Process default issue description
+        $issuedescription = new stdClass();
+        $user = $DB->get_record('user', array('id' => $issuedetails->userid));
+        $issuedescription->fullname = $user->username;
+        $issuedescription->userurl = "http://lol.no";
+        $userpicture = new \user_picture($user);
+        $userpicture->size = 0; // Size f2.
+        $issuedescription->profileimageurl = $userpicture->get_url($PAGE)->out(false);
+
+        $issuedetails->issuedescription = $issuedescription;
+
+
+        $commentsdetails = array();
+
+        // Process all issue comments...
+        $comments = $this->questionissue->get_comments();
+        foreach ($comments as $comment) {
+            $commentexporter = new issue_comment_exporter($comment->get_comment_obj(), ['context' => $context]);
+            $commentdetails = $commentexporter->export($output);
+            // Get the user data.
+            $user = $DB->get_record('user', array('id' => $commentdetails->userid));
+            $commentdetails->fullname = $user->username;
+            $userurl = new \moodle_url('/user/view.php');
+            $userurl->param('id', $user->id);
+            $userurl->param('course', $this->courseid);
+            $commentdetails->userurl = $userurl;
+            $userpicture = new \user_picture($user);
+            $userpicture->size = 0; // Size f2.
+            $commentdetails->profileimageurl = $userpicture->get_url($PAGE)->out(false);
+
+            $deleteurl = new \moodle_url('/local/qtracker/issue.php');
+            $deleteurl->param('courseid', $this->courseid);
+            $deleteurl->param('issueid', $this->questionissue->get_id());
+            $deleteurl->param('deletecommentid', $commentdetails->id);
+            $commentdetails->deleteurl = $deleteurl;
+            array_push($commentsdetails, $commentdetails);
+        }
+
+        $issuedetails->comments = $commentsdetails;
+        $issuedetails->{$issuedetails->state} = true;
         $data->questionissue = $issuedetails;
-print_r($data->questionissue);
+
+        // Set the user picture data.
+        $user = $DB->get_record('user', array('id' => $USER->id));
+        $userpicture = new \user_picture($user);
+        $userpicture->size = 0; // Size f2.
+        $data->profileimageurl = $userpicture->get_url($PAGE)->out(false);
+
+        if ($this->questionissue->get_state() == "closed") {
+            $reopenbutton = new stdClass();
+            $reopenbutton->label = get_string('reopenissue', 'local_qtracker');
+            $reopenbutton->name = "reopenissue";
+            $reopenbutton->value = true;
+            $data->reopenbutton = $reopenbutton;
+        } else {
+            $closebutton = new stdClass();
+            $closebutton->label = get_string('closeissue', 'local_qtracker');
+            $closebutton->name = "closeissue";
+            $closebutton->value = true;
+            $data->closebutton = $closebutton;
+        }
+
+        $commentbutton = new stdClass();
+        $commentbutton->primary = true;
+        $commentbutton->name = "commentissue";
+        $commentbutton->value = true;
+        $commentbutton->label = get_string('comment', 'local_qtracker');
+        $data->commentbutton = $commentbutton;
+
+        $question = \question_bank::load_question($this->questionissue->get_questionid());
+        question_require_capability_on($question, 'use');
+
+        $questiondata = new stdClass();
+        $questiondata->questionid = $question->id;
+        $questiondata->questionname = $question->name;
+        $questiondata->preview_url = question_preview_url($question->id, null, null, null, null, $context);
+
+        $edit_url = new \moodle_url('/question/question.php');
+        $edit_url->param('id', $question->id);
+        $edit_url->param('courseid', $this->courseid);
+        $questiondata->edit_url = $edit_url;
+
+        $form = new question_details_form($question, $PAGE->url);
+        $questiondata->questiontext = $form->render();
+        $data->question = $questiondata;
+
+        // Setup text editor
+        $editor = editors_get_preferred_editor(FORMAT_HTML);
+        $options = array();
+        $editor->use_editor('commenteditor', $options);
+
         return $data;
     }
 }

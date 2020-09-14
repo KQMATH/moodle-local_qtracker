@@ -68,8 +68,29 @@ $string['validtitle'] = 'Please provide a valid title.';
 $string['validdescription'] = 'Please provide a valid description.';
 
 $string['commentedon'] = 'commented on ';
+$string['openedissueon'] = 'opened issue on ';
 $string['name'] = 'Name';
+
+$string['tags'] = 'Tags';
 
 $string['new'] = 'New';
 $string['open'] = 'Open';
 $string['closed'] = 'Closed';
+
+$string['reopenissue'] = 'Reopen issue';
+$string['closeissue'] = 'Close issue';
+$string['comment'] = 'Comment';
+
+$string['confirm'] = 'Confirm';
+$string['deletecomment'] = 'Delete comment';
+$string['confirmdeletecomment'] = 'Are you sure you want to delete this comment?';
+
+$string['preview'] = 'Preview';
+$string['edit'] = 'Edit';
+$string['questionissues'] = 'Question issues';
+
+$string['qtracker:addissue'] = 'Add new issue';
+$string['qtracker:editmine'] = 'Edit your own issues';
+$string['qtracker:editall'] = 'Edit all issues';
+$string['qtracker:viewmine'] = 'Edit your own issues';
+$string['qtracker:viewall'] = 'View all issues';

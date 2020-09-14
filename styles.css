@@ -16,6 +16,10 @@
     bottom: 0;
 }
 
+.qtracker-action-item {
+    line-height: 2.5em;
+}
+
 .qtracker-container {
     position: relative;
     min-height: 400px;
@@ -42,6 +46,15 @@
 
 .flex-grow {
     flex: 1 0 auto;
+}
+
+.questiontext {
+    position: relative;
+    zoom: 1;
+    padding-left: .3em;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
 @media (min-width: 768px) {

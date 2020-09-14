@@ -39,6 +39,11 @@ class issue {
     protected $issue = null;
 
     /**
+     * @var \stdClass
+     */
+    protected $comments = array();
+
+    /**
      * Constructor.
      *
      * @param int|\stdClass $issue
@@ -154,6 +159,35 @@ class issue {
         return $this->issue;
     }
 
+    /**
+     * Returns a plain \stdClass with the issue data.
+     *
+     * @return \stdClass
+     */
+    public function create_comment($description) {
+        $comment = issue_comment::create($description, $this);
+        $comments = $this->get_comments();
+        array_push($comments, $comment);
+        return $comment;
+    }
+
+     /**
+     * Add a new commentto this issue.
+     *
+     * @return \stdClass
+     */
+    public function get_comments() {
+        global $DB;
+        if (empty($this->comments)) {
+            $this->comments = array();
+            $comments = $DB->get_records('qtracker_comment', ['issueid' => $this->get_id()]);
+            foreach ($comments as $comment) {
+                array_push($this->comments, new issue_comment($comment));
+            }
+        }
+        return $this->comments;
+    }
+
     public static function load(int $issueid) {
         global $DB;
         $issueobj = $DB->get_record('qtracker_issue', ['id' => $issueid]);
@@ -190,6 +224,39 @@ class issue {
 
         $issue = new issue($issueobj);
         return $issue;
+    }
+
+    /**
+     * Delete this issue.
+     *
+     * @return void
+     */
+    public function close() {
+        global $DB;
+        $this->issue->state = "closed";
+        $DB->update_record('qtracker_issue', $this->issue);
+    }
+
+    /**
+     * Delete this issue.
+     *
+     * @return void
+     */
+    public function open() {
+        global $DB;
+        $this->issue->state = "open";
+        $DB->update_record('qtracker_issue', $this->issue);
+    }
+
+    /**
+     * Delete this issue.
+     *
+     * @return void
+     */
+    public function comment() {
+
+        $this->comments;
+        $DB->update_record('qtracker_issue', $this->issue);
     }
 
     /**

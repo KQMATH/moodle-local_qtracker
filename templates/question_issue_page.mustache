@@ -29,10 +29,97 @@
     }
 }}
 <div class="qtracker-container">
+
     {{#questionissue}}
-        {{id}}
-        {{title}}
-        {{description}}
+    <div class="cotainer-fluid">
+        <div class="row">
+            <div class="col">
+                <h1>
+                    {{title}} <span class="text-muted">#{{id}}</span>
+                </h1>
+            </div>
+            <div class="col-4">
+                <h3>
+                    {{>local_qtracker/issue_state_badge}}
+                </h3>
+            </div>
+        </div>
+    {{/questionissue}}
+    <hr>
+    {{#question}}
+        {{! Question data here }}
+        <div class="row">
+            <div class="col-12 col-md-9">
+                <div>{{{questiontext}}}</div>
+            </div>
+            <div class="col-12 col-md-3">
+                <div class="bold">{{#str}} actions, core {{/str}}</div>
+                <div class="qtracker-action-item">
+                    <a href="{{{edit_url}}}">
+                        <i class="icon fa fa-cog fa-fw" aria-hidden="true" title="Edit enrolment" aria-label=""></i>
+                        <span>{{#str}} edit, local_qtracker {{/str}}</span>
+                    </a>
+                </div>
+                <div class="qtracker-action-item">
+                    <a href="{{{preview_url}}}">
+                        <i class="icon fa fa-search-plus fa-fw " aria-hidden="true"></i>
+                        <span>Preview</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    {{/question}}
+
+    {{#questionissue}}
+            <hr>
+            <div class="row">
+                <div class="col-12 col-md-9">
+                    {{#issuedescription}}
+                            {{> local_qtracker/issue_description}}
+                    {{/issuedescription}}
+                    {{#comments}}
+                        <div class="m-y-1">
+                            {{> local_qtracker/issue_comment}}
+                        </div>
+                    {{/comments}}
+                    <hr>
+                    <form method="post" action="{{action}}" data-action="issueaction" enctype="multipart/form-data" accept-charset="utf-8">
+                        <div class="d-flex flex-row">
+                            <span><img class="userpicture" width="35px" height="35px" src="{{profileimageurl}}"/></span>
+                            <div class="ml-3 w-100">
+                                <div class="p-2">
+                                    <textarea id="commenteditor" name="commenteditor" rows="5"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="m-t-1 d-flex justify-content-end">
+                            <div class="m-r-1">
+                                {{#closebutton}}
+                                    {{> local_qtracker/button}}
+                                {{/closebutton}}
+                                {{#reopenbutton}}
+                                    {{> local_qtracker/button}}
+                                {{/reopenbutton}}
+                            </div>
+                            {{#commentbutton}}
+                                {{> local_qtracker/button}}
+                            {{/commentbutton}}
+                        </div>
+                    </form>
+                </div>
+                <div class="col-12 col-md-3">
+                    <div class="row">
+                        <div class="col">
+                            <div class="bold">
+                                {{#str}} tags, local_qtracker {{/str}}
+                            </div>
+                            <div>
+                                Tags here...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     {{/questionissue}}
 </div>
-

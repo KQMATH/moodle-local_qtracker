@@ -88,6 +88,7 @@ function issue_has_capability_on($issueorid, $cap) {
     }
 
     $context = context::instance_by_id($issue->contextid);
+
     // These are existing issues capabilities.
     // Each of these has a 'mine' and 'all' version that is appended to the capability name.
     $capabilitieswithallandmine = ['edit' => 1, 'view' => 1];

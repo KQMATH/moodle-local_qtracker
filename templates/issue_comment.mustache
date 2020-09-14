@@ -1,0 +1,88 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_qtracker/issue_state_badge
+
+    Issue state badge template.
+
+    Example context (json):
+    {
+        "new": true
+    }
+}}
+<form method="post" action="{{action}}" id="comment_form_{{id}}">
+    <div class="d-flex flex-row">
+        <span><img class="userpicture" width="35px" height="35px" src="{{profileimageurl}}"/></span>
+        <div class="ml-3 border w-100">
+            <div class="d-flex flex-row p-2 border-bottom">
+                <a class="text-muted bold" href="{{userurl}}">{{fullname}}</a>&nbsp;
+                <div class="text-muted">
+                    {{#str}} commentedon, local_qtracker {{/str}}
+                    {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
+                </div>
+                <div class="ml-auto">
+                    <a id="comment_{{id}}" href="#">
+                        {{# pix }} t/delete, core {{/ pix }}
+                    </a>
+                </div>
+            </div>
+            <div class="p-2">
+                {{{description}}}
+            </div>
+        </div>
+    </div>
+</form>
+{{#js}}
+require(['jquery', 'core/modal_factory', 'core/modal_events', 'core/templates', 'core/str'], function($, ModalFactory, ModalEvents, Templates, str) {
+    let trigger = $('#comment_{{id}}');
+    let strObj = [
+        {
+            key: 'confirm',
+            component: 'local_qtracker'
+        },
+        {
+            key: 'confirmdeletecomment',
+            component: 'local_qtracker'
+        },
+        {
+            key: 'deletecomment',
+            component: 'local_qtracker'
+        }
+    ];
+    str.get_strings(strObj).then(function (strings) {
+        ModalFactory.create({
+            type: ModalFactory.types.SAVE_CANCEL,
+            title: strings[2],
+            body: strings[1],
+        }, trigger)
+        .done(function(modal) {
+            modal.setSaveButtonText(strings[0])
+            modal.getRoot().on(ModalEvents.save, function(e) {
+                // Stop the default save button behaviour which is to close the modal.
+                e.preventDefault();
+                let form = $('#comment_form_{{id}}');
+                $('<input>').attr({
+                    type: "hidden",
+                    name: "deletecommentid",
+                    value: {{id}}
+                }).appendTo(form);
+                form.submit();
+            });
+        });
+    });
+});
+{{/js}}
