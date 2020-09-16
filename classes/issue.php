@@ -260,12 +260,16 @@ class issue {
     }
 
     /**
-     * Delete this issue.
+     * Delete this issue and related comments.
      *
      * @return void
      */
     public function delete() {
         global $DB;
+        $comments = $this->get_comments();
+        foreach ($comments as $comment) {
+            $comment->delete();
+        }
         return $DB->delete_records('qtracker_issue', array('id' => $this->get_id()));
     }
 

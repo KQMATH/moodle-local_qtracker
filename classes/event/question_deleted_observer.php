@@ -15,17 +15,42 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Event observers supported by this module.
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_qtracker\event;
+
+use local_qtracker\issue;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2020091600;
-$plugin->requires = 2016120500;
-$plugin->cron = 0;
-$plugin->component = 'local_qtracker';
-$plugin->maturity = MATURITY_BETA;
-$plugin->release = '0.1.0';
+/**
+ * Event observers supported by this module.
+ *
+ * @package    local_qtracker
+ * @copyright  2020 André Storhaug
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class question_deleted_observer {
+
+    /**
+     * Delete related question issues when question is deleted.
+     *
+     * @param \core\event\question_deleted $event
+     */
+    public static function question_deleted(\core\event\question_deleted $event) {
+        global $DB;
+        // Delete all issues for given question.
+        $records = $DB->get_records('qtracker_issue', ['questionid' => $event->objectid], '', 'id');
+
+        foreach ($records as $record) {
+            $issue = issue::load($record->id);
+            $issue->delete();
+        }
+    }
+}

@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * This file defines observers needed by the plugin.
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -23,9 +25,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2020091600;
-$plugin->requires = 2016120500;
-$plugin->cron = 0;
-$plugin->component = 'local_qtracker';
-$plugin->maturity = MATURITY_BETA;
-$plugin->release = '0.1.0';
+$observers = [
+    [
+        'eventname'   => '\core\event\question_deleted',
+        'callback'    => '\local_qtracker\event\question_deleted_observer::question_deleted',
+    ],
+];
