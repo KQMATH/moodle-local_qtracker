@@ -68,6 +68,10 @@ $issuesnode->add(get_string('issue', 'local_qtracker'));
 
 // Load issue
 $issue = issue::load($issueid);
+if (!$issue) {
+    $issuesurl = new \moodle_url('/local/qtracker/view.php', array('courseid' => $courseid));
+    redirect($issuesurl);
+}
 
 // TODO: require capability for editing issues
 // Process issue actions
