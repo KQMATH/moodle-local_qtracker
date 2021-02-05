@@ -83,7 +83,7 @@ class question_issue_page implements renderable, templatable {
         $issueexporter = new issue_exporter($this->questionissue->get_issue_obj(), ['context' => $context]);
         $issuedetails = $issueexporter->export($output);
 
-        // Process default issue description
+        // Process default issue description.
         $issuedescription = new stdClass();
         $user = $DB->get_record('user', array('id' => $issuedetails->userid));
         $issuedescription->fullname = $user->username;
@@ -93,7 +93,6 @@ class question_issue_page implements renderable, templatable {
         $issuedescription->profileimageurl = $userpicture->get_url($PAGE)->out(false);
 
         $issuedetails->issuedescription = $issuedescription;
-
 
         $commentsdetails = array();
 
@@ -169,7 +168,7 @@ class question_issue_page implements renderable, templatable {
         $questiondata->questiontext = $form->render();
         $data->question = $questiondata;
 
-        // Setup text editor
+        // Setup text editor.
         $editor = editors_get_preferred_editor(FORMAT_HTML);
         $options = array();
         $editor->use_editor('commenteditor', $options);

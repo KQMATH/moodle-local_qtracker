@@ -1,5 +1,4 @@
 <?php
-
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -172,10 +171,10 @@ class issue {
     }
 
      /**
-     * Add a new commentto this issue.
-     *
-     * @return \stdClass
-     */
+      * Add a new commentto this issue.
+      *
+      * @return \stdClass
+      */
     public function get_comments() {
         global $DB;
         if (empty($this->comments)) {
@@ -216,8 +215,8 @@ class issue {
         $issueobj->userid = $USER->id;
         $time = time();
         $issueobj->timecreated = $time;
-        //$issueobj->timemodified = $time;
-        //$issueobj->usermodified = $USER->id;
+        // $issueobj->timemodified = $time;
+        // $issueobj->usermodified = $USER->id;
 
         $id = $DB->insert_record('qtracker_issue', $issueobj);
         $issueobj->id = $id;

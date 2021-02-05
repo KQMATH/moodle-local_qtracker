@@ -34,7 +34,7 @@ $string['descfoo'] = 'Config description';
 $string['headerconfig'] = 'Config section header';
 $string['labelfoo'] = 'Config label';
 
-// question issues table
+// Question issues table.
 $string['id'] = 'ID';
 $string['questionid'] = 'Question ID';
 $string['title'] = 'Title';

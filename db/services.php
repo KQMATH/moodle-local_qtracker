@@ -34,8 +34,8 @@ $functions = array(
         'description' => 'Register a new question issue.',
         'type'        => 'write',
         'ajax'         => true,
-        //'capabilities' => 'moodle/course:managegroups',
-        'capabilities' => array(),   // capabilities required by the function.
+        // 'capabilities' => 'moodle/course:managegroups',
+        'capabilities' => array(),   // Capabilities required by the function.
         'loginrequired' => true,
     ),
     'local_qtracker_edit_issue' => array(
@@ -45,8 +45,8 @@ $functions = array(
         'description' => 'Edit an existing question issue.',
         'type'        => 'write',
         'ajax'         => true,
-        //'capabilities' => 'moodle/course:managegroups',
-        'capabilities' => array(),   // capabilities required by the function.
+        // 'capabilities' => 'moodle/course:managegroups',
+        'capabilities' => array(),   // Capabilities required by the function.
         'loginrequired' => true,
     ),
     'local_qtracker_delete_issue' => array(
@@ -56,8 +56,8 @@ $functions = array(
         'description' => 'Delete an existing question issue.',
         'type'        => 'write',
         'ajax'         => true,
-        //'capabilities' => 'moodle/course:managegroups',
-        'capabilities' => array(),   // capabilities required by the function.
+        // 'capabilities' => 'moodle/course:managegroups',
+        'capabilities' => array(),   // Capabilities required by the function.
         'loginrequired' => true,
     ),
     'local_qtracker_get_issue' => array(
@@ -67,8 +67,8 @@ $functions = array(
         'description' => 'Get an existing question issue.',
         'type'        => 'read',
         'ajax'         => true,
-        //'capabilities' => 'moodle/course:managegroups',
-        'capabilities' => array(),   // capabilities required by the function.
+        // 'capabilities' => 'moodle/course:managegroups',
+        'capabilities' => array(),   // Capabilities required by the function.
         'loginrequired' => true,
     ),
     'local_qtracker_get_question' => array(

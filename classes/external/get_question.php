@@ -1,5 +1,4 @@
 <?php
-
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -27,7 +26,7 @@ namespace local_qtracker\external;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/externallib.php");
-require_once($CFG ->libdir . '/questionlib.php');
+require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/local/qtracker/lib.php');
 
 use external_value;
@@ -61,7 +60,7 @@ class get_question extends \external_api {
         $status = false;
         $warnings = array();
 
-        //Parameter validation
+        // Parameter validation.
         $params = self::validate_parameters(self::get_question_parameters(),
             array(
                 'id' => (int) $questionid,
@@ -73,7 +72,7 @@ class get_question extends \external_api {
             throw new \moodle_exception('cannotgetquestion', 'local_qtracker', '', $params['id']);
         }
 
-        //Context validation
+        // Context validation.
         $context = \context::instance_by_id($question->contextid);
         self::validate_context($context);
 

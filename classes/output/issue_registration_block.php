@@ -71,7 +71,7 @@ class issue_registration_block implements renderable, templatable {
         $this->slots = $slots;
         $this->contextid = $contextid;
 
-        //Todo  remove questions.....
+        // Todo  remove questions.....
         foreach ($this->slots as $slot) {
             $this->questions[] = $this->quba->get_question($slot);
         }
@@ -100,8 +100,7 @@ class issue_registration_block implements renderable, templatable {
         $url = $PAGE->url;
         $data = new stdClass();
 
-
-        //TODO: only check if questions exists... otherwise i dont need them...
+        // TODO: only check if questions exists... otherwise i dont need them...
         if (count($this->questions) > 1) {
             $data->hasmultiple = true;
 
@@ -138,7 +137,7 @@ class issue_registration_block implements renderable, templatable {
 
         // TODO: Fix this as both the button and the select gets this. Wrap in separate mustashe templates.
 
-        //$data->questions = $questions;
+        // $data->questions = $questions;
         return $data;
     }
 }

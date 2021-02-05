@@ -1,5 +1,4 @@
 <?php
-
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -27,7 +26,7 @@ namespace local_qtracker\external;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/externallib.php");
-require_once($CFG ->libdir . '/questionlib.php');
+require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/local/qtracker/lib.php');
 
 use external_value;
@@ -64,7 +63,7 @@ class edit_issue extends \external_api {
         $added = false;
         $warnings = array();
 
-        //Parameter validation
+        // Parameter validation.
         $params = self::validate_parameters(self::edit_issue_parameters(),
             array(
                 'issueid' => (int) $issueid,
@@ -84,14 +83,14 @@ class edit_issue extends \external_api {
 
         $issue = issue::load($params['issueid']);
 
-        //Context validation
+        // Context validation.
         $context = \context::instance_by_id($issue->get_contextid());
         self::validate_context($context);
 
-        //Capability checking
+        // Capability checking.
         issue_require_capability_on($issue->get_issue_obj(), 'edit');
 
-        if (empty($params['issuetitle'])){
+        if (empty($params['issuetitle'])) {
             $warnings[] = array(
                 'item' => 'issuetitle',
                 'itemid' => 0,

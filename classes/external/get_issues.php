@@ -1,5 +1,4 @@
 <?php
-
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -57,7 +56,8 @@ class get_issues extends \external_api {
                                 "id" (int) matching issue id,
                                 "questionid" (int) issue questionid,
                                 "state" (string) issue state,
-                                "title" (Sstring) issue last name (Note: you can use % for searching but it may be considerably slower!)'),
+                                "title" (Sstring) issue last name
+                                (Note: you can use % for searching but it may be considerably slower!)'),
                             'value' => new external_value(PARAM_RAW, 'the value to search')
                         )
                     ),
@@ -168,13 +168,12 @@ class get_issues extends \external_api {
         // Finally retrieve each issues information.
         $returnedissues = array();
         foreach ($issues as $issue) {
-            //Context validation
+            // Context validation.
             $context = \context::instance_by_id($issue->contextid);
             self::validate_context($context);
 
-            //Capability checking
+            // Capability checking.
             issue_require_capability_on($issue, 'view');
-
 
             $renderer = $PAGE->get_renderer('core');
             $exporter = new issue_exporter($issue, ['context' => $context]);

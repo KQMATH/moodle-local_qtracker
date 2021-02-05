@@ -35,7 +35,6 @@ use local_qtracker\issue;
 function local_qtracker_extend_navigation_course($navigation, $course, $context) {
     global $CFG;
 
-
     if ($context->contextlevel == CONTEXT_COURSE) {
         $params = array('courseid' => $context->instanceid);
     } else if ($context->contextlevel == CONTEXT_MODULE) {
@@ -52,14 +51,14 @@ function local_qtracker_extend_navigation_course($navigation, $course, $context)
         'qtracker'
     );
 
-    //TODO: Check if the user has ANY question issue context capabilities.
-    //$contexts = new issue_edit_contexts($context);
-    //if ($contexts->have_one_edit_tab_cap('issues')) {
+    // TODO: Check if the user has ANY question issue context capabilities.
+    // $contexts = new issue_edit_contexts($context);
+    // if ($contexts->have_one_edit_tab_cap('issues')) {
     $qtrackernode->add(get_string('issues', 'local_qtracker'), new moodle_url(
         $CFG->wwwroot . '/local/qtracker/view.php',
         $params
     ), navigation_node::TYPE_SETTING, null, 'issues');
-    //}
+    // }
 }
 
 /**

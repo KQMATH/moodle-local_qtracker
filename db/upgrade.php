@@ -27,7 +27,7 @@ function xmldb_local_qtracker_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
-    //TODO perform upgrades here...
+    // TODO perform upgrades here...
 
     return true;
 }

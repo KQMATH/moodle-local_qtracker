@@ -1,5 +1,4 @@
 <?php
-
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -143,8 +142,8 @@ class issue_comment {
         $commentobj->userid = $USER->id;
         $time = time();
         $commentobj->timecreated = $time;
-        //$commentobj->timemodified = $time;
-        //$commentobj->usermodified = $USER->id;
+        // $commentobj->timemodified = $time;
+        // $commentobj->usermodified = $USER->id;
 
         $id = $DB->insert_record('qtracker_comment', $commentobj);
         $commentobj->id = $id;
