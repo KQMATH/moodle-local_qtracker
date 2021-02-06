@@ -46,6 +46,7 @@ class questions_table extends table_sql {
      * Sets up the table.
      *
      * @param string $uniqueid Unique id of table.
+     * @param $context
      * @param moodle_url $url The base URL.
      */
     public function __construct($uniqueid, $url, $context) {
@@ -197,6 +198,9 @@ class questions_table extends table_sql {
     }
 
 
+    /**
+     * Not in use
+     */
     public function wrap_html_start() {
         if ($this->is_downloading()) {
             return;
@@ -211,6 +215,9 @@ class questions_table extends table_sql {
 
     }
 
+    /**
+     * Not in use
+     */
     public function wrap_html_finish() {
         global $PAGE;
         if ($this->is_downloading()) {

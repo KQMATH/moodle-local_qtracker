@@ -36,7 +36,14 @@ use external_single_structure;
 use external_warnings;
 use local_qtracker\issue;
 
-
+/**
+ * edit_issue class
+ *
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class edit_issue extends \external_api {
 
     /**
@@ -54,8 +61,13 @@ class edit_issue extends \external_api {
     }
 
     /**
-     * Returns welcome message
-     * @return string welcome message
+     * Edits issue
+     *
+     * @param $issueid id of the issue to be edited
+     * @param $issuetitle new issue title
+     * @param $issuedescription new issue description
+     *
+     * @return array with status, issueid and any warnings
      */
     public static function edit_issue($issueid, $issuetitle, $issuedescription) {
         global $USER, $DB;
@@ -123,6 +135,7 @@ class edit_issue extends \external_api {
 
     /**
      * Returns description of method result value
+     *
      * @return external_description
      */
     public static function edit_issue_returns() {

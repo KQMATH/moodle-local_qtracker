@@ -119,6 +119,13 @@ class issue_comment {
         return $this->comment;
     }
 
+    /**
+     * Loads and returns issue_comment with id $comment
+     *
+     * @param $comment
+     *
+     * @return issue_comment
+     */
     public static function load(int $comment) {
         global $DB;
         $commentobj = $DB->get_record('qtracker_comment', ['id' => $comment]);
@@ -131,6 +138,9 @@ class issue_comment {
     /**
      * Creates a new comment.
      *
+     * @param $description
+     * @param issue $issue
+     *
      * @return issue_comment
      */
     public static function create($description, issue $issue) {
@@ -142,7 +152,6 @@ class issue_comment {
         $commentobj->userid = $USER->id;
         $time = time();
         $commentobj->timecreated = $time;
-        // $commentobj->timemodified = $time;
         // $commentobj->usermodified = $USER->id;
 
         $id = $DB->insert_record('qtracker_comment', $commentobj);
@@ -162,6 +171,13 @@ class issue_comment {
         return $DB->delete_records('qtracker_comment', array('id' => $this->get_id()));
     }
 
+    /**
+     * Sets description of this comment
+     *
+     * @param $title
+     *
+     * @return void
+     */
     public function set_description($title) {
         global $DB;
         $this->comment->description = $title;

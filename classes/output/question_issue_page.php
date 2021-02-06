@@ -52,14 +52,17 @@ class question_issue_page implements renderable, templatable {
     /** The default number of results to be shown per page. */
     const DEFAULT_PAGE_SIZE = 20;
 
+    /** @var issue|null  */
     protected $questionissue = null;
 
+    /** @var array  */
     protected $courseid = [];
 
     /**
      * Construct this renderable.
      *
      * @param \local_qtracker\question_issues_table $questionissuestable
+     * @param courseid
      */
     public function __construct(issue $questionissue, $courseid) {
         $this->questionissue = $questionissue;

@@ -36,6 +36,14 @@ use external_warnings;
 use local_qtracker\issue;
 use local_qtracker\external\helper;
 
+/**
+ * get_issue class
+ *
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class get_issue extends \external_api {
 
     /**
@@ -52,8 +60,11 @@ class get_issue extends \external_api {
 
 
     /**
-     * Returns welcome message
-     * @return string welcome message
+     * Returns issue with the id $issueid
+     *
+     * @param $issueid id of the issue to be returned
+     *
+     * @return array with status, the issuedata, and any warnings
      */
     public static function get_issue($issueid) {
         global $USER, $DB;

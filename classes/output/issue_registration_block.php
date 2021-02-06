@@ -59,11 +59,12 @@ class issue_registration_block implements renderable, templatable {
 
     // TODO: create an alternative (class) for registering issues  that are not linked to an attempt....
 
+
     /**
      * Construct the contents of the block
-     * @param \question_definition[] $questions The questions that can be filed issues for.
-     * @param int $userid The id of the user.
-     * @throws \coding_exception If called at incorrect times
+     * @param \question_usage_by_activity $quba
+     * @param $slots
+     * @param $contextid
      */
     public function __construct(\question_usage_by_activity $quba, $slots, $contextid) {
 
@@ -79,6 +80,11 @@ class issue_registration_block implements renderable, templatable {
         $this->helpicon = new help_icon('question', 'local_qtracker');
     }
 
+    /**
+     *  Loads issues
+     *
+     * @return void
+     */
     private function load_issues() {
         global $DB;
 

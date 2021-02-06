@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * lib
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -102,6 +104,11 @@ function issue_has_capability_on($issueorid, $cap) {
 
 /**
  * Require capability on issue.
+ *
+ * @param $issue
+ * @param $cap
+ *
+ * @return boolean
  */
 function issue_require_capability_on($issue, $cap) {
     if (!issue_has_capability_on($issue, $cap)) {

@@ -36,7 +36,14 @@ use external_single_structure;
 use external_warnings;
 use local_qtracker\issue;
 
-
+/**
+ * new_issue class
+ *
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class new_issue extends \external_api {
 
     /**
@@ -56,8 +63,15 @@ class new_issue extends \external_api {
     }
 
     /**
-     * Returns welcome message
-     * @return string welcome message
+     * Creates new issue
+     *
+     * @param $issuetitle new issues title
+     * @param $issuedescription new issues description
+     * @param $contextid
+     * @param $qubaid
+     * @param $slot
+     *
+     * @return array with status, issueid and any warnings
      */
     public static function new_issue($qubaid, $slot, $contextid, $issuetitle, $issuedescription) {
         global $USER, $DB;

@@ -35,8 +35,15 @@ use moodle_exception;
 use external_single_structure;
 use external_warnings;
 use local_qtracker\issue;
+use mysql_xdevapi\Result;
 
-
+/**
+ * Class delete_issue
+ * @package local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class delete_issue extends \external_api {
 
     /**
@@ -52,8 +59,11 @@ class delete_issue extends \external_api {
     }
 
     /**
-     * Returns welcome message
-     * @return string welcome message
+     * Deletes issue with id $issueid
+     *
+     * @param $issueid id of the issue to be deleted
+     *
+     * @return array $result containing status, the issueid and any warnings
      */
     public static function delete_issue($issueid) {
         global $USER, $DB;
@@ -100,6 +110,7 @@ class delete_issue extends \external_api {
 
     /**
      * Returns description of method result value
+     *
      * @return external_description
      */
     public static function delete_issue_returns() {

@@ -80,6 +80,10 @@ class issue_exporter extends exporter {
         ];
     }
 
+
+    /**
+     * @return array
+     */
     protected static function define_related() {
         return array(
             'context' => 'context',

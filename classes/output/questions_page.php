@@ -46,12 +46,14 @@ class questions_page implements renderable, templatable {
     /** The default number of results to be shown per page. */
     const DEFAULT_PAGE_SIZE = 20;
 
+    /** @var array|questions_table|\local_qtracker\questions_table */
     protected $questionstable = [];
 
     /**
      * Construct this renderable.
      *
      * @param \local_qtracker\questions_table $questionstable
+     * @param $courseid
      */
     public function __construct(questions_table $questionstable, $courseid) {
         $this->questionstable = $questionstable;

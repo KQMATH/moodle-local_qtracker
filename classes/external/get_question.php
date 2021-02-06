@@ -35,6 +35,14 @@ use external_single_structure;
 use external_warnings;
 use local_qtracker\external\helper;
 
+/**
+ * get_question class
+ *
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class get_question extends \external_api {
 
     /**
@@ -51,8 +59,11 @@ class get_question extends \external_api {
 
 
     /**
-     * Returns welcome message
-     * @return string welcome message
+     * Retrieves question
+     *
+     * @param $questionid id of the question to be retrieved
+     *
+     * @return array with status, summary of the question and any warnings
      */
     public static function get_question($questionid) {
         global $PAGE, $USER;

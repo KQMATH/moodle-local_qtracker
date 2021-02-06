@@ -38,6 +38,14 @@ use local_qtracker\issue;
 use local_qtracker\external\helper;
 use local_qtracker\external\issue_exporter;
 
+/**
+ * get_issues class
+ *
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class get_issues extends \external_api {
 
     /**

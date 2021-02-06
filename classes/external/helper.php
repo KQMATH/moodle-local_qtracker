@@ -28,6 +28,14 @@ defined('MOODLE_INTERNAL') || die();
 use external_value;
 use external_single_structure;
 
+/**
+ * helper class
+ *
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class helper {
     /**
      * Create issue return value description.

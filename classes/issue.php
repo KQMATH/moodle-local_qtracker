@@ -13,6 +13,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Issue
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -161,6 +163,8 @@ class issue {
     /**
      * Returns a plain \stdClass with the issue data.
      *
+     * @param $description
+     *
      * @return \stdClass
      */
     public function create_comment($description) {
@@ -187,6 +191,12 @@ class issue {
         return $this->comments;
     }
 
+    /**
+     * Loads and returns issue with id $issueid
+     *
+     * @param int $issueid
+     * @return issue|null
+     */
     public static function load(int $issueid) {
         global $DB;
         $issueobj = $DB->get_record('qtracker_issue', ['id' => $issueid]);
@@ -198,6 +208,13 @@ class issue {
 
     /**
      * Creates a new issue.
+     *
+     * @param $description
+     * @param $contextid
+     * @param null $slot
+     * @param null $quba
+     * @param \question_definition $question
+     * @param $title
      *
      * @return issue
      */
@@ -272,12 +289,22 @@ class issue {
         return $DB->delete_records('qtracker_issue', array('id' => $this->get_id()));
     }
 
+    /**
+     * Sets this issues title to $title
+     *
+     * @param $title
+     */
     public function set_title($title) {
         global $DB;
         $this->issue->title = $title;
         $DB->update_record('qtracker_issue', $this->issue);
     }
 
+    /**
+     * Sets this issues description to $title
+     *
+     * @param $title
+     */
     public function set_description($title) {
         global $DB;
         $this->issue->description = $title;
