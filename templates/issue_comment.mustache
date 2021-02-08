@@ -22,11 +22,12 @@
     Example context (json):
     {
         "new": true
+        "profileimageurl": "https://moodle.org/pix/u/f3.png"
     }
 }}
 <form method="post" action="{{action}}" id="comment_form_{{id}}">
     <div class="d-flex flex-row">
-        <span><img class="userpicture" width="35px" height="35px" src="{{profileimageurl}}"/></span>
+        <span><img class="userpicture" alt="User picture" width="35" height="35" src="{{profileimageurl}}"/></span>
         <div class="ml-3 border w-100">
             <div class="d-flex flex-row p-2 border-bottom">
                 <a class="text-muted bold" href="{{userurl}}">{{fullname}}</a>&nbsp;
