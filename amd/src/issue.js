@@ -23,17 +23,18 @@
  * @copyright  2020 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'core/str', 'core/ajax'], function ($, Str, Ajax) {
+define(['jquery', 'core/str', 'core/ajax'], function($, Str, Ajax) {
 
     /**
      * Constructor
      *
-     * @param {String} selector used to find triggers for the new group modal.
+     * @param {int} slot
+     * @param id
      * @param {int} contextid
      *
      * Each call to init gets it's own instance of this class.
      */
-    var Issue = function (id = null, slot = null, contextid) {
+    var Issue = function(id = null, slot = null, contextid) {
         this.id = id;
         this.slot = slot;
         this.contextid = contextid;
@@ -43,7 +44,7 @@ define(['jquery', 'core/str', 'core/ajax'], function ($, Str, Ajax) {
         NEW: "new",
         OPEN: "open",
         CLOSED: "closed",
-    }
+    };
 
     /**
      * @var {int} id The id of this issue
@@ -78,11 +79,10 @@ define(['jquery', 'core/str', 'core/ajax'], function ($, Str, Ajax) {
     /**
      * Initialise the class.
      *
-     * @param {String} selector used to find triggers for the new group modal.
      * @private
-     * @return {Promise}
+     * @param {int} id
      */
-    Issue.prototype.setId = function (id) {
+    Issue.prototype.setId = function(id) {
         this.id = id;
     };
 
@@ -93,49 +93,50 @@ define(['jquery', 'core/str', 'core/ajax'], function ($, Str, Ajax) {
      * @private
      * @return {Promise}
      */
-    Issue.prototype.getId = function () {
+    Issue.prototype.getId = function() {
         return this.id;
     };
 
-    Issue.prototype.getSlot = function () {
+    Issue.prototype.getSlot = function() {
         return this.slot;
     };
 
-    Issue.prototype.getTitle = function () {
+    Issue.prototype.getTitle = function() {
         return this.title;
     };
 
-    Issue.prototype.setTitle = function (title) {
+    Issue.prototype.setTitle = function(title) {
         this.title = title;
     };
 
-    Issue.prototype.getDescription = function () {
+    Issue.prototype.getDescription = function() {
         return this.description;
     };
 
 
-    Issue.prototype.setDescription = function (description) {
+    Issue.prototype.setDescription = function(description) {
         this.description = description;
     };
 
-    Issue.prototype.changeState = function (state) {
+    Issue.prototype.changeState = function(state) {
         this.state = state;
     };
 
-    Issue.prototype.getState = function () {
+    Issue.prototype.getState = function() {
         return this.state;
     };
 
-    Issue.prototype.getContextid = function () {
+    Issue.prototype.getContextid = function() {
         return this.contextid;
     };
 
     /**
-     * return {Promise}
+     * @return {Promise}
+     * @param {int} id
      */
     Issue.load = function (id) {
         return Ajax.call([
-            { methodname: 'local_qtracker_get_issue', args: { issueid: id} }
+            {methodname: 'local_qtracker_get_issue', args: {issueid: id}}
         ])[0];
     };
 

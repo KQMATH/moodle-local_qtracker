@@ -59,7 +59,7 @@ define(['jquery', 'local_qtracker/issue'], function($, Issue) {
      * @method submitForm
      * @param slot
      * @private
-     * @return slot
+     * @return
      */
     IssueManager.prototype.getIssueBySlot = function(slot) {
         return this.issues.get(slot);
