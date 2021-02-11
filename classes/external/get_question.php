@@ -63,7 +63,7 @@ class get_question extends \external_api {
     /**
      * Retrieves question
      *
-     * @param $questionid id of the question to be retrieved
+     * @param int $questionid id of the question to be retrieved
      *
      * @return array with status, summary of the question and any warnings
      */

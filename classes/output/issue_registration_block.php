@@ -42,7 +42,7 @@ use help_icon;
  */
 class issue_registration_block implements renderable, templatable {
 
-    /** @var \question_definition[] Array of {@link \question_definition} */
+    /** @var \question_definition[] Array of {@link https://docs.moodle.org/dev/Question_types} */
     public $questions = array();
 
     /** @var \question_usage_by_activity */

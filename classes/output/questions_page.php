@@ -53,7 +53,7 @@ class questions_page implements renderable, templatable {
      * Construct this renderable.
      *
      * @param \local_qtracker\questions_table $questionstable
-     * @param $courseid
+     * @param int $courseid the id of the course
      */
     public function __construct(questions_table $questionstable, $courseid) {
         $this->questionstable = $questionstable;

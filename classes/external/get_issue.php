@@ -64,6 +64,7 @@ class get_issue extends \external_api {
      * Returns issue with the id $issueid
      *
      * @param int $issueid id of the issue to be returned
+     *
      * @return array with status, the issuedata, and any warnings
      */
     public static function get_issue($issueid) {

@@ -72,8 +72,8 @@ class question_issue_page implements renderable, templatable {
     /**
      * Export this data so it can be used as the context for a mustache template.
      *
-     * @param renderer_base $output
-     * @return stdClass
+     * @param renderer_base $output render base
+     * @return stdClass $data containing the questions data
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception

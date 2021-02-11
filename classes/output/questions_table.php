@@ -46,7 +46,7 @@ class questions_table extends table_sql {
      * Sets up the table.
      *
      * @param string $uniqueid Unique id of table.
-     * @param $context
+     * @param \context_course $context
      * @param moodle_url $url The base URL.
      */
     public function __construct($uniqueid, $url, $context) {
@@ -96,8 +96,8 @@ class questions_table extends table_sql {
 
     /**
      * Generate the display of the new, open and close column
-     * @param $cols extra_colums (new, open and close)
-     * @param $data the table row being output
+     * @param string $cols extra_colums (new, open and close)
+     * @param object $data the table row being output
      * @return |null string html content to go inside the td.
      */
     public function other_cols($cols, $data) {

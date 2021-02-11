@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Issue
+ * Issue class
  *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
@@ -165,7 +165,7 @@ class issue {
     /**
      * Returns a plain \stdClass with the issue data.
      *
-     * @param $description
+     * @param string $description
      *
      * @return \stdClass
      */
@@ -211,12 +211,12 @@ class issue {
     /**
      * Creates a new issue.
      *
-     * @param $description
-     * @param $contextid
+     * @param string $description
+     * @param int $contextid
      * @param null $slot
      * @param null $quba
      * @param \question_definition $question
-     * @param $title
+     * @param string $title
      *
      * @return issue
      */
@@ -294,7 +294,7 @@ class issue {
     /**
      * Sets this issues title to $title
      *
-     * @param $title
+     * @param string $title
      */
     public function set_title($title) {
         global $DB;
@@ -305,7 +305,7 @@ class issue {
     /**
      * Sets this issues description to $title
      *
-     * @param $title
+     * @param string $title
      */
     public function set_description($title) {
         global $DB;

@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Issue comment class
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -124,7 +126,7 @@ class issue_comment {
     /**
      * Loads and returns issue_comment with id $comment
      *
-     * @param $comment
+     * @param int $comment
      *
      * @return issue_comment
      */
@@ -140,7 +142,7 @@ class issue_comment {
     /**
      * Creates a new comment.
      *
-     * @param $description
+     * @param string $description
      * @param issue $issue
      *
      * @return issue_comment
@@ -176,7 +178,7 @@ class issue_comment {
     /**
      * Sets description of this comment
      *
-     * @param $title
+     * @param string $title
      *
      * @return void
      */

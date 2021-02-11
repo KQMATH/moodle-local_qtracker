@@ -63,7 +63,7 @@ class delete_issue extends \external_api {
     /**
      * Deletes issue with id $issueid
      *
-     * @param $issueid id of the issue to be deleted
+     * @param int $issueid id of the issue to be deleted
      *
      * @return array $result containing status, the issueid and any warnings
      */
