@@ -48,6 +48,7 @@ class question_details_form extends \moodleform {
         parent::__construct($url);
     }
 
+
     /**
      *
      */
