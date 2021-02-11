@@ -1,4 +1,6 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -58,12 +60,10 @@ class get_issue extends \external_api {
         );
     }
 
-
     /**
      * Returns issue with the id $issueid
      *
-     * @param $issueid id of the issue to be returned
-     *
+     * @param int $issueid id of the issue to be returned
      * @return array with status, the issuedata, and any warnings
      */
     public static function get_issue($issueid) {

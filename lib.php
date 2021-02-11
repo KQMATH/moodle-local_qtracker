@@ -54,13 +54,10 @@ function local_qtracker_extend_navigation_course($navigation, $course, $context)
     );
 
     // TODO: Check if the user has ANY question issue context capabilities.
-    // $contexts = new issue_edit_contexts($context);
-    // if ($contexts->have_one_edit_tab_cap('issues')) {
     $qtrackernode->add(get_string('issues', 'local_qtracker'), new moodle_url(
         $CFG->wwwroot . '/local/qtracker/view.php',
         $params
     ), navigation_node::TYPE_SETTING, null, 'issues');
-    // }
 }
 
 /**
@@ -68,7 +65,6 @@ function local_qtracker_extend_navigation_course($navigation, $course, $context)
  *
  * @param mixed $issueorid object or id. If an object is passed, it should include ->contextid and ->userid.
  * @param string $cap 'add', 'edit', 'view'.
- * @param integer $notused no longer used.
  * @return boolean this user has the capability $cap for this issue $issue?
  */
 function issue_has_capability_on($issueorid, $cap) {
@@ -105,10 +101,10 @@ function issue_has_capability_on($issueorid, $cap) {
 /**
  * Require capability on issue.
  *
- * @param $issue
- * @param $cap
+ * @param mixed $issue object or id. If an object is passed, it should include ->contextid and ->userid.
+ * @param string $cap 'add', 'edit', 'view'.
  *
- * @return boolean
+ * @return boolean this user has the capability $cap for this issue $issue?
  */
 function issue_require_capability_on($issue, $cap) {
     if (!issue_has_capability_on($issue, $cap)) {

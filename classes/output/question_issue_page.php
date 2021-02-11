@@ -162,10 +162,10 @@ class question_issue_page implements renderable, templatable {
         $questiondata->questionname = $question->name;
         $questiondata->preview_url = question_preview_url($question->id, null, null, null, null, $context);
 
-        $edit_url = new \moodle_url('/question/question.php');
-        $edit_url->param('id', $question->id);
-        $edit_url->param('courseid', $this->courseid);
-        $questiondata->edit_url = $edit_url;
+        $editurl = new \moodle_url('/question/question.php');
+        $editurl->param('id', $question->id);
+        $editurl->param('courseid', $this->courseid);
+        $questiondata->edit_url = $editurl;
 
         $form = new question_details_form($question, $PAGE->url);
         $questiondata->questiontext = $form->render();

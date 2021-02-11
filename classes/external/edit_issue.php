@@ -1,4 +1,6 @@
 <?php
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -63,9 +65,9 @@ class edit_issue extends \external_api {
     /**
      * Edits issue
      *
-     * @param $issueid id of the issue to be edited
-     * @param $issuetitle new issue title
-     * @param $issuedescription new issue description
+     * @param int $issueid id of the issue to be edited
+     * @param string $issuetitle new issue title
+     * @param string $issuedescription new issue description
      *
      * @return array with status, issueid and any warnings
      */

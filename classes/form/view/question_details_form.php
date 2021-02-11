@@ -40,8 +40,8 @@ class question_details_form extends \moodleform {
 
     /**
      * question_details_form constructor.
-     * @param $question
-     * @param \moodle_url $url
+     * @param \stdClass $question The question to be formed
+     * @param \moodle_url $url Questions moodle url
      */
     public function __construct($question, \moodle_url $url) {
         $this->question = $question;
@@ -50,7 +50,7 @@ class question_details_form extends \moodleform {
 
 
     /**
-     *
+     * Defines form
      */
     public function definition() {
         $mform = $this->_form;
