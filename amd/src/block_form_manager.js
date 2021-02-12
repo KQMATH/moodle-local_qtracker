@@ -98,7 +98,9 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
         BlockFormManager.prototype.init = function(issueids = []) {
             // Init all slots
             let slots = $(SELECTORS.SLOT_SELECT_OPTION);
-            if (slots.length == 0) {slots = $(SELECTORS.SLOT);}
+            if (slots.length == 0) {
+                slots = $(SELECTORS.SLOT);
+            }
             slots.map((index, option) => {
                 let issue = new Issue(null, parseInt(option.value), this.contextid);
                 issue.isSaved = false;// ChangeState(Issue.STATES.NEW);
@@ -341,6 +343,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                 })
                 .catch((error) => {
                     console.error(error);
+                    throw error;
                 });
         };
         /**
@@ -350,7 +353,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
          */
         BlockFormManager.prototype.toggleUpdateButton = function(show) {
             if (show) {
-                Str.get_string('update', 'core').then(function (updateStr) {
+                Str.get_string('update', 'core').then(function(updateStr) {
                     this.form.find(SELECTORS.SUBMIT_BUTTON).html(updateStr);
                 }.bind(this));
             } else {

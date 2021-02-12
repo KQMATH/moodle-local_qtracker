@@ -76,7 +76,9 @@ class QuestionsTable {
             let issuesResponse = await this.loadIssues(id, state);
             let issues = issuesResponse.issues;
 
-            if (hidden) {lol();}
+            if (hidden) {
+                lol();
+            }
 
             // Get users data.
             let userids = [...new Set(issues.map(issue => issue.userid))];
@@ -116,8 +118,8 @@ class QuestionsTable {
 
     /**
      *
-     * @param {*} issueData
-     * @param userData
+     * @param {object} issueData
+     * @param {object} userData
      * @return {Promise}
      */
     async addIssueItem(issueData, userData) {

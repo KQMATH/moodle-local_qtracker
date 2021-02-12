@@ -28,8 +28,8 @@ define(['jquery', 'core/str', 'core/ajax'], function($, Str, Ajax) {
     /**
      * Constructor
      *
+     * @param {int} id
      * @param {int} slot
-     * @param id
      * @param {int} contextid
      *
      * Each call to init gets it's own instance of this class.
@@ -134,7 +134,7 @@ define(['jquery', 'core/str', 'core/ajax'], function($, Str, Ajax) {
      * @return {Promise}
      * @param {int} id
      */
-    Issue.load = function (id) {
+    Issue.load = function(id) {
         return Ajax.call([
             {methodname: 'local_qtracker_get_issue', args: {issueid: id}}
         ])[0];
