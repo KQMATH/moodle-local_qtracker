@@ -66,12 +66,11 @@ class new_issue extends \external_api {
 
     /**
      * Creates new issue
-     *
-     * @param string $issuetitle new issues title
-     * @param string $issuedescription new issues description
-     * @param int $contextid new issues context id
      * @param int $qubaid new issues quba id
      * @param int $slot new issues slot
+     * @param int $contextid new issues context id
+     * @param string $issuetitle new issues title
+     * @param string $issuedescription new issues description
      *
      * @return array with status, issueid and any warnings
      */

@@ -67,6 +67,8 @@ class issue_comment_exporter extends exporter {
     }
 
     /**
+     * Return a list of objects that are related
+     *
      * @return array
      */
     protected static function define_related() {

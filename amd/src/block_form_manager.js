@@ -78,13 +78,13 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
         BlockFormManager.prototype.issueid = null;
 
         /**
-         * @var {int} issueid
+         * @var {issue[]} issues
          * @private
          */
         BlockFormManager.prototype.issues = [];
 
         /**
-         * @var {int} issueid
+         * @var {issue_manager} issueManager
          * @private
          */
         BlockFormManager.prototype.issueManager = null;
@@ -134,7 +134,6 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                 }); */
 
                 //
-
 
                 // Load existing issues.
                 var slotElement = this.form.find(SELECTORS.SLOT);
@@ -241,6 +240,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                 fail: this.handleFormSubmissionFailure.bind(this)
             }]);
         };
+
         /**
          * @method editIssue
          * @private

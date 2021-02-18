@@ -26,8 +26,10 @@
 defined('MOODLE_INTERNAL') || die();
 
 /**
- * @param $oldversion
- * @return bool
+ * Function to upgrade local_qtracker
+ *
+ * @param int $oldversion the version to be upgraded from
+ * @return bool result
  */
 function xmldb_local_qtracker_upgrade($oldversion) {
     global $DB;
