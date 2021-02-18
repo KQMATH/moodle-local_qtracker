@@ -348,7 +348,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
         };
         /**
          * @method handleFormSubmissionFailure
-         * @param show
+         * @param {boolean} show
          * @private
          */
         BlockFormManager.prototype.toggleUpdateButton = function(show) {
@@ -364,7 +364,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
         };
         /**
          * @method handleFormSubmissionFailure
-         * @param show
+         * @param {boolean} show
          * @private
          */
         BlockFormManager.prototype.toggleDeleteButton = function(show) {
@@ -396,7 +396,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
 
         /**
          * @method handleFormSubmissionFailure
-         * @param newaction
+         * @param {string} newaction
          * @private
          */
         BlockFormManager.prototype.setAction = function(newaction) {
