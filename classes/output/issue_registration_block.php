@@ -63,8 +63,8 @@ class issue_registration_block implements renderable, templatable {
     /**
      * Construct the contents of the block
      * @param \question_usage_by_activity $quba
-     * @param $slots
-     * @param $contextid
+     * @param stdClass[] $slots
+     * @param int $contextid
      */
     public function __construct(\question_usage_by_activity $quba, $slots, $contextid) {
 

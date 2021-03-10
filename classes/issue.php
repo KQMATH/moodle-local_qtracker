@@ -211,12 +211,12 @@ class issue {
     /**
      * Creates a new issue.
      *
-     * @param string $description
-     * @param int $contextid
-     * @param null $slot
-     * @param null $quba
-     * @param \question_definition $question
      * @param string $title
+     * @param string $description
+     * @param \question_definition $question
+     * @param int $contextid
+     * @param \question_usage_by_activity|null $quba
+     * @param int|null  $slot
      *
      * @return issue
      */

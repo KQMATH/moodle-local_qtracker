@@ -46,8 +46,8 @@ class questions_table extends table_sql {
      * Sets up the table.
      *
      * @param string $uniqueid Unique id of table.
-     * @param \context_course $context
      * @param moodle_url $url The base URL.
+     * @param \context_course $context
      */
     public function __construct($uniqueid, $url, $context) {
         global $CFG;

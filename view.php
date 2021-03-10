@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * View
+ * Display qtracker question page
  *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>

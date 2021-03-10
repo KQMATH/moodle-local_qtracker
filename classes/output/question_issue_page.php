@@ -61,8 +61,8 @@ class question_issue_page implements renderable, templatable {
     /**
      * Construct this renderable.
      *
-     * @param \local_qtracker\question_issues_table $questionissuestable
-     * @param courseid
+     * @param issue $questionissue
+     * @param int $courseid
      */
     public function __construct(issue $questionissue, $courseid) {
         $this->questionissue = $questionissue;
