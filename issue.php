@@ -89,6 +89,9 @@ if ($commentissue) {
 
 $closeissue = optional_param('closeissue', false, PARAM_BOOL);
 if ($closeissue) {
+    if ($commenttext != false) {
+        $issue->create_comment($commenttext);
+    }
     $issue->close();
     redirect($PAGE->url);
 }
