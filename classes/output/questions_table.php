@@ -143,7 +143,7 @@ class questions_table extends table_sql {
      */
     protected function define_table_configs() {
         $this->collapsible(false);
-        $this->sortable(true);
+        $this->sortable(true, get_string('new', 'local_qtracker'), SORT_DESC);
         $this->pageable(true);
     }
 
