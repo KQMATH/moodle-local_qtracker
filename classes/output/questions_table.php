@@ -143,8 +143,24 @@ class questions_table extends table_sql {
      */
     protected function define_table_configs() {
         $this->collapsible(false);
-        $this->sortable(true, get_string('new', 'local_qtracker'), SORT_DESC);
+        $this->sortable(true);
         $this->pageable(true);
+        $sortdata = [
+            [
+                'sortby' => 'new',
+                'sortorder' => SORT_DESC,
+            ], [
+                'sortby' => 'open',
+                'sortorder' => SORT_DESC,
+            ], [
+                'sortby' => 'closed',
+                'sortorder' => SORT_DESC,
+            ], [
+                'sortby' => 'id',
+                'sortorder' => SORT_ASC,
+            ]
+        ];
+        $this->set_sortdata($sortdata);
     }
 
     /**
