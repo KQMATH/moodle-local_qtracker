@@ -90,7 +90,10 @@ class question_issue_page implements renderable, templatable {
         $issuedescription = new stdClass();
         $user = $DB->get_record('user', array('id' => $issuedetails->userid));
         $issuedescription->fullname = $user->username;
-        $issuedescription->userurl = "http://lol.no";
+        $userurl = new \moodle_url('/user/view.php');
+        $userurl->param('id', $user->id);
+        $userurl->param('course', $this->courseid);
+        $issuedescription->userurl = $userurl;
         $userpicture = new \user_picture($user);
         $userpicture->size = 0; // Size f2.
         $issuedescription->profileimageurl = $userpicture->get_url($PAGE)->out(false);
