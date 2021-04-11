@@ -27,11 +27,12 @@ namespace local_qtracker;
 
 use local_qtracker\issue;
 use local_qtracker\output\question_issue_page;
+use mod_capquiz\capquiz;
 
 require_once('../../config.php');
 require_once($CFG->dirroot . '/local/qtracker/lib.php');
 
-global $DB, $OUTPUT, $PAGE;
+global $DB, $OUTPUT, $PAGE, $USER;
 
 // Check for all required variables.
 $courseid = required_param('courseid', PARAM_INT);
@@ -85,6 +86,18 @@ $commenttext = optional_param('commenteditor', false, PARAM_RAW);
 if ($commentissue) {
     $issue->create_comment($commenttext);
     redirect($PAGE->url);
+}
+
+$commentandmailissue = optional_param('commentandmailissue', false, PARAM_BOOL);
+if ($commentandmailissue) {
+    //TODO implement mailing function
+    $user = $DB->get_record('user', array('id' => $issue->get_userid()));
+    if(email_to_user($user, $USER,"subjecttext", $commenttext)) {
+        echo '<h1>Successfully sent mail</h1>';
+    } else {
+        echo '<h1>Failed to send mail</h1>';
+    }
+    //get_string('issuesubject', 'local_qtracker')
 }
 
 $closeissue = optional_param('closeissue', false, PARAM_BOOL);
