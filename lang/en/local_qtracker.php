@@ -86,6 +86,8 @@ $string['comment'] = 'Comment';
 //TODO clean up the text
 $string['commentandmail'] = 'Comment and forward mail to issue creator';
 $string['issuesubject'] = 'some subject';
+$string['commentanddm'] = 'Comment and dm issue to creator';
+
 
 $string['confirm'] = 'Confirm';
 $string['deletecomment'] = 'Delete comment';

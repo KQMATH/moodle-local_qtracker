@@ -25,6 +25,8 @@
 
 namespace local_qtracker;
 
+use core\check\performance\debugging;
+use core\message\message;
 use local_qtracker\issue;
 use local_qtracker\output\question_issue_page;
 use mod_capquiz\capquiz;
@@ -88,16 +90,38 @@ if ($commentissue) {
     redirect($PAGE->url);
 }
 
+$commentanddmissue = optional_param('commentanddmissue', false,PARAM_BOOL);
+if ($commentanddmissue) {
+    $user = $DB->get_record('user', array('id' => $issue->get_userid()));
+    $message = new \core\message\message();
+    $message->component = 'moodle'; // Your plugin's name
+    $message->name = 'instantmessage'; // Your notification name from message.php
+    $message->userfrom = $USER; // If the message is 'from' a specific user you can set them here
+    $message->userto = $user;
+    $message->subject = 'Issue ' . $issue->get_title();
+    $message->fullmessage = $commenttext;
+    $message->fullmessageformat = FORMAT_MARKDOWN;
+    $message->fullmessagehtml = '<p>message body</p>';
+    $message->smallmessage = 'small message';
+    $message->notification = 1; // Because this is a notification generated from Moodle, not a user-to-user message
+    $message->contexturl = (new \moodle_url('/course/'))->out(false); // A relevant URL for the notification
+    $message->contexturlname = 'Course list'; // Link title explaining where users get to for the contexturl
+    $content = array('*' => array('header' => ' test ', 'footer' => ' test ')); // Extra content for specific processor
+    $message->set_additional_content('email', $content);
+    //TODO create message from teacher to student
+    message_send($message);
+}
+
 $commentandmailissue = optional_param('commentandmailissue', false, PARAM_BOOL);
 if ($commentandmailissue) {
     //TODO implement mailing function
     $user = $DB->get_record('user', array('id' => $issue->get_userid()));
-    if(email_to_user($user, $USER,"subjecttext", $commenttext)) {
+    if(email_to_user($user, $USER,get_string('issuesubject', 'local_qtracker'), $commenttext)) {
         echo '<h1>Successfully sent mail</h1>';
+        debugging('Sending mail to ' . $user->email . ' from ' . $USER->email);
     } else {
         echo '<h1>Failed to send mail</h1>';
     }
-    //get_string('issuesubject', 'local_qtracker')
 }
 
 $closeissue = optional_param('closeissue', false, PARAM_BOOL);

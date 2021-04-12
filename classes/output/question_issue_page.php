@@ -147,6 +147,12 @@ class question_issue_page implements renderable, templatable {
             $data->closebutton = $closebutton;
         }
 
+        $commentanddmbutton = new stdClass();
+        $commentanddmbutton->primary = false;
+        $commentanddmbutton->name = "commentanddmissue";
+        $commentanddmbutton->value = true;
+        $commentanddmbutton->label = get_string('commentanddm', 'local_qtracker');
+        $data->commentanddmbutton = $commentanddmbutton;
 
         $commentandmailbutton = new stdClass();
         $commentandmailbutton->primary = true;
