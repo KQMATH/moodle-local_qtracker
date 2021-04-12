@@ -80,7 +80,8 @@ $string['open'] = 'Open';
 $string['closed'] = 'Closed';
 
 $string['reopenissue'] = 'Reopen issue';
-$string['closeissue'] = 'Comment and close issue';
+$string['closeissue'] = 'Close issue';
+$string['commentandcloseissue'] = 'Comment and close issue';
 $string['comment'] = 'Comment';
 
 $string['confirm'] = 'Confirm';

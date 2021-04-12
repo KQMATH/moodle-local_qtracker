@@ -170,6 +170,8 @@ class question_issue_page implements renderable, templatable {
         $form = new question_details_form($question, $PAGE->url);
         $questiondata->questiontext = $form->render();
         $data->question = $questiondata;
+        $data->closeissue = get_string('closeissue', 'local_qtracker');
+        $data->commentandcloseisue = get_string('commentandcloseissue', 'local_qtracker');
 
         // Setup text editor.
         $editor = editors_get_preferred_editor(FORMAT_HTML);

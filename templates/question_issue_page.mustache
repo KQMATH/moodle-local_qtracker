@@ -125,3 +125,10 @@
         </div>
     {{/questionissue}}
 </div>
+{{#js}}
+    require(['jquery', 'local_qtracker/issue_view'], function($, IssueView) {
+    var closeissuestring = "{{closeissue}}"
+    var commentandcloseissuestring = "{{commentandcloseisue}}"
+    new IssueView();
+    });
+{{/js}}
