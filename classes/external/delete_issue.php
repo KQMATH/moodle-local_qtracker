@@ -37,7 +37,6 @@ use moodle_exception;
 use external_single_structure;
 use external_warnings;
 use local_qtracker\issue;
-use mysql_xdevapi\Result;
 
 /**
  * Class delete_issue
