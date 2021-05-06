@@ -1,18 +1,17 @@
 
 
-
 class IssueView {
     constructor() {
-        const commentandcommitbtn = $("button[name=closeissue]");
-        const comment = $("#commenteditoreditable").children("p");
-        comment.onchange(event => {
-            console.log('comment has changed')
-            if (event.target.value == "") {
-                commentandcommitbtn.text = closeissuestring;
+        const commentandcommitbtn = $("button[name=closeissue]").get(0);
+        const commentEditor = $("#commenteditor").get(0);
+        commentEditor.addEventListener("change", event => {
+            if (commentEditor.value == ('<p dir="ltr" style="text-align: left;"><br></p>')) {
+                commentandcommitbtn.innerText = closeissuestring;
             } else {
-                commentandcommitbtn.text = commentandcloseissuestring;
+                commentandcommitbtn.innerText = commentandcloseissuestring;
             }
         })
     }
-
 }
+
+
