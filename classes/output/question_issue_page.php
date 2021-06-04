@@ -152,6 +152,7 @@ class question_issue_page implements renderable, templatable {
         $commentbutton->name = "commentissue";
         $commentbutton->value = true;
         $commentbutton->label = get_string('comment', 'local_qtracker');
+        $commentbutton->id = 11;
         $data->commentbutton = $commentbutton;
 
         $question = \question_bank::load_question($this->questionissue->get_questionid());

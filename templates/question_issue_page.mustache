@@ -127,8 +127,10 @@
 </div>
 {{#js}}
     require(['jquery', 'local_qtracker/issue_view'], function($, IssueView) {
+    if ($("[name='closeissue']").length) {
     var closeissuestring = "{{closeissue}}"
     var commentandcloseissuestring = "{{commentandcloseisue}}"
-    new IssueView();
+    new IssueView(closeissuestring, commentandcloseissuestring);
+    }
     });
 {{/js}}
