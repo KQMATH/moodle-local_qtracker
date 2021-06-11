@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * lib
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -35,7 +37,6 @@ use local_qtracker\issue;
 function local_qtracker_extend_navigation_course($navigation, $course, $context) {
     global $CFG;
 
-
     if ($context->contextlevel == CONTEXT_COURSE) {
         $params = array('courseid' => $context->instanceid);
     } else if ($context->contextlevel == CONTEXT_MODULE) {
@@ -52,14 +53,11 @@ function local_qtracker_extend_navigation_course($navigation, $course, $context)
         'qtracker'
     );
 
-    //TODO: Check if the user has ANY question issue context capabilities.
-    //$contexts = new issue_edit_contexts($context);
-    //if ($contexts->have_one_edit_tab_cap('issues')) {
+    // TODO: Check if the user has ANY question issue context capabilities.
     $qtrackernode->add(get_string('issues', 'local_qtracker'), new moodle_url(
         $CFG->wwwroot . '/local/qtracker/view.php',
         $params
     ), navigation_node::TYPE_SETTING, null, 'issues');
-    //}
 }
 
 /**
@@ -67,7 +65,6 @@ function local_qtracker_extend_navigation_course($navigation, $course, $context)
  *
  * @param mixed $issueorid object or id. If an object is passed, it should include ->contextid and ->userid.
  * @param string $cap 'add', 'edit', 'view'.
- * @param integer $notused no longer used.
  * @return boolean this user has the capability $cap for this issue $issue?
  */
 function issue_has_capability_on($issueorid, $cap) {
@@ -103,6 +100,11 @@ function issue_has_capability_on($issueorid, $cap) {
 
 /**
  * Require capability on issue.
+ *
+ * @param mixed $issue object or id. If an object is passed, it should include ->contextid and ->userid.
+ * @param string $cap 'add', 'edit', 'view'.
+ *
+ * @return boolean this user has the capability $cap for this issue $issue?
  */
 function issue_require_capability_on($issue, $cap) {
     if (!issue_has_capability_on($issue, $cap)) {

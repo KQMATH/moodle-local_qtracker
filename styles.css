@@ -62,7 +62,7 @@
         position: absolute;
         top: calc(-1.25rem - 2px);
         right: calc(-1.25rem);
-        height: calc(100% + 2*1.25rem + 2px);
+        height: calc(100% + 2 * 1.25rem + 2px);
         border: unset;
         border-left: 1px solid #dee2e6;
         box-shadow: -3px 0 5px rgba(36, 41, 46, .05);

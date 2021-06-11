@@ -1,5 +1,6 @@
 <?php
-
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -29,6 +30,14 @@ defined('MOODLE_INTERNAL') || die();
 use external_value;
 use external_single_structure;
 
+/**
+ * helper class
+ *
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class helper {
     /**
      * Create issue return value description.

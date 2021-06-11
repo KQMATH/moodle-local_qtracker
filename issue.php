@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * This file is used to render the qtracker block
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -57,7 +59,10 @@ if (optional_param('return', false, PARAM_BOOL)) {
     redirect($returnurl);
 }
 
-$issuesnode = $PAGE->navbar->add(get_string('pluginname', 'local_qtracker'), null, \navigation_node::TYPE_CONTAINER, null, 'qtracker');
+$issuesnode = $PAGE->navbar->add(
+    get_string('pluginname', 'local_qtracker'),
+    null, \navigation_node::TYPE_CONTAINER, null, 'qtracker'
+);
 $issuesnode->add(
     get_string('issues', 'local_qtracker'),
     new \moodle_url('/local/qtracker/view.php', array('courseid' => $courseid))
@@ -66,15 +71,15 @@ $issuesnode->add(get_string('issue', 'local_qtracker'));
 
 
 
-// Load issue
+// Load issue.
 $issue = issue::load($issueid);
 if (!$issue) {
     $issuesurl = new \moodle_url('/local/qtracker/view.php', array('courseid' => $courseid));
     redirect($issuesurl);
 }
 
-// TODO: require capability for editing issues
-// Process issue actions
+// TODO: require capability for editing issues.
+// Process issue actions.
 $commentissue = optional_param('commentissue', false, PARAM_BOOL);
 $commenttext = optional_param('commenteditor', false, PARAM_RAW);
 if ($commentissue) {
@@ -101,7 +106,7 @@ if (!is_null($deletecommentid)) {
     redirect($PAGE->url);
 }
 
-//Capability checking
+// Capability checking.
 issue_require_capability_on($issue->get_issue_obj(), 'view');
 
 $renderer = $PAGE->get_renderer('local_qtracker');

@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Upgrade
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -23,11 +25,17 @@
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Function to upgrade local_qtracker
+ *
+ * @param int $oldversion the version to be upgraded from
+ * @return bool result
+ */
 function xmldb_local_qtracker_upgrade($oldversion) {
     global $DB;
     $dbman = $DB->get_manager();
 
-    //TODO perform upgrades here...
+    // TODO perform upgrades here...
 
     return true;
 }

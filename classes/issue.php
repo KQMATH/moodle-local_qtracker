@@ -1,5 +1,6 @@
 <?php
-
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -14,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Issue class
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -162,6 +165,8 @@ class issue {
     /**
      * Returns a plain \stdClass with the issue data.
      *
+     * @param string $description
+     *
      * @return \stdClass
      */
     public function create_comment($description) {
@@ -172,10 +177,10 @@ class issue {
     }
 
      /**
-     * Add a new commentto this issue.
-     *
-     * @return \stdClass
-     */
+      * Add a new commentto this issue.
+      *
+      * @return \stdClass
+      */
     public function get_comments() {
         global $DB;
         if (empty($this->comments)) {
@@ -188,6 +193,12 @@ class issue {
         return $this->comments;
     }
 
+    /**
+     * Loads and returns issue with id $issueid
+     *
+     * @param int $issueid
+     * @return issue|null
+     */
     public static function load(int $issueid) {
         global $DB;
         $issueobj = $DB->get_record('qtracker_issue', ['id' => $issueid]);
@@ -199,6 +210,13 @@ class issue {
 
     /**
      * Creates a new issue.
+     *
+     * @param string $title
+     * @param string $description
+     * @param \question_definition $question
+     * @param int $contextid
+     * @param \question_usage_by_activity|null $quba
+     * @param int|null  $slot
      *
      * @return issue
      */
@@ -216,8 +234,8 @@ class issue {
         $issueobj->userid = $USER->id;
         $time = time();
         $issueobj->timecreated = $time;
-        //$issueobj->timemodified = $time;
-        //$issueobj->usermodified = $USER->id;
+        // $issueobj->timemodified = $time;
+        // $issueobj->usermodified = $USER->id;
 
         $id = $DB->insert_record('qtracker_issue', $issueobj);
         $issueobj->id = $id;
@@ -273,12 +291,22 @@ class issue {
         return $DB->delete_records('qtracker_issue', array('id' => $this->get_id()));
     }
 
+    /**
+     * Sets this issues title to $title
+     *
+     * @param string $title
+     */
     public function set_title($title) {
         global $DB;
         $this->issue->title = $title;
         $DB->update_record('qtracker_issue', $this->issue);
     }
 
+    /**
+     * Sets this issues description to $title
+     *
+     * @param string $title
+     */
     public function set_description($title) {
         global $DB;
         $this->issue->description = $title;

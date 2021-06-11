@@ -56,7 +56,7 @@ class question_issues_table extends table_sql {
 
         // Define columns in the table.
         $this->define_table_columns();
-        // Set the baseurl
+        // Set the baseurl.
         $this->define_baseurl($url);
         // Define configs.
         $this->define_table_configs();
@@ -132,7 +132,7 @@ class question_issues_table extends table_sql {
     protected function define_table_columns() {
 
         // Define headers and columns.
-        //TODO: define strings in lang file.
+        // TODO: define strings in lang file.
         $cols = array(
             'id' => get_string('id', 'local_qtracker'),
             'questionid' => get_string('questionid', 'local_qtracker'),

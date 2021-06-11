@@ -1,5 +1,6 @@
 <?php
-
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -27,7 +28,7 @@ namespace local_qtracker\external;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/externallib.php");
-require_once($CFG ->libdir . '/questionlib.php');
+require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/local/qtracker/lib.php');
 
 use external_value;
@@ -37,7 +38,14 @@ use external_single_structure;
 use external_warnings;
 use local_qtracker\issue;
 
-
+/**
+ * new_issue class
+ *
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class new_issue extends \external_api {
 
     /**
@@ -57,8 +65,14 @@ class new_issue extends \external_api {
     }
 
     /**
-     * Returns welcome message
-     * @return string welcome message
+     * Creates new issue
+     * @param int $qubaid new issues quba id
+     * @param int $slot new issues slot
+     * @param int $contextid new issues context id
+     * @param string $issuetitle new issues title
+     * @param string $issuedescription new issues description
+     *
+     * @return array with status, issueid and any warnings
      */
     public static function new_issue($qubaid, $slot, $contextid, $issuetitle, $issuedescription) {
         global $USER, $DB;
@@ -66,7 +80,7 @@ class new_issue extends \external_api {
         $added = false;
         $warnings = array();
 
-        //Parameter validation
+        // Parameter validation.
         $params = self::validate_parameters(self::new_issue_parameters(),
             array(
                 'qubaid' => (int) $qubaid,
@@ -77,17 +91,17 @@ class new_issue extends \external_api {
             )
         );
 
-        //Context validation
+        // Context validation.
         // TODO: ensure proper validation....
         $context = \context::instance_by_id($params['contextid']);
         self::validate_context($context);
 
-        //Capability checking
+        // Capability checking.
         if (!has_capability('local/qtracker:addissue', $context)) {
             throw new moodle_exception('cannotcreateissue', 'local_qtracker');
         }
 
-        if (empty($params['issuetitle'])){
+        if (empty($params['issuetitle'])) {
             $warnings[] = array(
                 'item' => 'issuetitle',
                 'itemid' => 0,

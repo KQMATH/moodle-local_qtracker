@@ -47,6 +47,7 @@ class questions_table extends table_sql {
      *
      * @param string $uniqueid Unique id of table.
      * @param moodle_url $url The base URL.
+     * @param \context_course $context
      */
     public function __construct($uniqueid, $url, $context) {
         global $CFG;
@@ -56,7 +57,7 @@ class questions_table extends table_sql {
 
         // Define columns in the table.
         $this->define_table_columns();
-        // Set the baseurl
+        // Set the baseurl.
         $this->define_baseurl($url);
         // Define configs.
         $this->define_table_configs();
@@ -86,8 +87,8 @@ class questions_table extends table_sql {
         if ($data->name) {
             $id = $data->id;
             $name = \html_writer::link("#", $data->name, array('onclick' => "showIssuesInPane($id);return false;"));
-            return $name;            //need to change it to correct link
-            //return '<a href="/user/profile.php?id='.$data->questionid.'">'.$data->title.'</a>';
+            return $name;            // need to change it to correct link.
+            // return '<a href="/user/profile.php?id='.$data->questionid.'">'.$data->title.'</a>';
         } else {
             return '-';
         }
@@ -95,8 +96,8 @@ class questions_table extends table_sql {
 
     /**
      * Generate the display of the new, open and close column
-     * @param $cols extra_colums (new, open and close)
-     * @param $data the table row being output
+     * @param string $cols extra_colums (new, open and close)
+     * @param object $data the table row being output
      * @return |null string html content to go inside the td.
      */
     public function other_cols($cols, $data) {
@@ -123,7 +124,7 @@ class questions_table extends table_sql {
     protected function define_table_columns() {
 
         // Define headers and columns.
-        //TODO: define strings in lang file.
+        // TODO: define strings in lang file.
         $cols = array(
             'id' => get_string('questionid', 'local_qtracker'),
             'name' => get_string('name', 'local_qtracker'),
@@ -197,29 +198,35 @@ class questions_table extends table_sql {
     }
 
 
+    /**
+     * Not in use
+     */
     public function wrap_html_start() {
         if ($this->is_downloading()) {
             return;
         }
 
-        //echo '<div id="questions-table-wrapper" class="push-pane-over">';
-        //echo '<div id="questions-table-wrapper">';
-        //echo '<div id="questions-table-sidebar"></div>';
-        //echo '<div class="border-bottom">';
-        //echo '<div class="no-overflow">';
-        //echo '<div class="questions-table">';
+        // echo '<div id="questions-table-wrapper" class="push-pane-over">';
+        // echo '<div id="questions-table-wrapper">';
+        // echo '<div id="questions-table-sidebar"></div>';
+        // echo '<div class="border-bottom">';
+        // echo '<div class="no-overflow">';
+        // echo '<div class="questions-table">';
 
     }
 
+    /**
+     * Not in use
+     */
     public function wrap_html_finish() {
         global $PAGE;
         if ($this->is_downloading()) {
             return;
         }
 
-        //echo '</div>';
-        //echo '</div>';
-        //echo '</div>';
-        //echo '</div>';
+        // echo '</div>';
+        // echo '</div>';
+        // echo '</div>';
+        // echo '</div>';
     }
 }

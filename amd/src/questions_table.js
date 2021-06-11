@@ -61,12 +61,12 @@ class QuestionsTable {
             Templates.replaceNodeContents('#questions-table-sidebar', html, js);
         });
 
-        window.showIssuesInPane = async function (id, state = null) {
+        window.showIssuesInPane = async function(id, state = null) {
             $('.issues-pane-content .issues').empty();
             $('.issues-pane-content .loading').addClass("show");
 
             // Get question title.
-            let questionData = await this.loadQuestionData(id)
+            let questionData = await this.loadQuestionData(id);
             let question = questionData.question;
             let questionEditUrl = this.getQuestionEditUrl(this.courseid, id);
             let link = $('<a></a>').attr("href", questionEditUrl).html(question.name + " #" + question.id);
@@ -76,34 +76,37 @@ class QuestionsTable {
             let issuesResponse = await this.loadIssues(id, state);
             let issues = issuesResponse.issues;
 
-            if (hidden) lol();
+            if (hidden) {
+                lol();
+            }
 
             // Get users data.
             let userids = [...new Set(issues.map(issue => issue.userid))];
             let usersData = await this.loadUsersData(userids);
 
             // Render issue items.
-            let promises = []
+            let promises = [];
             issues.forEach(async issueData => {
-                let userData =  usersData.find( ({ id }) => id === issueData.userid );
+                let userData = usersData.find(({id}) => id === issueData.userid);
                 promises.push(this.addIssueItem(issueData, userData));
             });
 
             // When all issue item promises are resolved.
-            $.when.apply($, promises).done(function () {
+            $.when.apply($, promises).done(function() {
                 $('.issues-pane-content .loading').removeClass("show");
                 $.each(arguments, (index, argument) => {
                     Templates.appendNodeContents('.issues-pane-content .issues', argument.html, argument.js);
                 });
             }).catch(e => {
-                console.error(e)
-            })
+                console.error(e);
+            });
 
         }.bind(this);
 
-        window.closeIssuesPane = function () {
-            if (!hidden)
+        window.closeIssuesPane = function() {
+            if (!hidden) {
                 lol();
+            }
         };
 
         window.lol = function togglePane() {
@@ -115,8 +118,9 @@ class QuestionsTable {
 
     /**
      *
-     * @param {*} issueData
-     * @return Promise
+     * @param {object} issueData
+     * @param {object} userData
+     * @return {Promise}
      */
     async addIssueItem(issueData, userData) {
         // Fetch user data.
@@ -129,7 +133,7 @@ class QuestionsTable {
             id: userData.id,
         });
 
-        //Render issues pane
+        // Render issues pane
         let paneContext = {
             issueurl: issueurl,
             userurl: userurl,
@@ -143,21 +147,21 @@ class QuestionsTable {
         paneContext[state] = true;
 
         return Templates.render('local_qtracker/issues_pane_item', paneContext)
-            .then(function (html, js) {
-                return { html: html, js: js };
+            .then(function(html, js) {
+                return {html: html, js: js};
             });
     }
 
     async loadIssues(id, state = null) {
         let criteria = [
-            { key: 'questionid', value: id },
+            {key: 'questionid', value: id},
         ];
         if (state) {
-            criteria.push({ key: 'state', value: state });
+            criteria.push({key: 'state', value: state});
         }
         let issuesData = await Ajax.call([{
             methodname: 'local_qtracker_get_issues',
-            args: { criteria: criteria }
+            args: {criteria: criteria}
         }])[0];
 
         return issuesData;

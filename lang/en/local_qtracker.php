@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * English keywords
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -34,7 +36,7 @@ $string['descfoo'] = 'Config description';
 $string['headerconfig'] = 'Config section header';
 $string['labelfoo'] = 'Config label';
 
-// question issues table
+// Question issues table.
 $string['id'] = 'ID';
 $string['questionid'] = 'Question ID';
 $string['title'] = 'Title';

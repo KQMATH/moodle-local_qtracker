@@ -23,7 +23,7 @@
  * @copyright  2020 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['jquery', 'local_qtracker/issue'], function ($, Issue) {
+define(['jquery', 'local_qtracker/issue'], function($, Issue) {
 
     /**
      * Constructor
@@ -33,7 +33,7 @@ define(['jquery', 'local_qtracker/issue'], function ($, Issue) {
      *
      * Each call to init gets it's own instance of this class.
      */
-    var IssueManager = function () {};
+    var IssueManager = function() {};
 
     /**
      * @var {Form} form
@@ -43,11 +43,11 @@ define(['jquery', 'local_qtracker/issue'], function ($, Issue) {
 
     IssueManager.prototype.activeIssue = null;
 
-    IssueManager.prototype.getActiveIssue = function () {
+    IssueManager.prototype.getActiveIssue = function() {
         return this.activeIssue;
     };
 
-    IssueManager.prototype.setActiveIssue = function (slot) {
+    IssueManager.prototype.setActiveIssue = function(slot) {
         let newIssue = this.getIssueBySlot(slot);
         this.activeIssue = newIssue;
         return newIssue;
@@ -57,39 +57,40 @@ define(['jquery', 'local_qtracker/issue'], function ($, Issue) {
      * This triggers a form submission, so that any mform elements can do final tricks before the form submission is processed.
      *
      * @method submitForm
-     * @param {Event} e Form submission event.
+     * @param slot
      * @private
+     * @return
      */
-    IssueManager.prototype.getIssueBySlot = function (slot) {
+    IssueManager.prototype.getIssueBySlot = function(slot) {
         return this.issues.get(slot);
     };
 
-    IssueManager.prototype.getIssueById = function (id) {
+    IssueManager.prototype.getIssueById = function(id) {
         for (const [slot, issue] of this.issues) {
             if (issue.getId() !== null && issue.getId() === id) {
                 return issue;
             }
-        };
+        }
         return false;
     };
 
-    IssueManager.prototype.addIssue = function (issue) {
+    IssueManager.prototype.addIssue = function(issue) {
         this.issues.set(issue.getSlot(), issue);
     };
 
-    IssueManager.prototype.loadIssues = function (issueids = []) {
+    IssueManager.prototype.loadIssues = function(issueids = []) {
         let promises = [];
         for (let i = 0; i < issueids.length; i++) {
             const id = issueids[i];
             let promise = Issue.load(id).then((response) => {
-                let issue = this.getIssueBySlot(response.issue.slot)
+                let issue = this.getIssueBySlot(response.issue.slot);
                 if (!issue) {
                     issue = new Issue(response.issue.id, response.issue.slot);
                 }
                 issue.setId(response.issue.id);
                 issue.setTitle(response.issue.title);
                 issue.setDescription(response.issue.description);
-                issue.isSaved = true;//changeState(Issue.STATES.EXISTING);
+                issue.isSaved = true;// ChangeState(Issue.STATES.EXISTING);
                 this.addIssue(issue);
             });
             promises.push(promise);

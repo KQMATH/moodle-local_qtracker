@@ -21,7 +21,7 @@
 
     Example context (json):
     {
-        "profileimageurl": "https://moodle.org/pix/u/f3.png"
+        "profileimageurl": "https://moodle.org/pix/u/f3.png",
         "fullname": "André Storhaug",
         "userurl": "https://example.com/user/profile.php?id=3",
         "timecreated": "1587655101",
@@ -31,7 +31,7 @@
 }}
 <div id="issues-pane-issue" class="sidebar-item border-bottom py-3">
     <div class="d-flex flex-row align-items-center">
-            <span><img class="userpicture" width="35px" height="35px" src="{{profileimageurl}}"/></span>
+            <span><img class="userpicture" width="35" height="35" alt="Profile image" src="{{profileimageurl}}"/></span>
         <div class="px-3">
             <a class="text-muted bold" href="{{userurl}}">{{fullname}}</a>
             <div class="text-muted">
@@ -45,7 +45,6 @@
             </h5>
         </div>
     </div>
-        <a href="{{issueurl}}" class="bold">{{title}}</a>
-        <div>{{description}}</div>
-    </dl>
+    <a href="{{issueurl}}" class="bold">{{title}}</a>
+    <div>{{description}}</div>
 </div>

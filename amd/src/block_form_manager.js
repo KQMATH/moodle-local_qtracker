@@ -24,7 +24,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/issue', 'local_qtracker/issue_manager'],
-    function ($, Str, Templates, Ajax, Issue, IssueManager) {
+    function($, Str, Templates, Ajax, Issue, IssueManager) {
         var SELECTORS = {
             SLOT: '[name="slot"]',
             SLOT_SELECT_OPTION: '[name="slot"] option',
@@ -32,7 +32,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
             DESCRIPTION: '[name="issuedescription"]',
             SUBMIT_BUTTON: 'button[type="submit"]',
             DELETE_BUTTON: '#qtracker-delete',
-        }
+        };
 
         let VALIDATION_ELEMENTS = [
             SELECTORS.TITLE,
@@ -46,11 +46,12 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
          * Constructor
          *
          * @param {String} selector used to find triggers for the new group modal.
+         * @param {string} issueids
          * @param {int} contextid
          *
          * Each call to init gets it's own instance of this class.
          */
-        var BlockFormManager = function (selector, issueids, contextid) {
+        var BlockFormManager = function(selector, issueids, contextid) {
             this.contextid = contextid;
             this.form = $(selector);
             this.form.closest('.card-text').prepend('<span class="notifications" id="qtracker-notifications"></span>');
@@ -77,13 +78,13 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
         BlockFormManager.prototype.issueid = null;
 
         /**
-         * @var {int} issueid
+         * @var {issue[]} issues
          * @private
          */
         BlockFormManager.prototype.issues = [];
 
         /**
-         * @var {int} issueid
+         * @var {issue_manager} issueManager
          * @private
          */
         BlockFormManager.prototype.issueManager = null;
@@ -91,17 +92,18 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
         /**
          * Initialise the class.
          *
-         * @param {String} selector used to find triggers for the new question issue.
+         * @param {*[]} issueids selector used to find triggers for the new question issue.
          * @private
-         * @return {Promise}
          */
-        BlockFormManager.prototype.init = function (issueids = []) {
+        BlockFormManager.prototype.init = function(issueids = []) {
             // Init all slots
             let slots = $(SELECTORS.SLOT_SELECT_OPTION);
-            if (slots.length == 0) slots = $(SELECTORS.SLOT);
+            if (slots.length == 0) {
+                slots = $(SELECTORS.SLOT);
+            }
             slots.map((index, option) => {
                 let issue = new Issue(null, parseInt(option.value), this.contextid);
-                issue.isSaved = false;//changeState(Issue.STATES.NEW);
+                issue.isSaved = false;// ChangeState(Issue.STATES.NEW);
                 this.issueManager.addIssue(issue);
             });
 
@@ -111,10 +113,10 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                 var formData = new FormData(this.form[0]);
                 this.issueManager.setActiveIssue(parseInt(formData.get('slot')));
 
-                this.reflectFormState()
+                this.reflectFormState();
 
                 // Issue title event listener.
-                let titleElement = this.form.find(SELECTORS.TITLE)
+                let titleElement = this.form.find(SELECTORS.TITLE);
                 titleElement.change((event) => {
                     this.issueManager.getActiveIssue().setTitle(event.target.value);
                 });
@@ -123,7 +125,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                 }); */
 
                 // Issue description event listener.
-                let descriptionElement = this.form.find(SELECTORS.DESCRIPTION)
+                let descriptionElement = this.form.find(SELECTORS.DESCRIPTION);
                 descriptionElement.change((event) => {
                     this.issueManager.getActiveIssue().setDescription(event.target.value);
                 });
@@ -132,7 +134,6 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                 }); */
 
                 //
-
 
                 // Load existing issues.
                 var slotElement = this.form.find(SELECTORS.SLOT);
@@ -145,67 +146,67 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
             });
         };
 
-        BlockFormManager.prototype.handleSlotChange = function (e) {
-            this.issueManager.setActiveIssue(parseInt(e.target.value))
+        BlockFormManager.prototype.handleSlotChange = function(e) {
+            this.issueManager.setActiveIssue(parseInt(e.target.value));
             this.reflectFormState();
-            this.resetValidation()
-        }
+            this.resetValidation();
+        };
 
-        BlockFormManager.prototype.reflectFormState = function () {
+        BlockFormManager.prototype.reflectFormState = function() {
             let issue = this.issueManager.getActiveIssue();
-            if (issue.isSaved === true) { //state === Issue.STATES.EXISTING) {
+            if (issue.isSaved === true) { // State === Issue.STATES.EXISTING) {
                 this.toggleDeleteButton(true);
                 this.toggleUpdateButton(true);
-            } else if (issue.isSaved === false) {//state === Issue.STATES.NEW) {
+            } else if (issue.isSaved === false) { // State === Issue.STATES.NEW) {
                 this.clearForm();
             }
 
             this.restoreForm();
-        }
+        };
 
         /**
          * @method handleFormSubmissionResponse
+         * @param response
          * @private
-         * @return {Promise}
          */
-        BlockFormManager.prototype.handleFormSubmissionResponse = function (response) {
+        BlockFormManager.prototype.handleFormSubmissionResponse = function(response) {
 
             // TODO: handle response.status === false
             // TODO: handle response.warning ...
 
             // We could trigger an event instead.
             // Yuk.
-            console.log("jijjijij")
-            Y.use('moodle-core-formchangechecker', function () {
+            console.log("jijjijij");
+            Y.use('moodle-core-formchangechecker', function() {
                 M.core_formchangechecker.reset_form_dirty_state();
             });
-            //document.location.reload();
+            // Document.location.reload();
 
             this.issueManager.getActiveIssue().setId(response.issueid);
         };
 
         /**
          * @method handleFormSubmissionFailure
+         * @param response
          * @private
-         * @return {Promise}
          */
-        BlockFormManager.prototype.handleFormSubmissionFailure = function (response) {
+        BlockFormManager.prototype.handleFormSubmissionFailure = function(response) {
             // Oh noes! Epic fail :(
             // Ah wait - this is normal. We need to re-display the form with errors!
             console.error("An error occured");
             console.error(response);
         };
 
-        BlockFormManager.prototype.clearForm = function () {
+        BlockFormManager.prototype.clearForm = function() {
             // Remove delete button.
             this.form.find('#qtracker-delete').remove();
             this.resetValidation();
-            Str.get_string('submitnewissue', 'local_qtracker').then(function (string) {
+            Str.get_string('submitnewissue', 'local_qtracker').then(function(string) {
                 this.form.find('button[type="submit"]').html(string);
             }.bind(this));
-        }
+        };
 
-        BlockFormManager.prototype.restoreForm = function () {
+        BlockFormManager.prototype.restoreForm = function() {
             let issue = this.issueManager.getActiveIssue();
             this.form.find('[name="issuetitle"]').val(issue.getTitle());
             this.form.find('[name="issuedescription"]').val(issue.getDescription());
@@ -215,9 +216,8 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
         /**
          * @method editIssue
          * @private
-         * @return {Promise}
          */
-        BlockFormManager.prototype.editIssue = function () {
+        BlockFormManager.prototype.editIssue = function() {
             var formData = new FormData(this.form[0]);
             Ajax.call([{
                 methodname: 'local_qtracker_edit_issue',
@@ -226,8 +226,8 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                     issuetitle: formData.get('issuetitle'),
                     issuedescription: formData.get('issuedescription'),
                 },
-                done: function (response) {
-                    Str.get_string('issueupdated', 'local_qtracker').then(function (string) {
+                done: function(response) {
+                    Str.get_string('issueupdated', 'local_qtracker').then(function(string) {
                         let notification = {
                             message: string,
                             announce: true,
@@ -240,19 +240,19 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                 fail: this.handleFormSubmissionFailure.bind(this)
             }]);
         };
+
         /**
          * @method editIssue
          * @private
-         * @return {Promise}
          */
-        BlockFormManager.prototype.deleteIssue = function () {
+        BlockFormManager.prototype.deleteIssue = function() {
             Ajax.call([{
                 methodname: 'local_qtracker_delete_issue',
                 args: {
                     issueid: this.issueManager.getActiveIssue().getId(),
                 },
-                done: function (response) {
-                    Str.get_string('issuedeleted', 'local_qtracker').then(function (string) {
+                done: function() {
+                    Str.get_string('issuedeleted', 'local_qtracker').then(function(string) {
                         let notification = {
                             message: string,
                             announce: true,
@@ -260,7 +260,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                         };
                         this.notify(notification);
                     }.bind(this));
-                    this.issueManager.getActiveIssue().isSaved = false;//changeState(Issue.STATES.NEW);;
+                    this.issueManager.getActiveIssue().isSaved = false;// ChangeState(Issue.STATES.NEW);;
                     this.clearForm();
                 }.bind(this),
                 fail: this.handleFormSubmissionFailure.bind(this)
@@ -270,9 +270,8 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
         /**
          * @method handleFormSubmissionFailure
          * @private
-         * @return {Promise}
          */
-        BlockFormManager.prototype.createIssue = function () {
+        BlockFormManager.prototype.createIssue = function() {
             var formData = new FormData(this.form[0]);
             // Now we can continue...
             Ajax.call([{
@@ -284,8 +283,8 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                     issuetitle: formData.get('issuetitle'),
                     issuedescription: formData.get('issuedescription'),
                 },
-                done: function (response) {
-                    Str.get_string('issuecreated', 'local_qtracker').then(function (string) {
+                done: function(response) {
+                    Str.get_string('issuecreated', 'local_qtracker').then(function(string) {
                         let notification = {
                             message: string,
                             announce: true,
@@ -293,8 +292,8 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                         };
                         this.notify(notification);
                     }.bind(this));
-                    this.issueManager.getActiveIssue().isSaved = true;//changeState(Issue.STATES.EXISTING)
-                    //this.setAction(ACTION.EDITISSUE);
+                    this.issueManager.getActiveIssue().isSaved = true;// ChangeState(Issue.STATES.EXISTING)
+                    // This.setAction(ACTION.EDITISSUE);
                     // TODO: add delete button.
                     this.toggleUpdateButton(true);
                     this.toggleDeleteButton(true);
@@ -308,14 +307,14 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
         /**
          * Cancel any typing pause timer.
          */
-        BlockFormManager.prototype.cancelNotificationTimer = function () {
+        BlockFormManager.prototype.cancelNotificationTimer = function() {
             if (notificationTimeoutHandle) {
                 clearTimeout(notificationTimeoutHandle);
             }
             notificationTimeoutHandle = null;
-        }
+        };
 
-        BlockFormManager.prototype.notify = function (notification) {
+        BlockFormManager.prototype.notify = function(notification) {
             notification = $.extend({
                 closebutton: true,
                 announce: true,
@@ -343,31 +342,32 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                     }, NOTIFICATION_DURATION);
                 })
                 .catch((error) => {
-                    console.error(error)
+                    console.error(error);
+                    throw error;
                 });
-        }
+        };
         /**
          * @method handleFormSubmissionFailure
+         * @param {boolean} show
          * @private
-         * @return {Promise}
          */
-        BlockFormManager.prototype.toggleUpdateButton = function (show) {
+        BlockFormManager.prototype.toggleUpdateButton = function(show) {
             if (show) {
-                Str.get_string('update', 'core').then(function (updateStr) {
+                Str.get_string('update', 'core').then(function(updateStr) {
                     this.form.find(SELECTORS.SUBMIT_BUTTON).html(updateStr);
                 }.bind(this));
             } else {
-                Str.get_string('submitnewissue', 'local_qtracker').then(function (updateStr) {
+                Str.get_string('submitnewissue', 'local_qtracker').then(function(updateStr) {
                     this.form.find(SELECTORS.SUBMIT_BUTTON).html(updateStr);
                 }.bind(this));
             }
-        }
+        };
         /**
          * @method handleFormSubmissionFailure
+         * @param {boolean} show
          * @private
-         * @return {Promise}
          */
-        BlockFormManager.prototype.toggleDeleteButton = function (show) {
+        BlockFormManager.prototype.toggleDeleteButton = function(show) {
             const context = {
                 type: "button",
                 classes: "col-auto",
@@ -378,11 +378,11 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
             let deleteButton = this.form.find(SELECTORS.DELETE_BUTTON);
             if (deleteButton.length == 0 && show) {
                 Templates.render('local_qtracker/button', context)
-                    .then(function (html, js) {
+                    .then(function(html, js) {
                         var container = this.form.find('button').closest(".form-row");
                         Templates.appendNodeContents(container, html, js);
-                        this.form.find('#qtracker-delete').on('click', function () {
-                            this.deleteIssue()
+                        this.form.find('#qtracker-delete').on('click', function() {
+                            this.deleteIssue();
                         }.bind(this));
                     }.bind(this));
             } else {
@@ -392,14 +392,14 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                     deleteButton.hide();
                 }
             }
-        }
+        };
 
         /**
          * @method handleFormSubmissionFailure
+         * @param {string} newaction
          * @private
-         * @return {Promise}
          */
-        BlockFormManager.prototype.setAction = function (newaction) {
+        BlockFormManager.prototype.setAction = function(newaction) {
 
             this.form.data('action', newaction);
         };
@@ -411,7 +411,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
          * @private
          * @param {Event} e Form submission event.
          */
-        BlockFormManager.prototype.submitFormAjax = function (e) {
+        BlockFormManager.prototype.submitFormAjax = function(e) {
             // We don't want to do a real form submission.
             e.preventDefault();
             e.stopPropagation();
@@ -427,7 +427,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
                 this.createIssue();
             }
 /*
-            var state = this.issueManager.getActiveIssue().getState();
+            Var state = this.issueManager.getActiveIssue().getState();
             switch (state) {
                 case Issue.STATES.NEW:
                     this.createIssue();
@@ -444,10 +444,10 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
             }*/
         };
 
-        BlockFormManager.prototype.validateForm = function () {
+        BlockFormManager.prototype.validateForm = function() {
             let valid = true;
             VALIDATION_ELEMENTS.forEach(selector => {
-                let element = this.form.find(selector)
+                let element = this.form.find(selector);
                 if (element.val() != "" && element.prop("validity").valid) {
                     element.removeClass("is-invalid").addClass("is-valid");
                 } else {
@@ -458,10 +458,10 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
             return valid;
         };
 
-        BlockFormManager.prototype.resetValidation = function () {
+        BlockFormManager.prototype.resetValidation = function() {
             VALIDATION_ELEMENTS.forEach(selector => {
-                let element = this.form.find(selector)
-                element.removeClass("is-invalid").removeClass("is-valid")
+                let element = this.form.find(selector);
+                element.removeClass("is-invalid").removeClass("is-valid");
             });
         };
 
@@ -472,7 +472,7 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
          * @param {Event} e Form submission event.
          * @private
          */
-        BlockFormManager.prototype.submitForm = function (e) {
+        BlockFormManager.prototype.submitForm = function(e) {
             e.preventDefault();
             this.form.submit();
         };
@@ -485,9 +485,10 @@ define(['jquery', 'core/str', 'core/templates', 'core/ajax', 'local_qtracker/iss
              * @method init
              * @param {string} selector The selector used to find the form for to use for this module.
              * @param {string} issueids The ids of existing issues to load.
+             * @param {int} contextid
              * @return {BlockFormManager}
              */
-            init: function (selector, issueids, contextid) {
+            init: function(selector, issueids, contextid) {
                 return new BlockFormManager(selector, issueids, contextid);
             }
         };

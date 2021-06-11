@@ -1,5 +1,6 @@
 <?php
-
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -14,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Issue comment class
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -120,6 +123,13 @@ class issue_comment {
         return $this->comment;
     }
 
+    /**
+     * Loads and returns issue_comment with id $comment
+     *
+     * @param int $comment
+     *
+     * @return issue_comment
+     */
     public static function load(int $comment) {
         global $DB;
         $commentobj = $DB->get_record('qtracker_comment', ['id' => $comment]);
@@ -132,6 +142,9 @@ class issue_comment {
     /**
      * Creates a new comment.
      *
+     * @param string $description
+     * @param issue $issue
+     *
      * @return issue_comment
      */
     public static function create($description, issue $issue) {
@@ -143,8 +156,7 @@ class issue_comment {
         $commentobj->userid = $USER->id;
         $time = time();
         $commentobj->timecreated = $time;
-        //$commentobj->timemodified = $time;
-        //$commentobj->usermodified = $USER->id;
+        // $commentobj->usermodified = $USER->id;
 
         $id = $DB->insert_record('qtracker_comment', $commentobj);
         $commentobj->id = $id;
@@ -163,6 +175,13 @@ class issue_comment {
         return $DB->delete_records('qtracker_comment', array('id' => $this->get_id()));
     }
 
+    /**
+     * Sets description of this comment
+     *
+     * @param string $title
+     *
+     * @return void
+     */
     public function set_description($title) {
         global $DB;
         $this->comment->description = $title;

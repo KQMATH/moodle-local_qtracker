@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Question form
+ *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
@@ -28,17 +30,28 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->libdir . '/formslib.php');
 
 /**
+ * Question form
+ *
  * @package    local_qtracker
  * @copyright  2020 André Storhaug
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class question_details_form extends \moodleform {
 
+    /**
+     * question_details_form constructor.
+     * @param \stdClass $question The question to be formed
+     * @param \moodle_url $url Questions moodle url
+     */
     public function __construct($question, \moodle_url $url) {
         $this->question = $question;
         parent::__construct($url);
     }
 
+
+    /**
+     * Defines form
+     */
     public function definition() {
         $mform = $this->_form;
 

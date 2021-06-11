@@ -52,14 +52,17 @@ class question_issue_page implements renderable, templatable {
     /** The default number of results to be shown per page. */
     const DEFAULT_PAGE_SIZE = 20;
 
+    /** @var issue|null  */
     protected $questionissue = null;
 
+    /** @var array  */
     protected $courseid = [];
 
     /**
      * Construct this renderable.
      *
-     * @param \local_qtracker\question_issues_table $questionissuestable
+     * @param issue $questionissue
+     * @param int $courseid
      */
     public function __construct(issue $questionissue, $courseid) {
         $this->questionissue = $questionissue;
@@ -69,8 +72,8 @@ class question_issue_page implements renderable, templatable {
     /**
      * Export this data so it can be used as the context for a mustache template.
      *
-     * @param renderer_base $output
-     * @return stdClass
+     * @param renderer_base $output render base
+     * @return stdClass $data containing the questions data
      * @throws coding_exception
      * @throws dml_exception
      * @throws moodle_exception
@@ -83,7 +86,7 @@ class question_issue_page implements renderable, templatable {
         $issueexporter = new issue_exporter($this->questionissue->get_issue_obj(), ['context' => $context]);
         $issuedetails = $issueexporter->export($output);
 
-        // Process default issue description
+        // Process default issue description.
         $issuedescription = new stdClass();
         $user = $DB->get_record('user', array('id' => $issuedetails->userid));
         $issuedescription->fullname = $user->username;
@@ -93,7 +96,6 @@ class question_issue_page implements renderable, templatable {
         $issuedescription->profileimageurl = $userpicture->get_url($PAGE)->out(false);
 
         $issuedetails->issuedescription = $issuedescription;
-
 
         $commentsdetails = array();
 
@@ -160,16 +162,16 @@ class question_issue_page implements renderable, templatable {
         $questiondata->questionname = $question->name;
         $questiondata->preview_url = question_preview_url($question->id, null, null, null, null, $context);
 
-        $edit_url = new \moodle_url('/question/question.php');
-        $edit_url->param('id', $question->id);
-        $edit_url->param('courseid', $this->courseid);
-        $questiondata->edit_url = $edit_url;
+        $editurl = new \moodle_url('/question/question.php');
+        $editurl->param('id', $question->id);
+        $editurl->param('courseid', $this->courseid);
+        $questiondata->edit_url = $editurl;
 
         $form = new question_details_form($question, $PAGE->url);
         $questiondata->questiontext = $form->render();
         $data->question = $questiondata;
 
-        // Setup text editor
+        // Setup text editor.
         $editor = editors_get_preferred_editor(FORMAT_HTML);
         $options = array();
         $editor->use_editor('commenteditor', $options);

@@ -1,5 +1,6 @@
 <?php
-
+// This file is part of Moodle - http://moodle.org/
+//
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
@@ -27,7 +28,7 @@ namespace local_qtracker\external;
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->libdir . "/externallib.php");
-require_once($CFG ->libdir . '/questionlib.php');
+require_once($CFG->libdir . '/questionlib.php');
 require_once($CFG->dirroot . '/local/qtracker/lib.php');
 
 use external_value;
@@ -36,6 +37,14 @@ use external_single_structure;
 use external_warnings;
 use local_qtracker\external\helper;
 
+/**
+ * get_question class
+ *
+ * @package    local_qtracker
+ * @author     André Storhaug <andr3.storhaug@gmail.com>
+ * @copyright  2020 NTNU
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 class get_question extends \external_api {
 
     /**
@@ -52,8 +61,11 @@ class get_question extends \external_api {
 
 
     /**
-     * Returns welcome message
-     * @return string welcome message
+     * Retrieves question
+     *
+     * @param int $questionid id of the question to be retrieved
+     *
+     * @return array with status, summary of the question and any warnings
      */
     public static function get_question($questionid) {
         global $PAGE, $USER;
@@ -61,7 +73,7 @@ class get_question extends \external_api {
         $status = false;
         $warnings = array();
 
-        //Parameter validation
+        // Parameter validation.
         $params = self::validate_parameters(self::get_question_parameters(),
             array(
                 'id' => (int) $questionid,
@@ -73,7 +85,7 @@ class get_question extends \external_api {
             throw new \moodle_exception('cannotgetquestion', 'local_qtracker', '', $params['id']);
         }
 
-        //Context validation
+        // Context validation.
         $context = \context::instance_by_id($question->contextid);
         self::validate_context($context);
 

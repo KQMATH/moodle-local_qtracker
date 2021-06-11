@@ -80,6 +80,12 @@ class issue_exporter extends exporter {
         ];
     }
 
+
+    /**
+     * Return a list of objects that are related
+     *
+     * @return array
+     */
     protected static function define_related() {
         return array(
             'context' => 'context',

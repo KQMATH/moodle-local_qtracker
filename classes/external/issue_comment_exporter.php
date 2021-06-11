@@ -30,6 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 use \core\external\exporter;
 use \renderer_base;
 
+
 /**
  * Class for displaying a list of issue comment data.
  *
@@ -65,6 +66,11 @@ class issue_comment_exporter extends exporter {
         ];
     }
 
+    /**
+     * Return a list of objects that are related
+     *
+     * @return array
+     */
     protected static function define_related() {
         return array(
             'context' => 'context',

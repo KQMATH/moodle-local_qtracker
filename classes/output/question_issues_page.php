@@ -46,6 +46,7 @@ class question_issues_page implements renderable, templatable {
     /** The default number of results to be shown per page. */
     const DEFAULT_PAGE_SIZE = 20;
 
+    /** @var array|question_issues_table|\local_qtracker\question_issues_table  */
     protected $questionissuestable = [];
 
     /**
