@@ -94,20 +94,22 @@ $commentanddmissue = optional_param('commentanddmissue', false,PARAM_BOOL);
 if ($commentanddmissue) {
     $user = $DB->get_record('user', array('id' => $issue->get_userid()));
     $message = new \core\message\message();
-    $message->component = 'moodle'; // Your plugin's name
-    $message->name = 'instantmessage'; // Your notification name from message.php
+    $message->component = 'qtracker'; // Your plugin's name
+    $message->name = 'issueresponse'; // Your notification name from message.php
     $message->userfrom = $USER; // If the message is 'from' a specific user you can set them here
     $message->userto = $user;
-    $message->subject = 'Issue ' . $issue->get_title();
+    $message->subject = 'Issue '.$issue->get_title();
     $message->fullmessage = $commenttext;
     $message->fullmessageformat = FORMAT_MARKDOWN;
-    $message->fullmessagehtml = '<p>message body</p>';
-    $message->smallmessage = 'small message';
+    $message->fullmessagehtml = '<p>'.$commenttext.'</p>';
+    $message->smallmessage = '';
     $message->notification = 1; // Because this is a notification generated from Moodle, not a user-to-user message
     $message->contexturl = (new \moodle_url('/course/'))->out(false); // A relevant URL for the notification
     $message->contexturlname = 'Course list'; // Link title explaining where users get to for the contexturl
+    /*
     $content = array('*' => array('header' => ' test ', 'footer' => ' test ')); // Extra content for specific processor
-    $message->set_additional_content('email', $content);
+    $message->set_additional_content('popup', $content);
+    */
     //TODO create message from teacher to student
     message_send($message);
 }

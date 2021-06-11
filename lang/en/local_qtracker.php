@@ -87,6 +87,7 @@ $string['comment'] = 'Comment';
 $string['commentandmail'] = 'Comment and forward mail to issue creator';
 $string['issuesubject'] = 'some subject';
 $string['commentanddm'] = 'Comment and dm issue to creator';
+$string['nessageorivuder:issueresponse'] = 'Response from teacher on student issue';
 
 
 $string['confirm'] = 'Confirm';
