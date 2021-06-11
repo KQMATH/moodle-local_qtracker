@@ -48,8 +48,9 @@ class questions_table extends table_sql {
      * @param string $uniqueid Unique id of table.
      * @param moodle_url $url The base URL.
      * @param \context_course $context
+     * @param boolean $manuallySorted set true if user has chosen a non-default sorting configuration
      */
-    public function __construct($uniqueid, $url, $context) {
+    public function __construct($uniqueid, $url, $context, $manuallySorted = false) {
         global $CFG;
         parent::__construct($uniqueid);
         // TODO: determine which context to use...
@@ -60,7 +61,7 @@ class questions_table extends table_sql {
         // Set the baseurl.
         $this->define_baseurl($url);
         // Define configs.
-        $this->define_table_configs();
+        $this->define_table_configs($manuallySorted);
         // Define SQL.
         $this->setup_sql_queries();
     }
@@ -140,11 +141,30 @@ class questions_table extends table_sql {
 
     /**
      * Define table configs.
+     * @param boolean $manuallySorted if false the default sorting will be used
      */
-    protected function define_table_configs() {
+    protected function define_table_configs($manuallySorted) {
         $this->collapsible(false);
         $this->sortable(true);
         $this->pageable(true);
+        if (!$manuallySorted) {
+            $sortdata = [
+                [
+                    'sortby' => 'new',
+                    'sortorder' => SORT_DESC,
+                ], [
+                    'sortby' => 'open',
+                    'sortorder' => SORT_DESC,
+                ], [
+                    'sortby' => 'closed',
+                    'sortorder' => SORT_DESC,
+                ], [
+                    'sortby' => 'id',
+                    'sortorder' => SORT_DESC,
+                ]
+            ];
+            $this->set_sortdata($sortdata);
+        }
     }
 
     /**
