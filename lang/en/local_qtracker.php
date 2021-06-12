@@ -96,3 +96,14 @@ $string['qtracker:editmine'] = 'Edit your own issues';
 $string['qtracker:editall'] = 'Edit all issues';
 $string['qtracker:viewmine'] = 'Edit your own issues';
 $string['qtracker:viewall'] = 'View all issues';
+
+$string['privacy:metadata:qtracker_issue'] = 'Details about each question issue.';
+$string['privacy:metadata:qtracker_issue:userid'] = 'The user that created the issue.';
+$string['privacy:metadata:qtracker_issue:title'] = 'The title of the issue.';
+$string['privacy:metadata:qtracker_issue:description'] = 'The description of the issue.';
+$string['privacy:metadata:qtracker_issue:timecreated'] = 'The time the issue was created.';
+
+$string['privacy:metadata:qtracker_comment'] = 'Details about each question issue comment.';
+$string['privacy:metadata:qtracker_issue:userid'] = 'The user that created the issue comment.';
+$string['privacy:metadata:qtracker_issue:description'] = 'The description of the issue comment.';
+$string['privacy:metadata:qtracker_issue:timecreated'] = 'The time the issue comment was created.';
