@@ -61,22 +61,22 @@ class provider implements
      * @return  collection  A listing of user data stored through this system.
      */
     public static function get_metadata(collection $items): collection {
-        // The table 'qtracker_issue' stores a record for each qtracker issue.
+        // The table 'local_qtracker_issue' stores a record for each qtracker issue.
         // It contains a userid which links to the user that created the issue and contains information about that issue.
-        $items->add_database_table('qtracker_issue', [
-            'userid' => 'privacy:metadata:qtracker_issue:userid',
-            'title' => 'privacy:metadata:qtracker_issue:title',
-            'description' => 'privacy:metadata:qtracker_issue:description',
-            'timecreated' => 'privacy:metadata:qtracker_issue:timecreated'
-        ], 'privacy:metadata:qtracker_issue');
+        $items->add_database_table('local_qtracker_issue', [
+            'userid' => 'privacy:metadata:local_qtracker_issue:userid',
+            'title' => 'privacy:metadata:local_qtracker_issue:title',
+            'description' => 'privacy:metadata:local_qtracker_issue:description',
+            'timecreated' => 'privacy:metadata:local_qtracker_issue:timecreated'
+        ], 'privacy:metadata:local_qtracker_issue');
 
-        // The table 'qtracker_comment' stores a record of each issue comment.
+        // The table 'local_qtracker_comment' stores a record of each issue comment.
         // It contains a userid which links to the user that created the comment and contains information about that comment.
-        $items->add_database_table('qtracker_comment', [
-            'userid' => 'privacy:metadata:qtracker_comment:userid',
-            'description' => 'privacy:metadata:qtracker_comment:description',
-            'timecreated' => 'privacy:metadata:qtracker_comment:timecreated'
-        ], 'privacy:metadata:qtracker_comment');
+        $items->add_database_table('local_qtracker_comment', [
+            'userid' => 'privacy:metadata:local_qtracker_comment:userid',
+            'description' => 'privacy:metadata:local_qtracker_comment:description',
+            'timecreated' => 'privacy:metadata:local_qtracker_comment:timecreated'
+        ], 'privacy:metadata:local_qtracker_comment');
 
         return $items;
     }
@@ -89,10 +89,10 @@ class provider implements
      */
     public static function get_contexts_for_userid(int $userid): contextlist {
 
-        // TODO: select all from table qtracker_issue and qtracker_comment left join? on issueid (comments table) to get all contextids stored in the qtracker_issue table.
+        // TODO: select all from table local_qtracker_issue and local_qtracker_comment left join? on issueid (comments table) to get all contextids stored in the local_qtracker_issue table.
         $sql = "SELECT qi.contextid
-                  FROM {qtracker_issue} qi
-             LEFT JOIN {qtracker_comment} qc
+                  FROM {local_qtracker_issue} qi
+             LEFT JOIN {local_qtracker_comment} qc
                     ON qi.id = qc.issueid
                  WHERE qi.userid = :userid1
                     OR qc.userid = :userid2";
@@ -119,7 +119,7 @@ class provider implements
         }
 
         list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
-        $sql = "SELECT * FROM {qtracker_issue} WHERE contextid $contextsql";
+        $sql = "SELECT * FROM {local_qtracker_issue} WHERE contextid $contextsql";
         $issues = $DB->get_records_sql($sql, $contextparams);
 
         $context = null;
@@ -146,8 +146,8 @@ class provider implements
                        qi.id AS issueid,
                        qc.description AS description,
                        qc.timecreated AS timecreated
-                  FROM {qtracker_issue} qi
-            INNER JOIN {qtracker_comment} qc
+                  FROM {local_qtracker_issue} qi
+            INNER JOIN {local_qtracker_comment} qc
                     ON qi.id = qc.issueid
                  WHERE qc.userid = :userid
                    AND qi.contextid {$contextsql}";
@@ -184,8 +184,8 @@ class provider implements
     public static function delete_data_for_all_users_in_context(context $context) {
         global $DB;
         $sql = "SELECT qc.id AS id
-                  FROM {qtracker_issue} qi
-            INNER JOIN {qtracker_comment} qc
+                  FROM {local_qtracker_issue} qi
+            INNER JOIN {local_qtracker_comment} qc
                     ON qc.issueid = qi.id
                  WHERE qi.contextid = :contextid";
         $params = [
@@ -194,11 +194,11 @@ class provider implements
         $comments = $DB->get_records_sql($sql, $params);
 
         foreach ($comments as $comment) {
-            $DB->delete_records('qtracker_comment', ['id' => $comment->id]);
+            $DB->delete_records('local_qtracker_comment', ['id' => $comment->id]);
         }
 
         $sql = "SELECT id
-                  FROM {qtracker_issue}
+                  FROM {local_qtracker_issue}
                  WHERE contextid = :contextid";
         $params = [
             'contextid' => $context->id
@@ -206,7 +206,7 @@ class provider implements
         $issues = $DB->get_records_sql($sql, $params);
 
         foreach ($issues as $issue) {
-            $DB->delete_records('qtracker_issue', ['id' => $issue->id]);
+            $DB->delete_records('local_qtracker_issue', ['id' => $issue->id]);
         }
     }
 
@@ -223,8 +223,8 @@ class provider implements
         $user = $contextlist->get_user();
         list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
         $sql = "SELECT qc.id AS id
-                  FROM {qtracker_issue} qi
-            INNER JOIN {qtracker_comment} qc
+                  FROM {local_qtracker_issue} qi
+            INNER JOIN {local_qtracker_comment} qc
                     ON qc.issueid = qi.id
                  WHERE qc.userid = :userid
                    AND qi.contextid {$contextsql}";
@@ -235,11 +235,11 @@ class provider implements
         $comments = $DB->get_records_sql($sql, $params);
 
         foreach ($comments as $comment) {
-            $DB->delete_records('qtracker_comment', ['id' => $comment->id]);
+            $DB->delete_records('local_qtracker_comment', ['id' => $comment->id]);
         }
 
         $sql = "SELECT id
-                  FROM {qtracker_issue}
+                  FROM {local_qtracker_issue}
                  WHERE userid = :userid
                    AND contextid {$contextsql}";
         $params = [
@@ -249,7 +249,7 @@ class provider implements
         $issues = $DB->get_records_sql($sql, $params);
 
         foreach ($issues as $issue) {
-            $DB->delete_records('qtracker_issue', ['id' => $issue->id]);
+            $DB->delete_records('local_qtracker_issue', ['id' => $issue->id]);
         }
     }
 }
