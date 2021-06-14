@@ -240,8 +240,8 @@ class provider implements
 
         $sql = "SELECT id
                   FROM {qtracker_issue}
-                 WHERE qc.userid = :userid
-                   AND qi.contextid {$contextsql}";
+                 WHERE userid = :userid
+                   AND contextid {$contextsql}";
         $params = [
             'userid' => $user->id
         ];
