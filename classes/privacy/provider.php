@@ -90,6 +90,18 @@ class provider implements
     public static function get_contexts_for_userid(int $userid): contextlist {
 
         // TODO: select all from table qtracker_issue and qtracker_comment left join? on issueid (comments table) to get all contextids stored in the qtracker_issue table.
+        $sql = "SELECT qi.contextid
+                  FROM {qtracker_issue} qi
+             LEFT JOIN {qtracker_comment} qc
+                    ON qi.id = qc.issueid
+                 WHERE qi.userid = :userid1
+                    OR qc.userid = :userid2";
+        $contextlist = new contextlist();
+        $contextlist->add_from_sql($sql, [
+            'userid1' => $userid,
+            'userid2' => $userid
+        ]);
+        return $contextlist;
     }
 
     /**
@@ -101,8 +113,67 @@ class provider implements
      * @throws moodle_exception
      */
     public static function export_user_data(approved_contextlist $contextlist) {
-        // TODO: Export all data from all issues with appropriate context id, but first delete all comments with correct contextid (linked in qtracker_issue table).
         global $DB;
+        if (empty($contextlist)) {
+            return;
+        }
+
+        list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
+        $sql = "SELECT * FROM {qtracker_issue} WHERE contextid $contextsql";
+        $issues = $DB->get_records_sql($sql, $contextparams);
+
+        $context = null;
+        foreach ($issues as $issue) {
+            $context = context::instance_by_id($issue->contextid);
+            // Store the quiz attempt data.
+            $data = new stdClass();
+            $data->title = $issue->title;
+            $data->description = $issue->description;
+            $data->timecreated = transform::datetime($issue->timecreated);
+
+            $subcontext = [get_string('issues', 'local_qtracker'),
+                           get_string('issue', 'local_qtracker') . ' ' . $issue->id];
+            // The capquiz attempt data is organised in: {Course name}/{Qtracker}/{Issues}/{_X}/data.json
+            // where X is the attempt number.
+            writer::with_context($context)->export_data($subcontext, $data);
+            //writer::with_context($context)->export_area_files($subcontext, 'local_qtracker', 'description', $issue->id);
+        }
+
+        $user = $contextlist->get_user();
+        list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
+        $sql = "SELECT qc.id AS id,
+                       qi.contextid AS contextid,
+                       qi.id AS issueid,
+                       qc.description AS description,
+                       qc.timecreated AS timecreated
+                  FROM {qtracker_issue} qi
+            INNER JOIN {qtracker_comment} qc
+                    ON qi.id = qc.issueid
+                 WHERE qc.userid = :userid
+                   AND qi.contextid {$contextsql}";
+        $params = [
+            'userid' => $user->id
+        ];
+        $params += $contextparams;
+        $comments = $DB->get_records_sql($sql, $params);
+
+        $context = null;
+        foreach ($comments as $comment) {
+            $context = context::instance_by_id($comment->contextid);
+            // Store the quiz attempt data.
+            $data = new stdClass();
+            $data->description = $comment->description;
+            $data->timecreated = transform::datetime($comment->timecreated);
+
+            $subcontext = [get_string('issues', 'local_qtracker'),
+                           get_string('issue','local_qtracker') . ' ' . $comment->issueid,
+                           get_string('comments', 'local_qtracker'),
+                           get_string('comment', 'local_qtracker') . ' ' . $comment->id];
+            // The issue comment data is organised in: {Course name}/{Qtracker}/{Issues}/{_X}/Comments({_Y}/data.json
+            // where X is the issue id and Y is the comment id.
+            writer::with_context($context)->export_data($subcontext, $data);
+            //writer::with_context($context)->export_area_files($subcontext, 'local_qtracker', 'description', $comment->id);
+        }
     }
 
     /**
@@ -111,8 +182,32 @@ class provider implements
      * @param context $context The specific context to delete data for.
      */
     public static function delete_data_for_all_users_in_context(context $context) {
-        // TODO: for ALL USERS : delete all issues with appropriate context id, but first delete all comments with correct contextid (linked in qtracker_issue table).
         global $DB;
+        $sql = "SELECT qc.id AS id
+                  FROM {qtracker_issue} qi
+            INNER JOIN {qtracker_comment} qc
+                    ON qc.issueid = qi.id
+                 WHERE qi.contextid = :contextid";
+        $params = [
+            'contextid' => $context->id
+        ];
+        $comments = $DB->get_records_sql($sql, $params);
+
+        foreach ($comments as $comment) {
+            $DB->delete_records('qtracker_comment', ['id' => $comment->id]);
+        }
+
+        $sql = "SELECT id
+                  FROM {qtracker_issue}
+                 WHERE contextid = :contextid";
+        $params = [
+            'contextid' => $context->id
+        ];
+        $issues = $DB->get_records_sql($sql, $params);
+
+        foreach ($issues as $issue) {
+            $DB->delete_records('qtracker_issue', ['id' => $issue->id]);
+        }
     }
 
     /**
@@ -121,9 +216,40 @@ class provider implements
      * @param approved_contextlist $contextlist The approved contexts and user information to delete information for.
      */
     public static function delete_data_for_user(approved_contextlist $contextlist) {
-        // TODO: for one specific user, delete all issues with appropriate context id, but first delete all comments with correct contextid (linked in qtracker_issue table).
-
         global $DB;
+        if (empty($contextlist->count())) {
+            return;
+        }
+        $user = $contextlist->get_user();
+        list($contextsql, $contextparams) = $DB->get_in_or_equal($contextlist->get_contextids(), SQL_PARAMS_NAMED);
+        $sql = "SELECT qc.id AS id
+                  FROM {qtracker_issue} qi
+            INNER JOIN {qtracker_comment} qc
+                    ON qc.issueid = qi.id
+                 WHERE qc.userid = :userid
+                   AND qi.contextid {$contextsql}";
+        $params = [
+            'userid' => $user->id
+        ];
+        $params += $contextparams;
+        $comments = $DB->get_records_sql($sql, $params);
 
+        foreach ($comments as $comment) {
+            $DB->delete_records('qtracker_comment', ['id' => $comment->id]);
+        }
+
+        $sql = "SELECT id
+                  FROM {qtracker_issue}
+                 WHERE qc.userid = :userid
+                   AND qi.contextid {$contextsql}";
+        $params = [
+            'userid' => $user->id
+        ];
+        $params += $contextparams;
+        $issues = $DB->get_records_sql($sql, $params);
+
+        foreach ($issues as $issue) {
+            $DB->delete_records('qtracker_issue', ['id' => $issue->id]);
+        }
     }
 }

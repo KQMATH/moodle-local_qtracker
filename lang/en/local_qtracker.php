@@ -64,6 +64,7 @@ $string['issuedeleted'] = 'Issue successfully deleted.';
 
 $string['issue'] = 'Issue';
 $string['issues'] = 'Issues';
+$string['comments'] ='Comments';
 
 $string['submitnewissue'] = 'Submit new issue';
 $string['validtitle'] = 'Please provide a valid title.';
