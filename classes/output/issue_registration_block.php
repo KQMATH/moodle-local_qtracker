@@ -92,7 +92,7 @@ class issue_registration_block implements renderable, templatable {
         list($sql, $params) = $DB->get_in_or_equal($this->slots, SQL_PARAMS_NAMED);
         $queryparams += $params;
         $where = 'questionusageid = :questionusageid AND slot ' . $sql;
-        $this->issueids = $DB->get_fieldset_select('qtracker_issue', 'id', $where, $queryparams);
+        $this->issueids = $DB->get_fieldset_select('local_qtracker_issue', 'id', $where, $queryparams);
     }
 
     /**

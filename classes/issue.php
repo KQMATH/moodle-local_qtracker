@@ -55,7 +55,7 @@ class issue {
     public function __construct($issue) {
         global $DB;
         if (is_scalar($issue)) {
-            $issue = $DB->get_record('qtracker_issue', array('id' => $issue), '*', MUST_EXIST);
+            $issue = $DB->get_record('local_qtracker_issue', array('id' => $issue), '*', MUST_EXIST);
             if (!$issue) {
                 throw new \moodle_exception('errorunexistingmodel', 'analytics', '', $issue);
             }
@@ -185,7 +185,7 @@ class issue {
         global $DB;
         if (empty($this->comments)) {
             $this->comments = array();
-            $comments = $DB->get_records('qtracker_comment', ['issueid' => $this->get_id()]);
+            $comments = $DB->get_records('local_qtracker_comment', ['issueid' => $this->get_id()]);
             foreach ($comments as $comment) {
                 array_push($this->comments, new issue_comment($comment));
             }
@@ -201,7 +201,7 @@ class issue {
      */
     public static function load(int $issueid) {
         global $DB;
-        $issueobj = $DB->get_record('qtracker_issue', ['id' => $issueid]);
+        $issueobj = $DB->get_record('local_qtracker_issue', ['id' => $issueid]);
         if ($issueobj === false) {
             return null;
         }
@@ -237,7 +237,7 @@ class issue {
         // $issueobj->timemodified = $time;
         // $issueobj->usermodified = $USER->id;
 
-        $id = $DB->insert_record('qtracker_issue', $issueobj);
+        $id = $DB->insert_record('local_qtracker_issue', $issueobj);
         $issueobj->id = $id;
 
         $issue = new issue($issueobj);
@@ -252,7 +252,7 @@ class issue {
     public function close() {
         global $DB;
         $this->issue->state = "closed";
-        $DB->update_record('qtracker_issue', $this->issue);
+        $DB->update_record('local_qtracker_issue', $this->issue);
     }
 
     /**
@@ -263,7 +263,7 @@ class issue {
     public function open() {
         global $DB;
         $this->issue->state = "open";
-        $DB->update_record('qtracker_issue', $this->issue);
+        $DB->update_record('local_qtracker_issue', $this->issue);
     }
 
     /**
@@ -274,7 +274,7 @@ class issue {
     public function comment() {
 
         $this->comments;
-        $DB->update_record('qtracker_issue', $this->issue);
+        $DB->update_record('local_qtracker_issue', $this->issue);
     }
 
     /**
@@ -288,7 +288,7 @@ class issue {
         foreach ($comments as $comment) {
             $comment->delete();
         }
-        return $DB->delete_records('qtracker_issue', array('id' => $this->get_id()));
+        return $DB->delete_records('local_qtracker_issue', array('id' => $this->get_id()));
     }
 
     /**
@@ -299,7 +299,7 @@ class issue {
     public function set_title($title) {
         global $DB;
         $this->issue->title = $title;
-        $DB->update_record('qtracker_issue', $this->issue);
+        $DB->update_record('local_qtracker_issue', $this->issue);
     }
 
     /**
@@ -310,6 +310,6 @@ class issue {
     public function set_description($title) {
         global $DB;
         $this->issue->description = $title;
-        $DB->update_record('qtracker_issue', $this->issue);
+        $DB->update_record('local_qtracker_issue', $this->issue);
     }
 }
