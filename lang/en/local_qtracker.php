@@ -64,6 +64,7 @@ $string['issuedeleted'] = 'Issue successfully deleted.';
 
 $string['issue'] = 'Issue';
 $string['issues'] = 'Issues';
+$string['comments'] ='Comments';
 
 $string['submitnewissue'] = 'Submit new issue';
 $string['validtitle'] = 'Please provide a valid title.';
@@ -96,3 +97,14 @@ $string['qtracker:editmine'] = 'Edit your own issues';
 $string['qtracker:editall'] = 'Edit all issues';
 $string['qtracker:viewmine'] = 'Edit your own issues';
 $string['qtracker:viewall'] = 'View all issues';
+
+$string['privacy:metadata:local_qtracker_issue'] = 'Details about each question issue.';
+$string['privacy:metadata:local_qtracker_issue:userid'] = 'The user that created the issue.';
+$string['privacy:metadata:local_qtracker_issue:title'] = 'The title of the issue.';
+$string['privacy:metadata:local_qtracker_issue:description'] = 'The description of the issue.';
+$string['privacy:metadata:local_qtracker_issue:timecreated'] = 'The time the issue was created.';
+
+$string['privacy:metadata:local_qtracker_comment'] = 'Details about each question issue comment.';
+$string['privacy:metadata:local_qtracker_comment:userid'] = 'The user that created the issue comment.';
+$string['privacy:metadata:local_qtracker_comment:description'] = 'The description of the issue comment.';
+$string['privacy:metadata:local_qtracker_comment:timecreated'] = 'The time the issue comment was created.';
