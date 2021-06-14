@@ -33,8 +33,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright   2021 Norwegian University of Science and Technology (NTNU)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class backup_local_qtracker_plugin extends backup_local_plugin
-{
+class backup_local_qtracker_plugin extends backup_local_plugin {
 
     /**
      * Not used
@@ -43,18 +42,21 @@ class backup_local_qtracker_plugin extends backup_local_plugin
     }
 
     /**
-     * Define structure
+     * Define qtracker structure from question entrypoint
+     *
+     * @return backup_plugin_element
+     * @throws base_element_struct_exception
      */
-    protected function define_module_plugin_structure() {
+    protected function define_question_plugin_structure() {
         // Define backup elements
         $plugin = $this->get_plugin_element();
         $pluginwrapper = new backup_nested_element($this->get_recommended_name());
         $qtrackerissue = new backup_nested_element('issue', ['id'], [
-            'title', 'description', 'questionid', 'questionusageid', 'slot',
+            'title', 'description', 'questionusageid', 'slot',
             'state', 'userid', 'contextid', 'timecreated'
         ]);
         $qtrackercomment = new backup_nested_element('comment', ['id'], [
-            'issueid', 'description', 'userid', 'timecreated'
+            'description', 'userid', 'timecreated'
         ]);
 
         // Build the backup tree
@@ -63,8 +65,14 @@ class backup_local_qtracker_plugin extends backup_local_plugin
         $plugin->add_child($pluginwrapper);
 
         // Define sources
-        $qtrackerissue->set_source_table('qtracker_issue', ['id' => backup::VAR_MODID]);
+        $qtrackerissue->set_source_table('qtracker_issue', ['questionid' => backup::VAR_PARENTID]);
         $qtrackercomment->set_source_table('qtracker_comment', ['issueid' => backup::VAR_PARENTID]);
+
+        // Define annotations
+        // TODO: Make these work
+        $qtrackerissue->annotate_ids('user','userid');
+        $qtrackerissue->annotate_ids('questionusage','questionusageid');
+        $qtrackerissue->annotate_ids('context','contextid');
 
         return $plugin;
     }
