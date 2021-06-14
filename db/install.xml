@@ -4,7 +4,7 @@
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="qtracker_issue" COMMENT="Table from which sessions are created.">
+    <TABLE NAME="local_qtracker_issue" COMMENT="Table from which sessions are created.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="title" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
@@ -24,7 +24,7 @@
         <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="qtracker_comment" COMMENT="Table keeping issue comments.">
+    <TABLE NAME="local_qtracker_comment" COMMENT="Table keeping issue comments.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="issueid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The issue identifier"/>
@@ -34,7 +34,7 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="issueid" TYPE="foreign" FIELDS="issueid" REFTABLE="qtracker_issue" REFFIELDS="id"/>
+        <KEY NAME="issueid" TYPE="foreign" FIELDS="issueid" REFTABLE="local_qtracker_issue" REFFIELDS="id"/>
         <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>

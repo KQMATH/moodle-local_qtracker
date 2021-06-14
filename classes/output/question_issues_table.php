@@ -163,7 +163,7 @@ class question_issues_table extends table_sql {
         // TODO: Write SQL to retrieve all rows...
         $fields = 'DISTINCT';
         $fields .= '*';
-        $from = '{qtracker_issue} qs';
+        $from = '{local_qtracker_issue} qs';
         $where = '1=1';
         $params = array(); // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
 

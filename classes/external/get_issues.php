@@ -173,7 +173,7 @@ class get_issues extends \external_api {
             }
         }
 
-        $issues = $DB->get_records_select('qtracker_issue', $sql, $sqlparams, 'id ASC');
+        $issues = $DB->get_records_select('local_qtracker_issue', $sql, $sqlparams, 'id ASC');
 
         // Finally retrieve each issues information.
         $returnedissues = array();
