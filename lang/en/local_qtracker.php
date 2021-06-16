@@ -84,6 +84,13 @@ $string['reopenissue'] = 'Reopen issue';
 $string['closeissue'] = 'Comment and close issue';
 $string['comment'] = 'Comment';
 
+//TODO clean up the text
+$string['commentandmail'] = 'Comment and forward mail to issue creator';
+$string['issuesubject'] = 'some subject';
+$string['commentanddm'] = 'Comment and dm issue to creator';
+$string['messageprovider:issueresponse'] = 'Response from teacher on student issue';
+
+
 $string['confirm'] = 'Confirm';
 $string['deletecomment'] = 'Delete comment';
 $string['confirmdeletecomment'] = 'Are you sure you want to delete this comment?';
