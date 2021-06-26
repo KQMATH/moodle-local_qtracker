@@ -41,6 +41,8 @@ class backup_local_qtracker_plugin extends backup_local_plugin {
     protected function define_my_settings() {
     }
 
+    // TODO: test for quizqtracker
+
     /**
      * Define qtracker structure from question entrypoint
      *
@@ -59,14 +61,17 @@ class backup_local_qtracker_plugin extends backup_local_plugin {
             'description', 'userid', 'timecreated'
         ]);
 
+        // TODO: Trenge ikkje questionusageid, slot, contextid
+
         // Build the backup tree
         $qtrackerissue->add_child($qtrackercomment);
         $pluginwrapper->add_child($qtrackerissue);
         $plugin->add_child($pluginwrapper);
 
         // Define sources
-        $qtrackerissue->set_source_table('qtracker_issue', ['questionid' => backup::VAR_PARENTID]);
-        $qtrackercomment->set_source_table('qtracker_comment', ['issueid' => backup::VAR_PARENTID]);
+        // TODO: Source local_qtracker...
+        $qtrackerissue->set_source_table('local_qtracker_issue', ['questionid' => backup::VAR_PARENTID]);
+        $qtrackercomment->set_source_table('local_qtracker_comment', ['issueid' => backup::VAR_PARENTID]);
 
         // Define annotations
         // TODO: Make these work
