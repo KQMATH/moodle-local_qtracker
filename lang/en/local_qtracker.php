@@ -75,6 +75,7 @@ $string['openedissueon'] = 'opened issue on ';
 $string['name'] = 'Name';
 
 $string['tags'] = 'Tags';
+$string['linkedissues'] = 'Linked issues';
 
 $string['new'] = 'New';
 $string['open'] = 'Open';
