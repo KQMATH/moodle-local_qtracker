@@ -57,6 +57,7 @@ class backup_local_qtracker_plugin extends backup_local_plugin {
             'title', 'description', 'questionusageid', 'slot',
             'state', 'userid', 'contextid', 'timecreated'
         ]);
+        $qtrackercommentwrapper = new backup_nested_element('comments');
         $qtrackercomment = new backup_nested_element('comment', ['id'], [
             'description', 'userid', 'timecreated'
         ]);
@@ -64,7 +65,8 @@ class backup_local_qtracker_plugin extends backup_local_plugin {
         // TODO: Trenge ikkje questionusageid, slot, contextid
 
         // Build the backup tree
-        $qtrackerissue->add_child($qtrackercomment);
+        $qtrackercommentwrapper->add_child($qtrackercomment);
+        $qtrackerissue->add_child($qtrackercommentwrapper);
         $pluginwrapper->add_child($qtrackerissue);
         $plugin->add_child($pluginwrapper);
 
