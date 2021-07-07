@@ -30,8 +30,9 @@
         "profileimageurl": "https://moodle.org/pix/u/f3.png"
     }
 }}
-<div class="qtracker-container">
+<div class="qtracker-container qtracker-push-pane-over">
 
+    <div id="question-issues-sidebar"></div>
     {{#questionissue}}
     <div class="cotainer-fluid">
         <div class="row">
@@ -40,13 +41,38 @@
                     {{title}} <span class="text-muted">#{{id}}</span>
                 </h1>
             </div>
-            <div class="col-4">
-                <h3>
-                    {{>local_qtracker/issue_state_badge}}
-                </h3>
+            <div class="col d-flex justify-content-end">
+                {{#edittitlebutton}}
+                    {{> local_qtracker/button}}
+                {{/edittitlebutton}}
+                {{#newissuebutton}}
+                    <form method="post" action="{{{action}}}" data-action="issueaction" enctype="multipart/form-data" accept-charset="utf-8">
+                        {{> local_qtracker/button}}
+                    </form>
+                {{/newissuebutton}}
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <div class="d-flex flex-row p-2 ">
+                    <h3>
+                        {{>local_qtracker/issue_state_badge}}
+                    </h3>
+                    {{#issuedescription}}
+                        <a class="text-dark bold m-l-1" href="{{userurl}}">{{fullname}}</a>&nbsp;
+                        <div class="text-muted">
+                            {{#str}} openedissueon, local_qtracker {{/str}}
+                            {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
+                        </div>
+                        <div class="ml-auto"></div>
+                    {{/issuedescription}}
+                </div>
+            </div>
+        </div>
+
     {{/questionissue}}
+    <span class="notifications" id="qtracker-notifications"></span>
+
     <hr>
     {{#question}}
         {{! Question data here }}
@@ -85,7 +111,7 @@
                         </div>
                     {{/comments}}
                     <hr>
-                    <form method="post" action="{{action}}" data-action="issueaction" enctype="multipart/form-data" accept-charset="utf-8">
+                    <form method="post" action="{{{action}}}" data-action="issueaction" enctype="multipart/form-data" accept-charset="utf-8">
                         <div class="d-flex flex-row">
                             <span><img class="userpicture" alt="Profile image" width="35" height="35" src="{{profileimageurl}}"/></span>
                             <div class="ml-3 w-100">
@@ -125,3 +151,8 @@
         </div>
     {{/questionissue}}
 </div>
+{{#js}}
+require(['jquery', 'local_qtracker/question_issue_page'], function($, QuestionIssuePage) {
+    new QuestionIssuePage({{courseid}}, {{question.questionid}}, {{questionissue.id}});
+});
+{{/js}}

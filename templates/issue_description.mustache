@@ -26,10 +26,11 @@
 }}
 <div class="d-flex flex-row">
     <span><img class="userpicture" alt="User picture" width="35" height="35" src="{{profileimageurl}}"/></span>
-    <div class="ml-3 border w-100">
-        <div class="d-flex flex-row p-2 border-bottom">
-            <a class="text-muted bold" href="{{userurl}}">{{fullname}}</a>&nbsp;
-            <div class="text-muted">
+
+    <div class="ml-3 border w-100 qtracker-relative">
+        <div class="d-flex flex-row p-2 border-bottom qtracker-bg-blue qtracker-arrow-left qtracker-arrow-left-blue">
+            <a class="text-white bold" href="{{userurl}}">{{fullname}}</a>&nbsp;
+            <div class="text-white">
                 {{#str}} openedissueon, local_qtracker {{/str}}
                 {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
             </div>

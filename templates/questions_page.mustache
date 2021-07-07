@@ -24,7 +24,7 @@
         "questions": "raw html"
     }
 }}
-<div class="qtracker-container">
+<div class="qtracker-container qtracker-push-pane-over">
     <h1>{{#str}} questionissues, local_qtracker {{/str}}</h1>
     <div id="questions-table-sidebar"></div>
     <div>
@@ -34,7 +34,7 @@
     </div>
 </div>
 {{#js}}
-require(['jquery', 'local_qtracker/questions_table'], function($, QuestionsTable) {
-    new QuestionsTable({{courseid}});
+require(['jquery', 'local_qtracker/questions_table_page'], function($, QuestionsTablPage) {
+    new QuestionsTablPage({{courseid}});
 });
 {{/js}}

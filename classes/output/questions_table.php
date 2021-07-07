@@ -226,7 +226,7 @@ class questions_table extends table_sql {
             return;
         }
 
-        // echo '<div id="questions-table-wrapper" class="push-pane-over">';
+        // echo '<div id="questions-table-wrapper" class="qtracker-push-pane-over-left">';
         // echo '<div id="questions-table-wrapper">';
         // echo '<div id="questions-table-sidebar"></div>';
         // echo '<div class="border-bottom">';

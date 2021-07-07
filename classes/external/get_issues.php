@@ -66,7 +66,7 @@ class get_issues extends \external_api {
                                 "id" (int) matching issue id,
                                 "questionid" (int) issue questionid,
                                 "state" (string) issue state,
-                                "title" (Sstring) issue last name
+                                "title" (Sstring) issue title,
                                 (Note: you can use % for searching but it may be considerably slower!)'),
                             'value' => new external_value(PARAM_RAW, 'the value to search')
                         )

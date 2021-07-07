@@ -106,6 +106,24 @@ $functions = array(
         'type'        => 'read',
         'ajax'         => true,
         'loginrequired' => true,
+    ),
+    'local_qtracker_get_issue_parents' => array(
+        'classname'   => 'local_qtracker\external\get_issue_parents',
+        'methodname'  => 'get_issue_parents',
+        'classpath'   => '',
+        'description' => 'Get issue parents.',
+        'type'        => 'read',
+        'ajax'         => true,
+        'loginrequired' => true,
+    ),
+    'local_qtracker_get_issue_children' => array(
+        'classname'   => 'local_qtracker\external\get_issue_children',
+        'methodname'  => 'get_issue_children',
+        'classpath'   => '',
+        'description' => 'Get issue children.',
+        'type'        => 'read',
+        'ajax'         => true,
+        'loginrequired' => true,
     )
 );
 
@@ -118,6 +136,8 @@ $services = array(
             'local_qtracker_delete_issue',
             'local_qtracker_get_issue',
             'local_qtracker_get_issues',
+            'local_qtracker_get_issue_parents',
+            'local_qtracker_get_issue_children',
         ),
         'restrictedusers' => 0,
         'enabled' => 1,

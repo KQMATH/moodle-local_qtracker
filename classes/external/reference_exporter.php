@@ -29,14 +29,15 @@ defined('MOODLE_INTERNAL') || die();
 
 use \core\external\exporter;
 
+
 /**
- * Class for displaying a list of issue data.
+ * Class for displaying a list of issue comment data.
  *
  * @package    local_qtracker
  * @copyright  2020 André Storhaug
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class issue_exporter extends exporter {
+class reference_exporter extends exporter {
 
 
     /**
@@ -49,36 +50,17 @@ class issue_exporter extends exporter {
             'id' => [
                 'type' => PARAM_INT,
             ],
-            'title' => [
-                'type' => PARAM_TEXT,
-            ],
-            'description' => [
-                'type' => PARAM_TEXT,
-            ],
-            'questionid' => [
+            'sourceid' => [
                 'type' => PARAM_INT,
             ],
-            'questionusageid' => [
+            'targetid' => [
                 'type' => PARAM_INT,
             ],
-            'slot' => [
-                'type' => PARAM_INT,
-            ],
-            'state' => [
-                'type' => PARAM_TEXT,
-            ],
-            'contextid' => [
-                'type' => PARAM_INT,
-            ],
-            'userid' => [
-                'type' => PARAM_INT,
-            ],
-            'timecreated' => [
-                'type' => PARAM_INT,
-            ],
+            'reftype' => [
+                'type' => PARAM_RAW,
+            ]
         ];
     }
-
 
     /**
      * Return a list of objects that are related

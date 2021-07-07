@@ -27,6 +27,7 @@ import $ from 'jquery';
 import Templates from 'core/templates';
 import Ajax from 'core/ajax';
 import url from 'core/url';
+import Sidebar from 'local_qtracker/sidebar';
 /**
  * Constructor
  * @constructor
@@ -35,50 +36,33 @@ import url from 'core/url';
  *
  * Each call to init gets it's own instance of this class.
  */
-class QuestionsTable {
+class QuestionsTablePage {
     courseid = null;
 
     constructor(courseid) {
         this.courseid = courseid;
-
+        this.sidebar = new Sidebar('#questions-table-sidebar', false, "right", false, '40%');
         this.init();
     }
 
     async init() {
-        var hidden = true;
 
-        let context = {
-            close: {
-                "key": "fa-times",
-                "title": "Close",
-                "alt": "Close pane",
-                "extraclasses": "",
-                "unmappedIcon": false
-            }
-        };
-
-        await Templates.render('local_qtracker/issues_pane', context).then((html, js) => {
-            Templates.replaceNodeContents('#questions-table-sidebar', html, js);
-        });
-
+        await this.sidebar.render();
         window.showIssuesInPane = async function(id, state = null) {
-            $('.issues-pane-content .issues').empty();
-            $('.issues-pane-content .loading').addClass("show");
+            this.sidebar.empty();
+            this.sidebar.setLoading(true);
 
             // Get question title.
             let questionData = await this.loadQuestionData(id);
             let question = questionData.question;
             let questionEditUrl = this.getQuestionEditUrl(this.courseid, id);
             let link = $('<a></a>').attr("href", questionEditUrl).html(question.name + " #" + question.id);
-            $('.issues-pane-title').html(link);
+            this.sidebar.setTitle(link);
+            this.sidebar.show();
 
             // Get issues data.
             let issuesResponse = await this.loadIssues(id, state);
             let issues = issuesResponse.issues;
-
-            if (hidden) {
-                lol();
-            }
 
             // Get users data.
             let userids = [...new Set(issues.map(issue => issue.userid))];
@@ -91,11 +75,12 @@ class QuestionsTable {
                 promises.push(this.addIssueItem(issueData, userData));
             });
 
+            self = this;
             // When all issue item promises are resolved.
             $.when.apply($, promises).done(function() {
-                $('.issues-pane-content .loading').removeClass("show");
+                self.sidebar.setLoading(false);
                 $.each(arguments, (index, argument) => {
-                    Templates.appendNodeContents('.issues-pane-content .issues', argument.html, argument.js);
+                    self.sidebar.addTemplateItem(argument.html, argument.js);
                 });
             }).catch(e => {
                 console.error(e);
@@ -103,17 +88,9 @@ class QuestionsTable {
 
         }.bind(this);
 
-        window.closeIssuesPane = function() {
-            if (!hidden) {
-                lol();
-            }
-        };
+        window.closeIssuesPane = function() {this.sidebar.hide()}.bind(this);
+        window.toggleIssuesPane = function() {this.sidebar.togglePane()}.bind(this);
 
-        window.lol = function togglePane() {
-            $('.qtracker-container').toggleClass('push-pane-over');
-            $('#issues-pane').toggleClass("show");
-            hidden = !hidden;
-        };
     }
 
     /**
@@ -146,7 +123,7 @@ class QuestionsTable {
         let state = issueData.state;
         paneContext[state] = true;
 
-        return Templates.render('local_qtracker/issues_pane_item', paneContext)
+        return Templates.render('local_qtracker/sidebar_item_issue', paneContext)
             .then(function(html, js) {
                 return {html: html, js: js};
             });
@@ -204,4 +181,4 @@ class QuestionsTable {
     }
 }
 
-export default QuestionsTable;
+export default QuestionsTablePage;

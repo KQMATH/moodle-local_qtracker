@@ -62,6 +62,8 @@ $string['issuecreated'] = 'Issue successfully created.';
 $string['issueupdated'] = 'Issue successfully updated.';
 $string['issuedeleted'] = 'Issue successfully deleted.';
 
+$string['issuesuperseded'] = 'Issue is superseded by {$a}.';
+
 $string['issue'] = 'Issue';
 $string['issues'] = 'Issues';
 $string['comments'] ='Comments';
@@ -79,6 +81,7 @@ $string['tags'] = 'Tags';
 $string['new'] = 'New';
 $string['open'] = 'Open';
 $string['closed'] = 'Closed';
+$string['newissue'] = 'New issue';
 
 $string['reopenissue'] = 'Reopen issue';
 $string['closeissue'] = 'Comment and close issue';

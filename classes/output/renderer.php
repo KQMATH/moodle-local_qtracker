@@ -60,7 +60,7 @@ class renderer extends plugin_renderer_base {
      */
     public function render_questions_page(questions_page $page) {
         $data = $page->export_for_template($this);
-        return parent::render_from_template('local_qtracker/questions', $data);
+        return parent::render_from_template('local_qtracker/questions_page', $data);
     }
 
     /**

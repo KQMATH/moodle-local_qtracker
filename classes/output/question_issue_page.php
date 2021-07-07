@@ -39,7 +39,9 @@ use templatable;
 use local_qtracker\issue;
 use local_qtracker\external\issue_exporter;
 use local_qtracker\external\issue_comment_exporter;
+use local_qtracker\external\reference_exporter;
 use local_qtracker\form\view\question_details_form;
+use local_qtracker\reference_manager;
 
 /**
  * Class containing data for question issue page.
@@ -157,6 +159,27 @@ class question_issue_page implements renderable, templatable {
         $commentbutton->label = get_string('comment', 'local_qtracker');
         $data->commentbutton = $commentbutton;
 
+
+        $edittitlebutton = new stdClass();
+        $edittitlebutton->primary = true;
+        $edittitlebutton->name = "edittitle";
+        $edittitlebutton->classes = "p-r-1";
+        $edittitlebutton->value = true;
+        $edittitlebutton->label = get_string('edit', 'local_qtracker');
+        $data->edittitlebutton = $edittitlebutton;
+        $data->action = $PAGE->url;
+
+        $newissuebutton = new stdClass();
+        $newissuebutton->primary = true;
+        $newissuebutton->name = "newissue";
+        $newissuebutton->value = true;
+        $newissuebutton->label = get_string('newissue', 'local_qtracker');
+        $newissueurl = new \moodle_url('/local/qtracker/new_issue.php');
+        $newissueurl->param('courseid', $this->courseid);
+        $newissuebutton->action = $newissueurl;
+        $data->newissuebutton = $newissuebutton;
+
+
         $question = \question_bank::load_question($this->questionissue->get_questionid());
         question_require_capability_on($question, 'use');
 
@@ -173,6 +196,7 @@ class question_issue_page implements renderable, templatable {
         $form = new question_details_form($question, $PAGE->url);
         $questiondata->questiontext = $form->render();
         $data->question = $questiondata;
+        $data->courseid = $this->courseid;
 
         // Setup text editor.
         $editor = editors_get_preferred_editor(FORMAT_HTML);
