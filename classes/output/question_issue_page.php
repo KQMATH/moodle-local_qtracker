@@ -152,6 +152,39 @@ class question_issue_page implements renderable, templatable {
             $data->closebutton = $closebutton;
         }
 
+        // TODO replace sim-data with data from linked issues and tags implementations
+        $simtag = [
+            "name"=> "tagname",
+            "text" => "<span class=\"badge badge-pill bg-danger\">Primary</span>",
+        ];
+        $simtag2 = [
+            "name"=> "tagname",
+            "text" => "<span class=\"badge badge-pill bg-danger\">Primary</span>",
+        ];
+        $simtag3 = [
+            "name"=> "tagname",
+            "text" => "<span class=\"badge badge-pill bg-danger\">Primary</span>",
+        ];
+        $simtag4 = [
+            "name"=> "tagname",
+            "text" => "<span class='badge badge-pill' style='background-color: aqua'>Primary</span>",
+        ];
+        $simlinkiss = [
+            "name" => "Issue name",
+            "text" => "Issue text"
+        ];
+
+        $linkedissues = new stdClass();
+        $linkedissues->label = get_string('linkedissues', 'local_qtracker');
+        $linkedissues->items = [$simlinkiss];
+
+        $tags = new stdClass();
+        $tags->label = get_string('tags', 'local_qtracker');
+        $tags->items = [$simtag, $simtag2, $simtag3, $simtag4, ];
+
+        $asideblocks = [$linkedissues, $tags];
+        $data->asideblocks = $asideblocks;
+
         $commentbutton = new stdClass();
         $commentbutton->primary = true;
         $commentbutton->name = "commentissue";
