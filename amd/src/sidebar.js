@@ -41,9 +41,11 @@ class Sidebar {
     width = null;
     margin = null;
     container = null;
+    closable = null;
+    options = null;
 
-    constructor(container, show = false, side = 'right', loading = false, width = '40%', margin = '0px') {
-        this.container = container; // Container element
+    constructor(container, show = false, side = 'right', loading = false, width = '40%', margin = '0px', closable = true, options = []) {
+        this.container = $(container); // Container element
         this.hidden = !show;
         this.visible = show;
         this.side = side;
@@ -51,11 +53,13 @@ class Sidebar {
         this.width = width;
         this.margin = margin;
 
+        this.closable = closable;
+        this.options = options;
+
         this.mql = window.matchMedia('(min-width: 768px)');
         this.mql.addEventListener('change', this.screenTest.bind(this));
 
         this.render = this.render.bind(this);
-
     }
 
     screenTest(e) {
@@ -77,22 +81,32 @@ class Sidebar {
     }
 
     async render() {
-        let context = {
-            close: {
+        let self = this;
+
+        let context = {};
+        if (this.closable) {
+            context.close = {
                 "key": "fa-times",
                 "title": "Close",
                 "alt": "Close pane",
                 "extraclasses": "",
                 "unmappedIcon": false
-            },
-            options: {
-                "key": "fa-cog",
-                "title": "Options",
-                "alt": "Show options",
-                "extraclasses": "",
-                "unmappedIcon": false
-            }
-        };
+            };
+        }
+        if (this.options.length > 0) {
+            context.options = {
+                "trigger": {
+                    "key": "fa-filter",
+                    "title": "Options",
+                    "alt": "Show options",
+                    "extraclasses": "",
+                    "unmappedIcon": false
+                },
+                "header": false,
+                "items": self.options,
+            };
+        }
+
         //let self = this;
         await Templates.render('local_qtracker/sidebar', context).then((html, js) => {
             Templates.replaceNodeContents(this.container, html, js);
@@ -109,7 +123,6 @@ class Sidebar {
             });*/
         });
     }
-
 
     getSide() {
         return this.side;
@@ -172,6 +185,10 @@ class Sidebar {
 
     getItems() {
         return $('.qtracker-sidebar-content .qtracker-items').children();
+    }
+
+    getContainer() {
+        return this.container;
     }
 
     hide() {

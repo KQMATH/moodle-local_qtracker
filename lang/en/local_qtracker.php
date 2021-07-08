@@ -96,6 +96,11 @@ $string['preview'] = 'Preview';
 $string['edit'] = 'Edit';
 $string['questionissues'] = 'Question issues';
 
+$string['noitems'] = 'No items';
+$string['subsumedissues'] = 'Subsumed issues';
+$string['subsumedescription'] = 'Subsume issues under this issue';
+$string['tagsdescription'] = 'Add tags for this issue';
+
 $string['qtracker:addissue'] = 'Add new issue';
 $string['qtracker:editmine'] = 'Edit your own issues';
 $string['qtracker:editall'] = 'Edit all issues';

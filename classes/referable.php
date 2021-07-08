@@ -92,7 +92,7 @@ abstract class referable {
     /**
      * Get all incomming references to this issue.
      *
-     * @return \stdClass
+     * @return array
      */
     public function get_incoming_references() {
         global $DB;

@@ -152,37 +152,31 @@ class question_issue_page implements renderable, templatable {
             $data->closebutton = $closebutton;
         }
 
-        // TODO replace sim-data with data from linked issues and tags implementations
-        $simtag = [
-            "name"=> "tagname",
-            "text" => "<span class=\"badge badge-pill bg-danger\">Primary</span>",
-        ];
-        $simtag2 = [
-            "name"=> "tagname",
-            "text" => "<span class=\"badge badge-pill bg-danger\">Primary</span>",
-        ];
-        $simtag3 = [
-            "name"=> "tagname",
-            "text" => "<span class=\"badge badge-pill bg-danger\">Primary</span>",
-        ];
-        $simtag4 = [
-            "name"=> "tagname",
-            "text" => "<span class='badge badge-pill' style='background-color: aqua'>Primary</span>",
-        ];
-        $simlinkiss = [
-            "name" => "Issue name",
-            "text" => "Issue text"
-        ];
+        $triggericon = new stdClass();
+        $triggericon->key = "fa-cog";
+        $triggericon->title = "Options";
+        $triggericon->alt = "Show options";
+        $triggericon->extraclasses = "";
+        $triggericon->unmappedIcon = false;
 
         $linkedissues = new stdClass();
-        $linkedissues->label = get_string('linkedissues', 'local_qtracker');
-        $linkedissues->items = [$simlinkiss];
+        $linkedissues->id = 'linkedissues';
+        $linkedissues->search = true;
+        $linkedissues->label = get_string('subsumedissues', 'local_qtracker');
+        $linkedissues->header = get_string('subsumedescription', 'local_qtracker');
+        //$linkedissues->items = $links;
+        $linkedissues->trigger = $triggericon;
 
-        $tags = new stdClass();
+        /*$tags = new stdClass();
+        $tags->id = 'tags';
         $tags->label = get_string('tags', 'local_qtracker');
+        $tags->header = get_string('tagsdescription', 'local_qtracker');
         $tags->items = [$simtag, $simtag2, $simtag3, $simtag4, ];
-
+        $tags->trigger = $triggericon;
         $asideblocks = [$linkedissues, $tags];
+        */
+
+        $asideblocks = [$linkedissues];
         $data->asideblocks = $asideblocks;
 
         $commentbutton = new stdClass();

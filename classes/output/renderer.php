@@ -48,7 +48,7 @@ class renderer extends plugin_renderer_base {
      */
     public function render_question_issues_page(question_issues_page $page) {
         $data = $page->export_for_template($this);
-        return parent::render_from_template('local_qtracker/question_issues', $data);
+        return parent::render_from_template('local_qtracker/question_issues_page', $data);
     }
 
     /**

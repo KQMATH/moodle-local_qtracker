@@ -39,93 +39,89 @@ use external_warnings;
 use local_qtracker\issue;
 
 /**
- * get_issue class
+ * set_issue_relation class
  *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2020 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class get_issue_children extends \external_api {
+class set_issue_relation extends \external_api {
 
     /**
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function get_issue_children_parameters() {
+    public static function set_issue_relation_parameters() {
         return new external_function_parameters(
             array(
-                'issueid' => new external_value(PARAM_INT, 'issue id')
+                'parentid' => new external_value(PARAM_INT, 'issue id of parent'),
+                'childid' => new external_value(PARAM_INT, 'issue id of child')
             )
         );
     }
 
     /**
-     * Returns children of issue with the id $issueid
+     * Supersedes issue passed as child under issue passed as parent
      *
-     * @param int $issueid id of the issue to be returned
+     * @param int $parentid id of the parent issue to supersede a child issue
+     * @param int $childid id of the child issue to be superseded by a parent issue
      *
      * @return array with status, the issuedata, and any warnings
      */
-    public static function get_issue_children($issueid) {
+    public static function set_issue_relation($parentid, $childid) {
         global $PAGE, $DB;
 
-        $issue = array();
-        $children = array();
+        $added = false;
         $warnings = array();
 
         // Parameter validation.
-        $params = self::validate_parameters(self::get_issue_children_parameters(),
+        $params = self::validate_parameters(self::set_issue_relation_parameters(),
             array(
-                'issueid' => (int) $issueid,
+                'parentid' => (int) $parentid,
+                'childid' => (int) $childid,
             )
         );
 
-        if (!$DB->record_exists_select('local_qtracker_issue', 'id = :issueid',
+        if (!$DB->record_exists_select('local_qtracker_issue', 'id = :parentid',
             array(
-                'issueid' => $params['issueid']
+                'parentid' => $params['parentid']
             )
         )) {
-            throw new \moodle_exception('cannotgetissue', 'local_qtracker', '', $params['issueid']);
+            throw new \moodle_exception('cannoteditissue', 'local_qtracker', '', $params['parentid']);
         }
 
-        $issue = issue::load($params['issueid']);
+        if (!$DB->record_exists_select('local_qtracker_issue', 'id = :childid',
+            array(
+                'childid' => $params['childid']
+            )
+        )) {
+            throw new \moodle_exception('cannoteditissue', 'local_qtracker', '', $params['childid']);
+        }
+
+
+        $parent = issue::load($params['parentid']);
+        $child = issue::load($params['childid']);
 
         // Context validation.
-        $context = \context::instance_by_id($issue->get_contextid());
-        self::validate_context($context);
+        $parentcontext = \context::instance_by_id($parent->get_contextid());
+        self::validate_context($parentcontext);
+        $childcontext = \context::instance_by_id($child->get_contextid());
+        self::validate_context($childcontext);
 
         // Capability checking.
-        issue_require_capability_on($issue->get_issue_obj(), 'view');
+        issue_require_capability_on($parent->get_issue_obj(), 'edit');
+        issue_require_capability_on($child->get_issue_obj(), 'edit');
 
-
-        $children = $issue->get_children();
-
-        $returnedchildren = array();
-        foreach ($children as $child) {
-            // Context validation.
-            $context = \context::instance_by_id($child->get_contextid());
-            self::validate_context($context);
-
-            // Capability checking.
-            issue_require_capability_on($child->get_id(), 'view');
-
-            $renderer = $PAGE->get_renderer('core');
-            $exporter = new issue_exporter($child->get_issue_obj(), ['context' => $context]);
-            $childdetails = $exporter->export($renderer);
-            // Return the issue only if all the searched fields are returned.
-            // Otherwise it means that the $issue was not allowed to search the returned issue.
-            if (!empty($childdetails)) {
-                $validchild = true;
-
-                if ($validchild) {
-                    $returnedchildren[] = $childdetails;
-                }
-            }
+        if (empty($warnings)) {
+            $added = $parent->supersede_issue($child);
         }
 
-        return array('children' => $returnedchildren, 'warnings' => $warnings);
+        $result = array();
+        $result['status'] = $added;
+        $result['warnings'] = $warnings;
 
+        return $result;
     }
 
      /**
@@ -134,12 +130,10 @@ class get_issue_children extends \external_api {
      * @return external_description
      * @since Moodle 2.5
      */
-    public static function get_issue_children_returns() {
+    public static function set_issue_relation_returns() {
         return new external_single_structure(
             array(
-                'children' => new external_multiple_structure(
-                    issue_exporter::get_read_structure()
-                ),
+                'status' => new external_value(PARAM_BOOL, 'status: true if success'),
                 'warnings' => new external_warnings()
             )
         );

@@ -78,7 +78,9 @@ class get_issues extends \external_api {
                         the search is still executed on the valid criterias.
                         You can search without criteria, but the function is not designed for it.
                         It could very slow or timeout. The function is designed to search some specific issues.'
-                )
+                ),
+                'from' => new external_value(PARAM_INT, 'Start returning records from here', VALUE_DEFAULT, 0),
+                'limit' => new external_value(PARAM_INT, 'Number of records to return', VALUE_DEFAULT, 20)
             )
         );
     }
@@ -91,13 +93,16 @@ class get_issues extends \external_api {
      * @return array An array of arrays containing issue profiles.
      * @since Moodle 2.5
      */
-    public static function get_issues($criteria = array()) {
+    public static function get_issues($criteria = array(), $from, $limit) {
         global $CFG, $issue, $DB, $PAGE, $USER;
 
         require_once($CFG->dirroot . "/local/qtracker/lib.php");
         $params = self::validate_parameters(
             self::get_issues_parameters(),
-            array('criteria' => $criteria)
+            array(
+                'criteria' => $criteria,
+                'from' => $from,
+                'limit' => $limit,)
         );
 
         // Validate the criteria and retrieve the issues.
@@ -173,7 +178,9 @@ class get_issues extends \external_api {
             }
         }
 
-        $issues = $DB->get_records_select('local_qtracker_issue', $sql, $sqlparams, 'id ASC');
+        $limitfrom= $params['from'];
+        $limitnum= $params['limit'];
+        $issues = $DB->get_records_select('local_qtracker_issue', $sql, $sqlparams, 'id ASC', '*', $limitfrom, $limitnum);
 
         // Finally retrieve each issues information.
         $returnedissues = array();

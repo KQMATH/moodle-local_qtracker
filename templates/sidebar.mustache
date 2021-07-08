@@ -30,9 +30,7 @@
                         <a class="qtracker-sidebar-title bold" href="#">{{questiontitle}} #{{questionid}}</a>
                         <div>
                             {{#options}}
-                                <a href="#" onclick="openSidebarOptions();return false;">
-                                    {{>core/pix_icon_fontawesome}}
-                                </a>
+                                {{>local_qtracker/dropdown}}
                             {{/options}}
                             {{#close}}
                                 <a href="#" onclick="closeIssuesPane();return false;">

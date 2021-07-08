@@ -26,10 +26,15 @@
         "userurl": "https://example.com/user/profile.php?id=3",
         "timecreated": "1587655101",
         "title": "Issue title",
-        "description": "Issue description"
+        "description": "Issue description",
+        "extraclasses": "acctive",
+        "actions": [
+            { "name": "Close", "action": "V", "disabled": false },
+            { "name": "Subsume", "action": "V", "disabled": true },
+            ]
     }
 }}
-<div id="sidebar-issue-item" class="sidebar-item border-bottom py-3">
+<div id="sidebar-issue-item" class="sidebar-item border-bottom py-3 {{extraclasses}}">
     <div class="d-flex flex-row align-items-center">
             <span><img class="userpicture" width="35" height="35" alt="Profile image" src="{{profileimageurl}}"/></span>
         <div class="px-3">
@@ -44,6 +49,11 @@
                 {{>local_qtracker/issue_state_badge}}
             </h5>
         </div>
+        {{#actions}}
+        <!-- <form method="post" action="{{{action}}}" data-action="issueaction" enctype="multipart/form-data" accept-charset="utf-8"> -->
+            {{>local_qtracker/dropdown}}
+        <!-- </form> -->
+        {{/actions}}
     </div>
     <a href="{{issueurl}}" class="bold">{{title}}</a>
     <div>{{description}}</div>
