@@ -22,7 +22,9 @@
     Example context (json):
     {
         "label": "tags",
-        "items": [{text:"An action", state: "disabled"}, {text:"another action", state: "active"}, {text:"a third action", state: "active"} ],
+        "url": "dasd",
+        "type": "tags",
+        "items": [{text:"An action", state: "disabled", url:'someurl'}, {text:"another action", state: "active", url:'another url'}, {text:"a third action", state: "active", url:'a third url'} ],
     }
 }}
 
@@ -31,7 +33,7 @@
         <div class="d-flex flex-inline justify-content-between">
             <h5 class="card-title">{{label}}</h5>
             <!-- Med eller uten  class="dropdown-toggle" ? -->
-            <a href="#" role="button" id="{{label}}dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside">
+            <a href="#" role="button" id="{{type}}dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside">
                 <!-- Bootstrap gear icon -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="black" class="bi bi-gear float-right" viewBox="0 0 16 16">
                     <path d="M8 4.754a3.246 3.246 0 1 0 0 6.492 3.246 3.246 0 0 0 0-6.492zM5.754 8a2.246 2.246 0 1 1 4.492 0 2.246 2.246 0 0 1-4.492 0z"/>
@@ -39,33 +41,41 @@
                 </svg>
             </a>
             <!-- Lage scrollable list? -->
-            <ul class="dropdown-menu" aria-labelledby="dropdownMenuClickableInside">
-                <li>
-                    <input type="search" id="{{label}}form" class="form-control" placeholder="Search"
+            <div class="dropdown-menu" id="{{type}}menu" aria-labelledby="dropdownMenuClickableInside">
+                    <input type="search" id="{{type}}form" class="form-control" placeholder="Search"
                            aria-label="Search" />
-                </li>
-                <li><hr class="dropdown-divider"></li>
+                <hr class="dropdown-divider">
                 {{#items}}
-                    <li><a class="dropdown-item" href="#">{{{text}}}</a></li>
+                    <a class="dropdown-item d-inline-flex w-100 mx-0 align-items-center" href="{{url}}" data-state="{{state}}">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="2rem" height="2rem" fill="black" class="bi bi-check" viewBox="0 0 16 16">
+                            <path d="M4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z"/>
+                        </svg>
+                        <div  class="w-75">{{{text}}}</div>
+                    </a>
                 {{/items}}
                 {{^items}}
-                    <li class="list-group-item">No {{label}}</li>
+                    <h1 class="dropdown-item">No {{label}}</h1>
                 {{/items}}
 
 
-            </ul>
+            </div>
         </div>
 
         <!-- Tag and/or linked issues list -->
-        <ul class="list-group list-group-flush">
+        <div class="list-group list-group-flush" id="{{type}}list">
             {{#items}}
-                <li class="list-group-item {{state}}">{{{text}}}</li>
+                <div class="list-group-item">{{{text}}}</div>
             {{/items}}
             {{^items}}
-                <li class="list-group-item">No {{label}}</li>
+                <div class="list-group-item">No {{label}}</div>
             {{/items}}
-        </ul>
+        </div>
     </div>
 </div>
+{{#js}}
+    require(['local_qtracker/aside_block'], function(init) {
+    init('{{type}}','{{label}}');
+    });
+{{/js}}
 
 

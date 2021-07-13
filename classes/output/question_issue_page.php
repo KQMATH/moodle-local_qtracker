@@ -154,31 +154,44 @@ class question_issue_page implements renderable, templatable {
         $simtag = [
             "name"=> "tagname",
             "text" => "<span class=\"badge badge-pill bg-danger\">Primary</span>",
+            "url" => "lol.no",
+            "state" => "active",
         ];
         $simtag2 = [
             "name"=> "tagname",
             "text" => "<span class=\"badge badge-pill bg-danger\">Primary</span>",
+            "url" => "lol.no",
+            "state" => "active",
         ];
         $simtag3 = [
             "name"=> "tagname",
             "text" => "<span class=\"badge badge-pill bg-danger\">Primary</span>",
+            "url" => "lol.no",            "state" => "active",
+            "state" => "active",
         ];
         $simtag4 = [
             "name"=> "tagname",
             "text" => "<span class='badge badge-pill' style='background-color: aqua'>Primary</span>",
+            "url" => "lol.no",
+            "state" => "inactive",
+
         ];
         $simlinkiss = [
             "name" => "Issue name",
-            "text" => "Issue text"
+            "text" => "Issue text",
+            "url" => "lol.no",
+            "state" => "no",
         ];
 
         $linkedissues = new stdClass();
         $linkedissues->label = get_string('linkedissues', 'local_qtracker');
         $linkedissues->items = [$simlinkiss];
+        $linkedissues->type = 'linkedissue';
 
         $tags = new stdClass();
         $tags->label = get_string('tags', 'local_qtracker');
         $tags->items = [$simtag, $simtag2, $simtag3, $simtag4, ];
+        $tags->type = 'tags';
 
         $asideblocks = [$linkedissues, $tags];
         $data->asideblocks = $asideblocks;
