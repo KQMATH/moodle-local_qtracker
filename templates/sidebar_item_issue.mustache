@@ -15,9 +15,9 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_qtracker/issues_pane_item
+    @template local_qtracker/sidebar_item_issue
 
-    Issue pane item template.
+    Issue sidebar item template.
 
     Example context (json):
     {
@@ -25,17 +25,23 @@
         "fullname": "André Storhaug",
         "userurl": "https://example.com/user/profile.php?id=3",
         "timecreated": "1587655101",
+        "id": "Issue id",
         "title": "Issue title",
-        "description": "Issue description"
+        "description": "Issue description",
+        "extraclasses": "acctive",
+        "actions": [
+            { "name": "Close", "action": "V", "disabled": false },
+            { "name": "Subsume", "action": "V", "disabled": true },
+            ]
     }
 }}
-<div id="issues-pane-issue" class="sidebar-item border-bottom py-3">
+<div id="sidebar-issue-item" class="sidebar-item border-bottom py-3 {{extraclasses}}">
     <div class="d-flex flex-row align-items-center">
             <span><img class="userpicture" width="35" height="35" alt="Profile image" src="{{profileimageurl}}"/></span>
         <div class="px-3">
             <a class="text-muted bold" href="{{userurl}}">{{fullname}}</a>
             <div class="text-muted">
-                {{#str}} commentedon, local_qtracker {{/str}}
+                {{#str}} openedissueon, local_qtracker, #{{id}} {{/str}}
                 {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
             </div>
         </div>
@@ -44,6 +50,11 @@
                 {{>local_qtracker/issue_state_badge}}
             </h5>
         </div>
+        {{#actions}}
+        <!-- <form method="post" action="{{{action}}}" data-action="issueaction" enctype="multipart/form-data" accept-charset="utf-8"> -->
+            {{>local_qtracker/dropdown}}
+        <!-- </form> -->
+        {{/actions}}
     </div>
     <a href="{{issueurl}}" class="bold">{{title}}</a>
     <div>{{description}}</div>

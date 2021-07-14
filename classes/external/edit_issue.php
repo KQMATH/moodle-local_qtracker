@@ -57,7 +57,7 @@ class edit_issue extends \external_api {
             array(
                 'issueid' => new external_value(PARAM_INT, 'issue id'),
                 'issuetitle' => new external_value(PARAM_TEXT, 'issue title'),
-                'issuedescription' => new external_value(PARAM_TEXT, 'issue description'),
+                'issuedescription' => new external_value(PARAM_RAW, 'issue description'),
             )
         );
     }
@@ -86,7 +86,7 @@ class edit_issue extends \external_api {
             )
         );
 
-        if (!$DB->record_exists_select('qtracker_issue', 'id = :issueid AND userid = :userid',
+        if (!$DB->record_exists_select('local_qtracker_issue', 'id = :issueid AND userid = :userid',
             array(
                 'issueid' => $params['issueid'],
                 'userid' => $USER->id

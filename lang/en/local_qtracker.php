@@ -62,22 +62,29 @@ $string['issuecreated'] = 'Issue successfully created.';
 $string['issueupdated'] = 'Issue successfully updated.';
 $string['issuedeleted'] = 'Issue successfully deleted.';
 
+$string['issuesuperseded'] = 'Issue is superseded by {$a}.';
+
 $string['issue'] = 'Issue';
 $string['issues'] = 'Issues';
+$string['comments'] ='Comments';
 
 $string['submitnewissue'] = 'Submit new issue';
 $string['validtitle'] = 'Please provide a valid title.';
 $string['validdescription'] = 'Please provide a valid description.';
 
 $string['commentedon'] = 'commented on ';
-$string['openedissueon'] = 'opened issue on ';
+$string['openedissueon'] = 'opened issue {$a} on ';
+$string['errorsubsumingissue'] = 'An error occurred trying to subsume issue {$a}. The issue is probably superseded by another issue.';
 $string['name'] = 'Name';
 
 $string['tags'] = 'Tags';
+$string['linkedissues'] = 'Linked issues';
 
 $string['new'] = 'New';
 $string['open'] = 'Open';
 $string['closed'] = 'Closed';
+$string['newissue'] = 'New issue';
+$string['allissues'] = 'All issues';
 
 $string['reopenissue'] = 'Reopen issue';
 $string['closeissue'] = 'Comment and close issue';
@@ -91,8 +98,29 @@ $string['preview'] = 'Preview';
 $string['edit'] = 'Edit';
 $string['questionissues'] = 'Question issues';
 
+$string['noitems'] = 'No items';
+$string['createnewissue'] = 'Create new issue';
+$string['errornonexistingquestion'] = 'Please provide an valid question ID.';
+
+$string['subsumeissue'] = 'Subsume issue';
+$string['subsumeissueconfirm'] = 'Are you sure you want to subsume issue <b>#{$a->child}</b> under <b>#{$a->parent}</b>?<br>This will close issue <b>#{$a->child}</b>.';
+$string['subsumedissues'] = 'Subsumed issues';
+$string['subsumedescription'] = 'Subsume issues under this issue';
+$string['tagsdescription'] = 'Add tags for this issue';
+
 $string['qtracker:addissue'] = 'Add new issue';
 $string['qtracker:editmine'] = 'Edit your own issues';
 $string['qtracker:editall'] = 'Edit all issues';
 $string['qtracker:viewmine'] = 'Edit your own issues';
 $string['qtracker:viewall'] = 'View all issues';
+
+$string['privacy:metadata:local_qtracker_issue'] = 'Details about each question issue.';
+$string['privacy:metadata:local_qtracker_issue:userid'] = 'The user that created the issue.';
+$string['privacy:metadata:local_qtracker_issue:title'] = 'The title of the issue.';
+$string['privacy:metadata:local_qtracker_issue:description'] = 'The description of the issue.';
+$string['privacy:metadata:local_qtracker_issue:timecreated'] = 'The time the issue was created.';
+
+$string['privacy:metadata:local_qtracker_comment'] = 'Details about each question issue comment.';
+$string['privacy:metadata:local_qtracker_comment:userid'] = 'The user that created the issue comment.';
+$string['privacy:metadata:local_qtracker_comment:description'] = 'The description of the issue comment.';
+$string['privacy:metadata:local_qtracker_comment:timecreated'] = 'The time the issue comment was created.';

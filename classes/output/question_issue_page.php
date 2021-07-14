@@ -39,7 +39,9 @@ use templatable;
 use local_qtracker\issue;
 use local_qtracker\external\issue_exporter;
 use local_qtracker\external\issue_comment_exporter;
+use local_qtracker\external\reference_exporter;
 use local_qtracker\form\view\question_details_form;
+use local_qtracker\reference_manager;
 
 /**
  * Class containing data for question issue page.
@@ -150,12 +152,60 @@ class question_issue_page implements renderable, templatable {
             $data->closebutton = $closebutton;
         }
 
+        $triggericon = new stdClass();
+        $triggericon->key = "fa-cog";
+        $triggericon->title = "Options";
+        $triggericon->alt = "Show options";
+        $triggericon->extraclasses = "";
+        $triggericon->unmappedIcon = false;
+
+        $linkedissues = new stdClass();
+        $linkedissues->id = 'linkedissues';
+        $linkedissues->search = true;
+        $linkedissues->label = get_string('subsumedissues', 'local_qtracker');
+        $linkedissues->header = get_string('subsumedescription', 'local_qtracker');
+        //$linkedissues->items = $links;
+        $linkedissues->trigger = $triggericon;
+
+        /*$tags = new stdClass();
+        $tags->id = 'tags';
+        $tags->label = get_string('tags', 'local_qtracker');
+        $tags->header = get_string('tagsdescription', 'local_qtracker');
+        $tags->items = [$simtag, $simtag2, $simtag3, $simtag4, ];
+        $tags->trigger = $triggericon;
+        $asideblocks = [$linkedissues, $tags];
+        */
+
+        $asideblocks = [$linkedissues];
+        $data->asideblocks = $asideblocks;
+
         $commentbutton = new stdClass();
         $commentbutton->primary = true;
         $commentbutton->name = "commentissue";
         $commentbutton->value = true;
         $commentbutton->label = get_string('comment', 'local_qtracker');
         $data->commentbutton = $commentbutton;
+
+
+        $edittitlebutton = new stdClass();
+        $edittitlebutton->primary = true;
+        $edittitlebutton->name = "edittitle";
+        $edittitlebutton->classes = "p-r-1 edittitle";
+        $edittitlebutton->value = true;
+        $edittitlebutton->label = get_string('edit', 'local_qtracker');
+        $data->edittitlebutton = $edittitlebutton;
+        $data->action = $PAGE->url;
+
+        $newissuebutton = new stdClass();
+        $newissuebutton->primary = true;
+        $newissuebutton->name = "newissue";
+        $newissuebutton->value = true;
+        $newissuebutton->label = get_string('newissue', 'local_qtracker');
+        $newissueurl = new \moodle_url('/local/qtracker/new_issue.php');
+        $newissueurl->param('courseid', $this->courseid);
+        $newissuebutton->action = $newissueurl;
+        $data->newissuebutton = $newissuebutton;
+
 
         $question = \question_bank::load_question($this->questionissue->get_questionid());
         question_require_capability_on($question, 'use');
@@ -168,11 +218,14 @@ class question_issue_page implements renderable, templatable {
         $editurl = new \moodle_url('/question/question.php');
         $editurl->param('id', $question->id);
         $editurl->param('courseid', $this->courseid);
+        $returnurl = $PAGE->url->out_as_local_url(false);
+        $editurl->param('returnurl', $returnurl);
         $questiondata->edit_url = $editurl;
 
         $form = new question_details_form($question, $PAGE->url);
         $questiondata->questiontext = $form->render();
         $data->question = $questiondata;
+        $data->courseid = $this->courseid;
 
         // Setup text editor.
         $editor = editors_get_preferred_editor(FORMAT_HTML);

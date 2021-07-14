@@ -189,7 +189,7 @@ class questions_table extends table_sql {
         $fields .= "COUNT(case qi.state when 'new' then 1 else null end) AS new,
                     COUNT(case qi.state when 'open' then 1 else null end) AS open,
                     COUNT(case qi.state when 'closed' then 1 else null end) AS closed";
-        $from = '{qtracker_issue} qi';
+        $from = '{local_qtracker_issue} qi';
         $from .= "\nJOIN {question} q ON q.id = qi.questionid";
         $from .= "\nJOIN {context} ctx ON qi.contextid = ctx.id";
         $where = "\nctx.id $insql";
@@ -226,7 +226,7 @@ class questions_table extends table_sql {
             return;
         }
 
-        // echo '<div id="questions-table-wrapper" class="push-pane-over">';
+        // echo '<div id="questions-table-wrapper" class="qtracker-push-pane-over-left">';
         // echo '<div id="questions-table-wrapper">';
         // echo '<div id="questions-table-sidebar"></div>';
         // echo '<div class="border-bottom">';

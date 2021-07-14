@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<XMLDB PATH="local/qtracker/db" VERSION="20190116" COMMENT="XMLDB file for Moodle plugin local/qtracker"
+<XMLDB PATH="local/qtracker/db" VERSION="20210629" COMMENT="XMLDB file for Moodle plugin local/qtracker"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:noNamespaceSchemaLocation="../../../lib/xmldb/xmldb.xsd"
 >
   <TABLES>
-    <TABLE NAME="qtracker_issue" COMMENT="Table from which sessions are created.">
+    <TABLE NAME="local_qtracker_issue" COMMENT="Table from which sessions are created.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="title" TYPE="text" NOTNULL="false" SEQUENCE="false"/>
@@ -24,7 +24,7 @@
         <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
-    <TABLE NAME="qtracker_comment" COMMENT="Table keeping issue comments.">
+    <TABLE NAME="local_qtracker_comment" COMMENT="Table keeping issue comments.">
       <FIELDS>
         <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
         <FIELD NAME="issueid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The issue identifier"/>
@@ -34,8 +34,21 @@
       </FIELDS>
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
-        <KEY NAME="issueid" TYPE="foreign" FIELDS="issueid" REFTABLE="qtracker_issue" REFFIELDS="id"/>
+        <KEY NAME="issueid" TYPE="foreign" FIELDS="issueid" REFTABLE="local_qtracker_issue" REFFIELDS="id"/>
         <KEY NAME="userid" TYPE="foreign" FIELDS="userid" REFTABLE="user" REFFIELDS="id"/>
+      </KEYS>
+    </TABLE>
+    <TABLE NAME="local_qtracker_reference" COMMENT="Table keeping issue references.">
+      <FIELDS>
+        <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="true"/>
+        <FIELD NAME="sourceid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The referencer id"/>
+        <FIELD NAME="targetid" TYPE="int" LENGTH="10" NOTNULL="true" SEQUENCE="false" COMMENT="The reference target id"/>
+        <FIELD NAME="reftype" TYPE="text" NOTNULL="true" SEQUENCE="false" COMMENT="The reference type."/>
+      </FIELDS>
+      <KEYS>
+        <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
+        <KEY NAME="sourceid" TYPE="foreign" FIELDS="sourceid" REFTABLE="local_qtracker_issue" REFFIELDS="id"/>
+        <KEY NAME="targetid" TYPE="foreign" FIELDS="targetid" REFTABLE="local_qtracker_issue" REFFIELDS="id"/>
       </KEYS>
     </TABLE>
   </TABLES>

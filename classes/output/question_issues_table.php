@@ -70,8 +70,15 @@ class question_issues_table extends table_sql {
      * @return string HTML content to go inside the td.
      */
     public function col_id($data) {
+        global $COURSE;
+
         if ($data->id) {
-            return $data->id;
+            $issueid = $data->id;
+            $url = new \moodle_url('/local/qtracker/issue.php');
+            $url->param('courseid', $COURSE->id);
+            $url->param('issueid', $issueid);
+            $id = \html_writer::link($url, $data->id);
+            return $id;
         } else {
             return '-';
         }
@@ -96,8 +103,15 @@ class question_issues_table extends table_sql {
      * @return string HTML content to go inside the td.
      */
     protected function col_title($data) {
+        global $COURSE;
         if ($data->title) {
-            return $data->title;
+            $issueid = $data->id;
+            $url = new \moodle_url('/local/qtracker/issue.php');
+            $url->param('courseid', $COURSE->id);
+            $url->param('issueid', $issueid);
+            $title = \html_writer::link($url, $data->title);
+            return $title;            // need to change it to correct link.
+            // return '<a href="/user/profile.php?id='.$data->questionid.'">'.$data->title.'</a>';
         } else {
             return '-';
         }
@@ -163,7 +177,7 @@ class question_issues_table extends table_sql {
         // TODO: Write SQL to retrieve all rows...
         $fields = 'DISTINCT';
         $fields .= '*';
-        $from = '{qtracker_issue} qs';
+        $from = '{local_qtracker_issue} qs';
         $where = '1=1';
         $params = array(); // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
 

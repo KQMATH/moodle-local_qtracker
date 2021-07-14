@@ -78,7 +78,6 @@ if (!$issue) {
     redirect($issuesurl);
 }
 
-// TODO: require capability for editing issues.
 // Process issue actions.
 $commentissue = optional_param('commentissue', false, PARAM_BOOL);
 $commenttext = optional_param('commenteditor', false, PARAM_RAW);

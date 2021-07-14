@@ -46,7 +46,7 @@ class question_deleted_observer {
     public static function question_deleted(\core\event\question_deleted $event) {
         global $DB;
         // Delete all issues for given question.
-        $records = $DB->get_records('qtracker_issue', ['questionid' => $event->objectid], '', 'id');
+        $records = $DB->get_records('local_qtracker_issue', ['questionid' => $event->objectid], '', 'id');
 
         foreach ($records as $record) {
             $issue = issue::load($record->id);

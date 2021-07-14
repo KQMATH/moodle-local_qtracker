@@ -81,7 +81,7 @@ class get_issue extends \external_api {
             )
         );
 
-        if (!$DB->record_exists_select('qtracker_issue', 'id = :issueid AND userid = :userid',
+        if (!$DB->record_exists_select('local_qtracker_issue', 'id = :issueid AND userid = :userid',
             array(
                 'issueid' => $params['issueid'],
                 'userid' => $USER->id
@@ -106,6 +106,7 @@ class get_issue extends \external_api {
             $issuedata['state'] = $issue->get_state();
             $issuedata['questionid'] = $issue->get_questionid();
             $issuedata['questionusageid'] = $issue->get_qubaid();
+            $issuedata['contextid'] = $issue->get_contextid();
             $issuedata['slot'] = $issue->get_slot();
             $issuedata['userid'] = $issue->get_userid();
             $issuedata['timecreated'] = $issue->get_timecreated();
