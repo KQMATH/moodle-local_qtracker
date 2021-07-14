@@ -57,21 +57,29 @@ class backup_local_qtracker_plugin extends backup_local_plugin {
             'title', 'description', 'questionusageid', 'slot',
             'state', 'userid', 'contextid', 'timecreated'
         ]);
+
         $qtrackercommentwrapper = new backup_nested_element('comments');
         $qtrackercomment = new backup_nested_element('comment', ['id'], [
             'description', 'userid', 'timecreated'
+        ]);
+
+        $qtrackerreferencewrapper = new backup_nested_element('references');
+        $qtrackerreference = new backup_nested_element('reference', [id], [
+           'targetid', 'reftype'
         ]);
 
         // TODO: Trenge ikkje questionusageid, slot, contextid
 
         // Build the backup tree
         $qtrackercommentwrapper->add_child($qtrackercomment);
+        $qtrackerreferencewrapper->add_child($qtrackerreference);
+        $qtrackerissue->add_child($qtrackerreferencewrapper);
         $qtrackerissue->add_child($qtrackercommentwrapper);
         $pluginwrapper->add_child($qtrackerissue);
         $plugin->add_child($pluginwrapper);
 
         // Define sources
-        // TODO: Source local_qtracker...
+        $qtrackerreference->set_source_table('local_qtracker_reference', ['sourceid' => backup::VAR_PARENTID]);
         $qtrackerissue->set_source_table('local_qtracker_issue', ['questionid' => backup::VAR_PARENTID]);
         $qtrackercomment->set_source_table('local_qtracker_comment', ['issueid' => backup::VAR_PARENTID]);
 
