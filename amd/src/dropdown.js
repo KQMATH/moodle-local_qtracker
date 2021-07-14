@@ -16,8 +16,8 @@
 /**
  * Manager for managing table of questions with issues.
  *
- * @module     local_qtracker/QuestionsIssue
- * @class      QuestionsIssue
+ * @module     local_qtracker/Dropdown
+ * @class      Dropdown
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2021 NTNU
@@ -25,8 +25,15 @@
  */
 import $ from 'jquery';
 import Templates from 'core/templates';
-import Ajax from 'core/ajax';
 import { get_string as getString } from 'core/str';
+import DropdownEvents from 'local_qtracker/dropdown_events';
+import { loadIssuesData } from 'local_qtracker/api_helpers';
+
+var SELECTORS = {
+    DROPDOWN: '[data-region="dropdown"]',
+    SEARCH: 'input[type="search"]',
+    ITEM: '[data-region="item"]',
+};
 
 /**
  * Constructor
@@ -38,47 +45,114 @@ import { get_string as getString } from 'core/str';
  */
 class Dropdown {
     loading = null;
-    container = null;
+    root = null;
     items = new Map();
     activeItems = new Map();
     isSearching = false;
-    constructor(container) {
-        this.container = $(container); // Container element dropdown-menu
-        this.init();
+
+    constructor(root, search = true) {
+        this.root = $(root); // Root element dropdown-menu
+        this.dropdown = this.root.find(SELECTORS.DROPDOWN);
+        this.search = search;
+
         this.render = this.renderItems.bind(this);
-        this.addListeners = this.addListeners.bind(this);
+        this.registerEventListeners = this.registerEventListeners.bind(this);
 
+        if (this.search) {
+            this.registerEventListeners();
+        }
     }
 
-    init() {
-        this.addListeners();
-    }
 
-    addListeners() {
-        let self = this;
-        this.container.find('input[type="search"]').each(function () {
-            $(this).on('input', async function (event) {
-                await this.search($(event.target).val());
-                this.render();
-            }.bind(self))
-        });
 
-        this.container.on('click', function (event) {
-            let element = $(event.target);
-            if (!element.hasClass("dropdown-item") || element.hasClass("disabled"))  {
+    /**
+     * Get the dropdown element of this dropdown.
+     *
+     * @method getDropdown
+     * @return {object} jQuery object
+     */
+    getDropdown() {
+        return this.dropdown;
+    };
+
+    /**
+     * Get the dropdown element of this dropdown.
+     *
+     * @method getDropdown
+     * @return {object} jQuery object
+     */
+    getRoot() {
+        return this.root;
+    };
+
+    /**
+     * Set up all of the event handling for the modal.
+     *
+     * @method registerEventListeners
+     */
+    registerEventListeners() {
+        // Handle the clicking of an item.
+        this.getDropdown().on('click', SELECTORS.ITEM, function (e) {
+            let element = $(e.currentTarget);
+            if (element.hasClass("disabled")) {
                 return;
             }
-            this.handleClicked(element);
+            var clickEvent = $.Event(DropdownEvents.click);
+            this.getRoot().trigger(clickEvent, [element]);
+
+            if (!clickEvent.isDefaultPrevented()) {
+                e.preventDefault();
+            }
         }.bind(this));
+
+        this.registerSearchListener();
     }
 
-    setActiveItems(items) {
-        this.activeItems = new Map();
-        items.forEach(item => this.activeItems.set(item.id, item));
-    }
+
+    /**
+     * Register a listener to close the dialogue when the save button is pressed.
+     *
+     * @method registerSearch
+     */
+    registerSearchListener() {
+
+        this.getDropdown().find(SELECTORS.SEARCH).on('input', function (e) {
+
+            let str = $(e.target).val();
+            var searchEvent = $.Event(DropdownEvents.search, str);
+            this.getRoot().trigger(searchEvent, [str]);
+
+            if (!searchEvent.isDefaultPrevented()) {
+                e.preventDefault();
+                if (str.length > 0) {
+                    this.isSearching = true;
+                } else {
+                    this.isSearching = false;
+                }
+                this.renderItems();
+            }
+        }.bind(this));
+    };
+
 
     getActiveItems() {
+
         return this.activeItems;
+    }
+
+    setItemStatus(key, active = true) {
+        if (active) {
+            let item = this.getItems().get(key);
+            this.activeItems.set(key, item);
+        } else {
+            this.activeItems.delete(key);
+        }
+    }
+
+    reset() {
+        this.isSearching = false;
+        this.getDropdown().find(SELECTORS.SEARCH).val("");
+        this.renderItems()
     }
 
     async render() {
@@ -93,44 +167,59 @@ class Dropdown {
         };
         //let self = this;
         await Templates.render('local_qtracker/dropdown', context).then((html, js) => {
-            Templates.replaceNodeContents(this.container, html, js);
+            Templates.replaceNodeContents(this.getDropdown(), html, js);
         });
+    }
+
+    async generateItems() {
+        let elements = [];
+        let items = this.isSearching ? this.getItems() : this.getActiveItems();
+        if (items.size === 0) {
+            let element = $('<div></div>')
+                .addClass("dropdown-item disabled")
+                .attr("data-region", 'item')
+                .html(await getString('noitems', 'local_qtracker'))
+                .prop('outerHTML');
+            elements.push(element)
+        } else {
+            // map ;; index(id), html
+            items.forEach((html, key) => {
+                let element = $('<div></div>')
+                    .addClass("dropdown-item")
+                    .addClass(() => {
+                        if (this.isActiveItem(key)) {
+                            return "active";
+                        }
+                    })
+                    .attr("data-value", key)
+                    .attr("data-region", 'item')
+                    .html(html).prop('outerHTML');
+                elements.push(element)
+            });
+        }
+        return elements;
     }
 
     async renderItems() {
-        console.log("RENDER")
         this.empty();
-        console.warn(this)
-        let elements = [];
-        let items = this.isSearching ? this.getItems() : this.getActiveItems();
-
-        if (items.size === 0) {
-            let element = $('<div></div>')
-            .addClass("dropdown-item disabled")
-            .html(await getString('noitems', 'local_qtracker'))
-            .prop('outerHTML');
-            elements.push(element)
-        }
-
-        items.forEach((item, id, map) => {
-            let element = $('<div></div>')
-            .addClass("dropdown-item")
-            .addClass(() => {
-                if (this.isActiveItem(item)) {
-                    return "active";
-                }
-            })
-            .attr( "data-value", item.id )
-            .html(item.title).prop('outerHTML');
-            elements.push(element)
-        });
-        this.container.append(elements);
+        let elements = await this.generateItems();
+        this.getDropdown().append(elements);
         //<a class="dropdown-item" data-value={{value}} href="#">{{{text}}}</a>
     }
 
-    setItems(items) {
-        this.items = new Map();
-        items.forEach(item => this.items.set(item.id, item));
+    /**
+     *
+     * @param {*} items tuples [id, html]
+     * @param {*} active
+     */
+    setItems(items, active = false) {
+        if (active) {
+            this.activeItems = new Map();
+            items.forEach(item => this.activeItems.set(item[0], item[1]));
+        } else {
+            this.items = new Map();
+            items.forEach(item => this.items.set(item[0], item[1]));
+        }
     }
 
     getItems() {
@@ -141,27 +230,12 @@ class Dropdown {
         return Array.prototype.concat(this.items, this.getActiveItems());
     }
 
-    isActiveItem(item) {
-        return this.getActiveItems().has(item.id);
-    }
-
-    async handleClicked(element) {
-        let selected = element.hasClass("active") ? true : false;
-        let id = parseInt(element.attr("data-value"));
-        let response = await this.onclick(id, selected);
-        if (response.status) {
-            if (this.getActiveItems().has(id)) {
-                this.getActiveItems().delete(id);
-            } else {
-                this.getActiveItems().set(id, this.getItems().get(id));
-            }
-        }
-        this.onchange(this.getActiveItems());
-        this.renderItems();
+    isActiveItem(key) {
+        return this.getActiveItems().has(key);
     }
 
     async search(str) {
-        if (str.length > 0 ) {
+        if (str.length > 0) {
             this.isSearching = true;
         } else {
             this.isSearching = false;
@@ -173,23 +247,13 @@ class Dropdown {
             criteria.push({ key: 'id', value: id });
         } else {
             if (str.length > 2) str += "%"
-            criteria.push({ key: 'title', value: str  });
+            criteria.push({ key: 'title', value: str });
         }
 
-        let issuesResponse = await this.loadIssuesData(criteria);
+        let issuesResponse = await loadIssuesData(criteria);
         let issues = issuesResponse.issues;
         this.setItems(issues);
         return issues;
-    }
-
-
-
-    async loadIssuesData(criteria) {
-        let issuesData = await Ajax.call([{
-            methodname: 'local_qtracker_get_issues',
-            args: { criteria: criteria }
-        }])[0];
-        return issuesData;
     }
 
     setTitle(html) {
@@ -207,7 +271,7 @@ class Dropdown {
     }
 
     empty() {
-        this.container.find('.dropdown-item').remove();
+        this.getDropdown().find(SELECTORS.ITEM).remove();
     }
 
     addTemplateItem(html, js) {

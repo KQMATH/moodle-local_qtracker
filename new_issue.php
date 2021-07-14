@@ -26,9 +26,12 @@
 namespace local_qtracker;
 
 use local_qtracker\issue;
+use local_qtracker\output\new_question_issue_page;
+use local_qtracker\form\view\new_issue_form;
 
 require_once('../../config.php');
 require_once($CFG->dirroot . '/local/qtracker/lib.php');
+require_once($CFG->libdir . '/questionlib.php');
 
 global $DB, $OUTPUT, $PAGE;
 
@@ -66,34 +69,24 @@ $issuesnode->add(
 );
 $issuesnode->add(get_string('newissue', 'local_qtracker'));
 
+// Process form actions.
+$mform = new new_issue_form($PAGE->url);
 
+if ($mform->is_cancelled()) {
+    redirect($returnurl);
 
-// TODO: require capability for editing issues.
-// Process issue actions.
-/* $commentissue = optional_param('commentissue', false, PARAM_BOOL);
-$commenttext = optional_param('commenteditor', false, PARAM_RAW);
-if ($commentissue) {
-    $issue->create_comment($commenttext);
-    redirect($PAGE->url);
+} else if ($data = $mform->get_data()) {
+    $context = \context_course::instance($courseid);
+    $question = \question_bank::load_question($data->questionid);
+    question_require_capability_on($question, 'view');
+
+    $issue = issue::create($data->title, $data->description['text'], $question, $context->id);
+    $issue->open();
+    $issueurl = new \moodle_url('/local/qtracker/issue.php', array('courseid' => $courseid, 'issueid' => $issue->get_id()));
+    redirect($issueurl);
 }
 
-
-$deletecommentid = optional_param('deletecommentid', null, PARAM_INT);
-if (!is_null($deletecommentid)) {
-    $comment = issue_comment::load($deletecommentid);
-    $comment->delete();
-    redirect($PAGE->url);
-} */
-
-// Capability checking.
-//issue_require_capability_on($issue->get_issue_obj(), 'view');
-
-$renderer = $PAGE->get_renderer('local_qtracker');
-//$questionissuepage = new question_issue_page($issue, $courseid);
-
-//$data = $renderer->render($questionissuepage);
-$data = "";
-
 echo $OUTPUT->header();
-echo $data;
+echo $OUTPUT->heading(get_string('createnewissue', 'local_qtracker'));
+$mform->display();
 echo $OUTPUT->footer();

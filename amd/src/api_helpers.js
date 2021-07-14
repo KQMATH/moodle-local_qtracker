@@ -1,4 +1,4 @@
-<?php
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,19 +15,32 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version data
- *
+ * @module     local_qtracker/api_helpers
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2021 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
+import Ajax from "core/ajax";
 
-$plugin->version = 2021071400;
-$plugin->requires = 2016120500;
-$plugin->cron = 0;
-$plugin->component = 'local_qtracker';
-$plugin->maturity = MATURITY_BETA;
-$plugin->release = '0.1.0';
+/**
+ * TODO: dynamically load "from-to" and use limit.
+ * @param {*} criteria
+ * @param {*} from
+ * @param {*} limit
+ * @returns
+ */
+export const loadIssuesData = async (criteria, from = 0, limit = 100) => {
+    let issuesData = await Ajax.call([{
+        methodname: 'local_qtracker_get_issues',
+        args: {
+            criteria: criteria,
+            from: from,
+            limit: limit,
+        }
+    }])[0];
+
+    return issuesData;
+}
+

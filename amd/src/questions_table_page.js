@@ -14,13 +14,13 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Manager for managing table of questions with issues.
+ * Class for handling page with table of questions with issues.
  *
- * @module     local_qtracker/IssueManager
- * @class      IssueManager
+ * @module     local_qtracker/QuestionsTablePage
+ * @class      QuestionsTablePage
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
- * @copyright  2020 NTNU
+ * @copyright  2021 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 import $ from 'jquery';
@@ -28,6 +28,7 @@ import Templates from 'core/templates';
 import Ajax from 'core/ajax';
 import url from 'core/url';
 import Sidebar from 'local_qtracker/sidebar';
+
 /**
  * Constructor
  * @constructor
@@ -48,7 +49,7 @@ class QuestionsTablePage {
     async init() {
 
         await this.sidebar.render();
-        window.showIssuesInPane = async function(id, state = null) {
+        window.showIssuesInPane = async function (id, state = null) {
             this.sidebar.empty();
             this.sidebar.setLoading(true);
 
@@ -71,13 +72,13 @@ class QuestionsTablePage {
             // Render issue items.
             let promises = [];
             issues.forEach(async issueData => {
-                let userData = usersData.find(({id}) => id === issueData.userid);
+                let userData = usersData.find(({ id }) => id === issueData.userid);
                 promises.push(this.addIssueItem(issueData, userData));
             });
 
             self = this;
             // When all issue item promises are resolved.
-            $.when.apply($, promises).done(function() {
+            $.when.apply($, promises).done(function () {
                 self.sidebar.setLoading(false);
                 $.each(arguments, (index, argument) => {
                     self.sidebar.addTemplateItem(argument.html, argument.js);
@@ -88,8 +89,8 @@ class QuestionsTablePage {
 
         }.bind(this);
 
-        window.closeIssuesPane = function() {this.sidebar.hide()}.bind(this);
-        window.toggleIssuesPane = function() {this.sidebar.togglePane()}.bind(this);
+        window.closeIssuesPane = function () { this.sidebar.hide() }.bind(this);
+        window.toggleIssuesPane = function () { this.sidebar.togglePane() }.bind(this);
 
     }
 
@@ -117,6 +118,7 @@ class QuestionsTablePage {
             profileimageurl: userData.profileimageurlsmall,
             fullname: userData.fullname,
             timecreated: issueData.timecreated,
+            id: issueData.id,
             title: issueData.title,
             description: issueData.description,
         };
@@ -124,21 +126,21 @@ class QuestionsTablePage {
         paneContext[state] = true;
 
         return Templates.render('local_qtracker/sidebar_item_issue', paneContext)
-            .then(function(html, js) {
-                return {html: html, js: js};
+            .then(function (html, js) {
+                return { html: html, js: js };
             });
     }
 
     async loadIssues(id, state = null) {
         let criteria = [
-            {key: 'questionid', value: id},
+            { key: 'questionid', value: id },
         ];
         if (state) {
-            criteria.push({key: 'state', value: state});
+            criteria.push({ key: 'state', value: state });
         }
         let issuesData = await Ajax.call([{
             methodname: 'local_qtracker_get_issues',
-            args: {criteria: criteria}
+            args: { criteria: criteria }
         }])[0];
 
         return issuesData;

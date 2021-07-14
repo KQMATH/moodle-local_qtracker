@@ -190,7 +190,7 @@ class question_issue_page implements renderable, templatable {
         $edittitlebutton = new stdClass();
         $edittitlebutton->primary = true;
         $edittitlebutton->name = "edittitle";
-        $edittitlebutton->classes = "p-r-1";
+        $edittitlebutton->classes = "p-r-1 edittitle";
         $edittitlebutton->value = true;
         $edittitlebutton->label = get_string('edit', 'local_qtracker');
         $data->edittitlebutton = $edittitlebutton;
@@ -218,6 +218,8 @@ class question_issue_page implements renderable, templatable {
         $editurl = new \moodle_url('/question/question.php');
         $editurl->param('id', $question->id);
         $editurl->param('courseid', $this->courseid);
+        $returnurl = $PAGE->url->out_as_local_url(false);
+        $editurl->param('returnurl', $returnurl);
         $questiondata->edit_url = $editurl;
 
         $form = new question_details_form($question, $PAGE->url);

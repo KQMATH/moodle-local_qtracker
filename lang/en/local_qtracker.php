@@ -73,7 +73,8 @@ $string['validtitle'] = 'Please provide a valid title.';
 $string['validdescription'] = 'Please provide a valid description.';
 
 $string['commentedon'] = 'commented on ';
-$string['openedissueon'] = 'opened issue on ';
+$string['openedissueon'] = 'opened issue {$a} on ';
+$string['errorsubsumingissue'] = 'An error occurred trying to subsume issue {$a}. The issue is probably superseded by another issue.';
 $string['name'] = 'Name';
 
 $string['tags'] = 'Tags';
@@ -83,6 +84,7 @@ $string['new'] = 'New';
 $string['open'] = 'Open';
 $string['closed'] = 'Closed';
 $string['newissue'] = 'New issue';
+$string['allissues'] = 'All issues';
 
 $string['reopenissue'] = 'Reopen issue';
 $string['closeissue'] = 'Comment and close issue';
@@ -97,6 +99,11 @@ $string['edit'] = 'Edit';
 $string['questionissues'] = 'Question issues';
 
 $string['noitems'] = 'No items';
+$string['createnewissue'] = 'Create new issue';
+$string['errornonexistingquestion'] = 'Please provide an valid question ID.';
+
+$string['subsumeissue'] = 'Subsume issue';
+$string['subsumeissueconfirm'] = 'Are you sure you want to subsume issue <b>#{$a->child}</b> under <b>#{$a->parent}</b>?<br>This will close issue <b>#{$a->child}</b>.';
 $string['subsumedissues'] = 'Subsumed issues';
 $string['subsumedescription'] = 'Subsume issues under this issue';
 $string['tagsdescription'] = 'Add tags for this issue';

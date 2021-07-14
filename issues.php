@@ -48,6 +48,18 @@ $PAGE->set_url($url);
 $PAGE->set_pagelayout('incourse');
 $PAGE->set_heading(get_string('pluginname', 'local_qtracker'));
 
+
+$issuesnode = $PAGE->navbar->add(
+    get_string('pluginname', 'local_qtracker'),
+    null, \navigation_node::TYPE_CONTAINER, null, 'qtracker'
+);
+$issuesnode->add(
+    get_string('issues', 'local_qtracker'),
+    new \moodle_url('/local/qtracker/view.php', array('courseid' => $courseid))
+);
+$issuesnode->add(get_string('allissues', 'local_qtracker'));
+
+
 echo $OUTPUT->header();
 
 // Get table renderer and display table.

@@ -49,10 +49,11 @@ class helper {
         $issuefields = array(
             'id' => new external_value(PARAM_INT, 'The id of the issue'),
             'title' => new external_value(PARAM_TEXT, 'The issue title.'),
-            'description' => new external_value(PARAM_TEXT, 'The issue description.'),
+            'description' => new external_value(PARAM_RAW, 'The issue description.'),
             'state' => new external_value(PARAM_TEXT, 'The issue state.'),
             'questionid' => new external_value(PARAM_INT, 'The question id for this issue.'),
             'questionusageid' => new external_value(PARAM_INT, 'The question usage id for this issue.'),
+            'contextid' => new external_value(PARAM_INT, 'The context id for this issue.'),
             'slot' => new external_value(PARAM_INT, 'The issslot for the question for the issue.'),
             'userid' => new external_value(PARAM_INT, 'The user id for the user who created the issue.'),
             'timecreated' => new external_value(PARAM_INT, 'The time the issue was created.'),

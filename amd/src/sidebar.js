@@ -14,10 +14,10 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Manager for managing table of questions with issues.
+ * Manager for managing a sidebar.
  *
- * @module     local_qtracker/QuestionsIssue
- * @class      QuestionsIssue
+ * @module     local_qtracker/Sidebar
+ * @class      Sidebar
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2021 NTNU
@@ -25,7 +25,6 @@
  */
 import $ from 'jquery';
 import Templates from 'core/templates';
-import Resizer from 'local_qtracker/resizer';
 
 /**
  * Constructor
@@ -70,13 +69,10 @@ class Sidebar {
             /* the viewport is 768px pixels wide or more */
             $('#qtracker-sidebar').css('width', 'calc(' + this.width + ' - -1.25rem)');
             $('.qtracker-push-pane-over').css('padding-' + this.getSide(), 'calc(' + this.width + ' - -' + this.margin + ')');
-            //document.body.style.backgroundColor = 'red';
         } else {
             /* the viewport is more than 768px pixels wide or less */
             $('#qtracker-sidebar').css('width', '100%');
             $('.qtracker-push-pane-over').css('padding-' + this.getSide(), '0');
-
-            //document.body.style.backgroundColor = 'blue';
         }
     }
 
@@ -113,14 +109,7 @@ class Sidebar {
             this.setVisibility(!this.hidden);
             this.setLoading(this.loading);
             this.setSide(this.side);
-            //this.setWidth(this.width);
             this.screenTest(this.mql)
-            /*this.resizer = new Resizer($('#qtracker-sidebar')[0], true, function(x,y) {
-                self.setWidth(
-                    'calc(' + x + 'px ' + ' - 30px)',
-                    'calc(' + x + 'px ' + ' - -' + self.margin + ')'
-                )
-            });*/
         });
     }
 
@@ -151,13 +140,9 @@ class Sidebar {
         if (side == 'right') {
             $('#qtracker-sidebar').addClass('qtracker-sidebar-right');
             $('#qtracker-sidebar').removeClass('qtracker-sidebar-left');
-            //$('#qtracker-sidebar').addClass('border-left');
-            //$('#qtracker-sidebar').removeClass('border-right');
         } else if (side == 'left') {
             $('#qtracker-sidebar').addClass('qtracker-sidebar-left');
             $('#qtracker-sidebar').removeClass('qtracker-sidebar-right');
-            //$('#qtracker-sidebar').addClass('border-right');
-            //$('#qtracker-sidebar').removeClass('border-left');
         }
     }
 
@@ -209,7 +194,7 @@ class Sidebar {
             $('#qtracker-sidebar').addClass('show');
             this.screenTest(this.mql);
         } else {
-            $('.qtracker-push-pane-over').css('padding-' + this.getSide(),'0');
+            $('.qtracker-push-pane-over').css('padding-' + this.getSide(), '0');
             $('#qtracker-sidebar').removeClass('show');
         }
         this.hidden = !show;

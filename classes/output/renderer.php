@@ -46,6 +46,18 @@ class renderer extends plugin_renderer_base {
      * @return string html for the page
      * @throws moodle_exception
      */
+    public function render_new_question_issue_page(new_question_issue_page $page) {
+        $data = $page->export_for_template($this);
+        return parent::render_from_template('local_qtracker/new_question_issue_page', $data);
+    }
+
+    /**
+     * Render the review page for the deletion of expired contexts.
+     *
+     * @param question_issues_page $page
+     * @return string html for the page
+     * @throws moodle_exception
+     */
     public function render_question_issues_page(question_issues_page $page) {
         $data = $page->export_for_template($this);
         return parent::render_from_template('local_qtracker/question_issues_page', $data);

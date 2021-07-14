@@ -25,6 +25,7 @@
         "fullname": "André Storhaug",
         "userurl": "https://example.com/user/profile.php?id=3",
         "timecreated": "1587655101",
+        "id": "Issue id",
         "title": "Issue title",
         "description": "Issue description",
         "extraclasses": "acctive",
@@ -40,7 +41,7 @@
         <div class="px-3">
             <a class="text-muted bold" href="{{userurl}}">{{fullname}}</a>
             <div class="text-muted">
-                {{#str}} commentedon, local_qtracker {{/str}}
+                {{#str}} openedissueon, local_qtracker, #{{id}} {{/str}}
                 {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
             </div>
         </div>

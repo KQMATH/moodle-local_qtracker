@@ -60,9 +60,11 @@ class issue_exporter extends exporter {
             ],
             'questionusageid' => [
                 'type' => PARAM_INT,
+                'null' => NULL_ALLOWED,
             ],
             'slot' => [
                 'type' => PARAM_INT,
+                'null' => NULL_ALLOWED,
             ],
             'state' => [
                 'type' => PARAM_TEXT,

@@ -334,7 +334,7 @@ class issue extends referable {
         $issueobj->title = $title;
         $issueobj->description = $description;
         $issueobj->questionid = $question->id;
-        $issueobj->questionusageid = $quba->get_id();
+        $issueobj->questionusageid = !is_null($quba) ? $quba->get_id() : null;
         $issueobj->slot = $slot;
         $issueobj->contextid = $contextid;
         $issueobj->state = 'new';
@@ -394,6 +394,14 @@ class issue extends referable {
         $comments = $this->get_comments();
         foreach ($comments as $comment) {
             $comment->delete();
+        }
+        $outrefs = $this->get_outgoing_references();
+        foreach ($outrefs as $outref) {
+            $outref->delete();
+        }
+        $inrefs = $this->get_incoming_references();
+        foreach ($inrefs as $inref) {
+            $inref->delete();
         }
         return $DB->delete_records('local_qtracker_issue', array('id' => $this->get_id()));
     }

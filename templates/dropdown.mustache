@@ -28,7 +28,7 @@
         "items": [{text:"An action", state: "disabled"}, {text:"another action", state: "active"}, {text:"a third action", state: "active"} ],
     }
 }}
-<div class="dropdown">
+<div class="dropdown" id="{{id}}-dropdown">
     <!-- Med eller uten  class="dropdown-toggle" ? -->
     <a href="#" class="" role="button" id="{{label}}dropdownMenuClickableInside" data-bs-toggle="dropdown" data-bs-auto-close="outside">
         <!-- Bootstrap gear icon -->
@@ -43,7 +43,7 @@
         {{/trigger}}
     </a>
     <!-- Lage scrollable list? -->
-    <div id="{{id}}-dropdown" class="dropdown-menu" aria-labelledby="dropdownMenuClickableInside">
+    <div data-region="dropdown" class="dropdown-menu" aria-labelledby="dropdownMenuClickableInside">
 
         {{#header}}
         <div class="dropdown-header">{{header}}</div>

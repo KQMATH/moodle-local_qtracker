@@ -14,22 +14,33 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Manager for managing table of questions with issues.
+ * Class for handling question issue page.
  *
- * @module     local_qtracker/QuestionsIssue
- * @class      QuestionsIssue
+ * @module     local_qtracker/QuestionIssuePage
+ * @class      QuestionIssuePage
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
  * @copyright  2021 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-import $, { data } from 'jquery';
+import $ from 'jquery';
 import Templates from 'core/templates';
 import Ajax from 'core/ajax';
 import url from 'core/url';
-import { get_string as getString } from 'core/str';
+import * as Str from 'core/str';
 import Sidebar from 'local_qtracker/sidebar';
 import Dropdown from 'local_qtracker/dropdown';
+import Issue from 'local_qtracker/issue';
+import ModalFactory from 'core/modal_factory';
+import ModalEvents from 'core/modal_events';
+import DropdownEvents from 'local_qtracker/dropdown_events';
+import { loadIssuesData } from 'local_qtracker/api_helpers';
+
+var SELECTORS = {
+    TITLE: '[data-region="issuetitle"]',
+    TITLE_TEXT: '[data-region="issuetitle-text"]',
+    TITLE_INPUT: '[data-region="issuetitle-input"]',
+};
 
 /**
  * Constructor
@@ -43,33 +54,50 @@ class QuestionIssuePage {
     courseid = null;
     questionid = null;
     issueid = null;
+    issue = null;
     parents = [];
-    filter =  new Set(['Open', 'New'])
+    filter = new Set(['Open', 'New'])
 
     constructor(courseid, questionid, issueid) {
         this.courseid = courseid;
         this.questionid = questionid;
         this.issueid = parseInt(issueid);
-
+        this.issue = null;
         this.loadSettings()
 
-
-        let active = this.filter.has("Closed");
-        let sidebarOptions = [{"name": "toggleclosed" , "text": "Show closed issues", "value": 0, "checkbox": true, "active": active}];
-        this.sidebar = new Sidebar('#question-issues-sidebar', true, "left", false, '30%', '1.25rem', false, sidebarOptions);
-
+        this.editingTitle = false;
         this.init();
-        this.initDropdowns();
+    }
+
+    async init() {
+        this.checkForParents()
         this.initSidebar()
+        this.initDropdowns();
+        this.registerEditTitleButtonListener()
+    }
+
+    async checkForParents() {
+
+        let parentsData = await this.loadIssueParents(this.issueid);
+        if (parentsData.parents.length > 0) {
+            this.parents = parentsData.parents;
+            let supersededids = this.parents.map((parent) => {
+                return $('<a></a>')
+                    .attr("href", this._getIssueUrl(parent.id))
+                    .html("#" + parent.id).prop('outerHTML');
+            }).join(", ");
+            this.notify({
+                message: await Str.get_string('issuesuperseded', 'local_qtracker', supersededids),
+                announce: false,
+                type: "warning",
+            }, '#qtracker-superseded');
+        }
     }
 
     loadSettings() {
         let filterData = JSON.parse(sessionStorage.getItem('local_qtracker_issue_page_filter'))
-        if (filterData !== null){
-            console.log(...filterData)
+        if (filterData !== null) {
             filterData.forEach(this.filter.add, this.filter)
-
-            console.log(this.filter)
         }
     }
 
@@ -78,85 +106,152 @@ class QuestionIssuePage {
         sessionStorage.setItem('local_qtracker_issue_page_filter', JSON.stringify(filterData))
     }
 
+
+    async loadChildren() {
+        let childrenData = await this.loadIssueChildren(this.issueid);
+        let children = childrenData.children;
+        let items = children.map((item) => [item.id, item.title]);
+        return items;
+    }
+
+    async getIssue() {
+        if (this.issue === null) {
+            this.issue = await Issue.load(this.issueid);
+        }
+        return this.issue;
+    }
+
+    registerEditTitleButtonListener() {
+        $(".edittitle").children("button").on('click', async function (e) {
+            let button = $(e.target);
+            if (!this.editingTitle) {
+                button.html(await Str.get_string('save', 'core'));
+                $(SELECTORS.TITLE_INPUT).show();
+                $(SELECTORS.TITLE_TEXT).parent("div").hide();
+                this.editingTitle = true;
+            } else {
+                let title = $(SELECTORS.TITLE_INPUT).val();
+                let issue = await this.getIssue();
+                issue.setTitle(title);
+                let response = await issue.save();
+                if (response.status) {
+                    button.html(await Str.get_string('edit', 'core'));
+                    $(SELECTORS.TITLE_INPUT).hide();
+                    $(SELECTORS.TITLE_TEXT).parent("div").show();
+                    $(SELECTORS.TITLE_TEXT).text(title);
+                    this.editingTitle = false;
+                }
+            }
+        }.bind(this));
+    }
+
     // aside blocks
     async initDropdowns() {
         let issuesDropdown = new Dropdown('#linkedissues-dropdown');
-        let childrenData = await this.loadIssueChildren(this.issueid);
-        let children = childrenData.children;
-        issuesDropdown.setActiveItems(children);
+        issuesDropdown.setItems(await this.loadChildren(), true);
         this.updateIssueAsideBlock(issuesDropdown.getActiveItems());
-        issuesDropdown.onclick = async (value, selected) => {
-            let response;
-            let parentid = parseInt(this.issueid);
-            let childid = parseInt(value);
 
-            if (selected) {
-                console.log("DELETING RELATION");
-                response = await this.deleteIssueRelation(parentid, childid);
+        // TODO: Remove the right margin of the content container when the grading panel is hidden so that it expands to full-width.
+        let dropdown = issuesDropdown;
+        dropdown.getRoot().on(DropdownEvents.search, async function (e, str) {
+            let criteria = [];
+            if (str.startsWith('#')) {
+                let id = parseInt(str.substr(1));
+                criteria.push({ key: 'id', value: id });
             } else {
-                console.log("CREATING RELATION");
-                response = await this.setIssueRelation(parentid, childid);
+                if (str.length > 2) str += "%"
+                criteria.push({ key: 'title', value: str });
             }
-            console.log("Resopnse: ", response);
-            if (response.status) {
-                this.renderSidebarContent();//TODO: update sidebar issues if exists with new status.
+            let issuesResponse = await loadIssuesData(criteria);
+            let issues = issuesResponse.issues;
+            let items = issues.map((item) => {
+                let html = item.title + ' <span class="text-muted"> #' + item.id + '</span>';
+                return [item.id, html];
+            });
+            issuesDropdown.setItems(items);
+            issuesDropdown.renderItems();
+        }.bind(this));
+
+
+        dropdown.getRoot().on(DropdownEvents.click, async function (e, element) {
+            let parentid = parseInt(this.issueid);
+            let childid = parseInt(element.attr("data-value"));
+            let active = dropdown.isActiveItem(childid);
+            if (active) {
+                let response = await this.deleteIssueRelation(parentid, childid);
+                if (response.status) {
+                    this.renderSidebarContent();//TODO: update sidebar issues if exists with new status.
+                    issuesDropdown.setItemStatus(childid, !active)
+                    issuesDropdown.reset();
+                    this.updateIssueAsideBlock(issuesDropdown.getActiveItems())
+                }
+            } else {
+                let modal = await ModalFactory.create({
+                    title: await Str.get_string('subsumeissue', 'local_qtracker'),
+                    body: await Str.get_string('subsumeissueconfirm', 'local_qtracker', { child: childid, parent: parentid }),
+                    type: ModalFactory.types.SAVE_CANCEL,
+                    large: false,
+                })
+                modal.setSaveButtonText(await Str.get_string('confirm', 'core'));
+                modal.getRoot().on(ModalEvents.save, async e => {
+                    // Don't close the modal yet.
+                    e.preventDefault();
+                    // Submit form data.
+                    let response = await this.setIssueRelation(parentid, childid);
+                    if (response.status) {
+                        this.renderSidebarContent();//TODO: update sidebar issues if exists with new status.
+                        issuesDropdown.setItemStatus(childid, !active)
+                        issuesDropdown.reset();
+                        this.updateIssueAsideBlock(issuesDropdown.getActiveItems())
+                    } else {
+                        let issueurl = $('<a></a>')
+                            .attr("href", this._getIssueUrl(childid))
+                            .html("#" + childid).prop('outerHTML');
+
+                        this.notify({
+                            message: await Str.get_string('errorsubsumingissue', 'local_qtracker', issueurl),
+                            announce: true,
+                            closebutton: true,
+                            type: "error",
+                        }, '#qtracker-notifications');
+                    }
+                    modal.destroy();
+
+                    //submitEditFormAjax(link, getBody, modal, userEnrolmentId, container.dataset);
+                });
+                // Handle hidden event.
+                modal.getRoot().on(ModalEvents.hidden, () => {
+                    // Destroy when hidden.
+                    modal.destroy();
+                });
+                // Show the modal.
+                modal.show();
             }
-            return response
-        };
-        issuesDropdown.onchange = this.updateIssueAsideBlock.bind(this);
+        }.bind(this))
+
         issuesDropdown.renderItems();
-
-
-        console.log("issuesDropdown")
-        console.log(issuesDropdown)
-
     }
 
     async updateIssueAsideBlock(items) {
-         //this.issueAsideBlock.update();
-         console.log("ONCHANGE", items)
-         console.log("ONCHANGE", items)
-         let elements = []
+        let elements = []
 
-         if (items.size === 0) {
+        if (items.size === 0) {
             let element = $('<div></div>')
-            .addClass("dropdown-item disabled")
-            .html(await getString('noitems', 'local_qtracker'))
-            .prop('outerHTML');
+                .addClass("dropdown-item disabled")
+                .html(await Str.get_string('noitems', 'local_qtracker'))
+                .prop('outerHTML');
             elements.push(element)
         }
 
-         items.forEach(issue => {
-             let element = $('<a></a>')
-             .addClass("list-item border-0 p-1")
-             .attr("href", this._getIssueUrl(issue.id))
-             .html(issue.title).prop('outerHTML');
-             //<div class="list-group-item border-0 {{state}}">{{{text}}}</div>
-             elements.push(element);
-         });
-         $(".linkedissues-list").html(elements);
-    }
-
-
-    async init() {
-        let parentsData = await this.loadIssueParents(this.issueid);
-        if (parentsData.parents.length > 0) {
-            this.parents = parentsData.parents;
-            console.log(this.parents)
-
-            let supersededids = this.parents.map((parent) => {
-                return $('<a></a>')
-                    .attr("href", this._getIssueUrl(parent.id))
-                    .html("#"+ parent.id).prop('outerHTML');
-            }).join(", ");
-
-            console.log(supersededids)
-            this.notify({
-                message: await getString('issuesuperseded', 'local_qtracker', supersededids),
-                announce: true,
-                type: "warning",
-            });
-        }
+        items.forEach((html, key) => {
+            let element = $('<a></a>')
+                .addClass("list-item border-0 p-1")
+                .attr("href", this._getIssueUrl(key))
+                .html(html).prop('outerHTML');
+            //<div class="list-group-item border-0 {{state}}">{{{text}}}</div>
+            elements.push(element);
+        });
+        $(".linkedissues-list").html(elements);
     }
 
     _getIssueUrl(issueid) {
@@ -203,8 +298,11 @@ class QuestionIssuePage {
         });
     }
 
-
     async initSidebar() {
+        let active = this.filter.has("Closed");
+        let sidebarOptions = [{ "name": "toggleclosed", "text": "Show closed issues", "value": 0, "checkbox": true, "active": active }];
+        this.sidebar = new Sidebar('#question-issues-sidebar', true, "left", false, '30%', '1.25rem', false, sidebarOptions);
+
         await this.sidebar.render();
 
         this.sidebar.empty();
@@ -219,19 +317,15 @@ class QuestionIssuePage {
         this.sidebar.show();
 
         await this.renderSidebarContent();
-        console.log(this.sidebar.getContainer())
-        console.log(this.sidebar.getContainer())
-
 
         // Add logic to sidebar actions (dropdowns)
-        this.sidebar.getContainer().on('click', async function(e) {
+        this.sidebar.getContainer().on('click', async function (e) {
             let element = $(e.target);
             if (element.hasClass("dropdown-item")) {
                 let dropdownItem = element.attr("data-name");
                 let itemValue = parseInt(element.attr("data-value"));
                 switch (dropdownItem) {
                     case "toggleclosed": // Sidebar toolbar filter
-                        console.log("toggleclosed", itemValue)
                         if (element.is(':checked')) {
                             this.filter.add('Closed');
                             element.prop('checked', true);
@@ -244,7 +338,6 @@ class QuestionIssuePage {
                         break;
                     case "subsume": // Sidebar item action
                         //TODO: add issue menu to the sidebar items
-                        console.log("Subsume", itemValue)
                         let parentid = this.issueid;
                         let childid = itemValue;
                         let response = await this.setIssueRelation(parentid, childid);
@@ -284,7 +377,7 @@ class QuestionIssuePage {
      * @param {object} userData
      * @return {Promise}
      */
-    async addIssueItem(issueData, userData, extraClasses="") {
+    async addIssueItem(issueData, userData, extraClasses = "") {
         // Fetch user data.
         let issueurl = url.relativeUrl('/local/qtracker/issue.php', {
             courseid: this.courseid,
@@ -305,7 +398,7 @@ class QuestionIssuePage {
             },
             "header": false,
             "items": [
-                {"name": "subsume",  "text": "Subsume", "value": issueData.id},
+                { "name": "subsume", "text": "Subsume", "value": issueData.id },
             ]
         }
         // Render issues pane
@@ -315,6 +408,7 @@ class QuestionIssuePage {
             profileimageurl: userData.profileimageurlsmall,
             fullname: userData.fullname,
             timecreated: issueData.timecreated,
+            id: issueData.id,
             title: issueData.title,
             description: issueData.description,
             extraclasses: extraClasses
@@ -425,10 +519,7 @@ class QuestionIssuePage {
         return userData;
     }
 
-
-
-
-    notify(notification) {
+    notify(notification, selector = null) {
         notification = $.extend({
             closebutton: false,
             announce: false,
@@ -446,7 +537,11 @@ class QuestionIssuePage {
         let template = types[notification.type];
         Templates.render(template, notification)
             .then((html, js) => {
-                $('#qtracker-notifications').html(html);
+                if (selector === null) {
+                    $('#qtracker-notifications').append(html);
+                } else {
+                    $(selector).append(html);
+                }
                 Templates.runTemplateJS(js);
             })
             .catch((error) => {

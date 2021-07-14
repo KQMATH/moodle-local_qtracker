@@ -30,15 +30,17 @@
         "profileimageurl": "https://moodle.org/pix/u/f3.png"
     }
 }}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
 <div class="qtracker-container qtracker-push-pane-over">
-
     <div id="question-issues-sidebar"></div>
     {{#questionissue}}
     <div class="cotainer-fluid">
+        <span class="notifications" id="qtracker-notifications"></span>
         <div class="row">
             <div class="col">
-                <h1>
-                    {{title}} <span class="text-muted">#{{id}}</span>
+                <h1 data-region="issuetitle">
+                    <div><span data-region="issuetitle-text">{{title}}</span> <span class="text-muted">#{{id}}</span></div>
+                    <input type="text" data-region="issuetitle-input" class="form-control" value="{{title}}" style="display: none;">
                 </h1>
             </div>
             <div class="col d-flex justify-content-end">
@@ -71,7 +73,7 @@
         </div>
 
     {{/questionissue}}
-    <span class="notifications" id="qtracker-notifications"></span>
+    <span class="notifications" id="qtracker-superseded"></span>
 
     <hr>
     {{#question}}
@@ -144,8 +146,6 @@
                                 </div>
                                 <hr>
                             {{/asideblocks}}
-                            <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
-
                         </div>
                     </div>
                 </div>
