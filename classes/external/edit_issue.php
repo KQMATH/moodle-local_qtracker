@@ -52,7 +52,7 @@ class edit_issue extends \external_api {
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function edit_issue_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters(
             array(
                 'issueid' => new external_value(PARAM_INT, 'issue id'),
@@ -71,14 +71,14 @@ class edit_issue extends \external_api {
      *
      * @return array with status, issueid and any warnings
      */
-    public static function edit_issue($issueid, $issuetitle, $issuedescription) {
+    public static function execute($issueid, $issuetitle, $issuedescription) {
         global $USER, $DB;
 
         $added = false;
         $warnings = array();
 
         // Parameter validation.
-        $params = self::validate_parameters(self::edit_issue_parameters(),
+        $params = self::validate_parameters(self::execute_parameters(),
             array(
                 'issueid' => (int) $issueid,
                 'issuetitle' => $issuetitle,
@@ -140,7 +140,7 @@ class edit_issue extends \external_api {
      *
      * @return external_description
      */
-    public static function edit_issue_returns() {
+    public static function execute_returns() {
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),

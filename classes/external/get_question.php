@@ -51,7 +51,7 @@ class get_question extends \external_api {
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function get_question_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters(
             array(
                 'id' => new external_value(PARAM_INT, 'question id')
@@ -67,14 +67,14 @@ class get_question extends \external_api {
      *
      * @return array with status, summary of the question and any warnings
      */
-    public static function get_question($questionid) {
+    public static function execute($questionid) {
         global $PAGE, $USER;
 
         $status = false;
         $warnings = array();
 
         // Parameter validation.
-        $params = self::validate_parameters(self::get_question_parameters(),
+        $params = self::validate_parameters(self::execute_parameters(),
             array(
                 'id' => (int) $questionid,
             )
@@ -107,7 +107,7 @@ class get_question extends \external_api {
      * Returns description of method result value
      * @return external_description
      */
-    public static function get_question_returns() {
+    public static function execute_returns() {
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),
