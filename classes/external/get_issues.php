@@ -56,7 +56,7 @@ class get_issues extends \external_api {
      * @return external_function_parameters
      * @since Moodle 2.5
      */
-    public static function get_issues_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters(
             array(
                 'criteria' => new external_multiple_structure(
@@ -66,7 +66,7 @@ class get_issues extends \external_api {
                                 "id" (int) matching issue id,
                                 "questionid" (int) issue questionid,
                                 "state" (string) issue state,
-                                "title" (Sstring) issue last name
+                                "title" (Sstring) issue title,
                                 (Note: you can use % for searching but it may be considerably slower!)'),
                             'value' => new external_value(PARAM_RAW, 'the value to search')
                         )
@@ -78,7 +78,9 @@ class get_issues extends \external_api {
                         the search is still executed on the valid criterias.
                         You can search without criteria, but the function is not designed for it.
                         It could very slow or timeout. The function is designed to search some specific issues.'
-                )
+                ),
+                'from' => new external_value(PARAM_INT, 'Start returning records from here', VALUE_DEFAULT, 0),
+                'limit' => new external_value(PARAM_INT, 'Number of records to return', VALUE_DEFAULT, 20)
             )
         );
     }
@@ -91,13 +93,16 @@ class get_issues extends \external_api {
      * @return array An array of arrays containing issue profiles.
      * @since Moodle 2.5
      */
-    public static function get_issues($criteria = array()) {
+    public static function execute($criteria = array(), $from, $limit) {
         global $CFG, $issue, $DB, $PAGE, $USER;
 
         require_once($CFG->dirroot . "/local/qtracker/lib.php");
         $params = self::validate_parameters(
-            self::get_issues_parameters(),
-            array('criteria' => $criteria)
+            self::execute_parameters(),
+            array(
+                'criteria' => $criteria,
+                'from' => $from,
+                'limit' => $limit,)
         );
 
         // Validate the criteria and retrieve the issues.
@@ -173,7 +178,9 @@ class get_issues extends \external_api {
             }
         }
 
-        $issues = $DB->get_records_select('local_qtracker_issue', $sql, $sqlparams, 'id ASC');
+        $limitfrom= $params['from'];
+        $limitnum= $params['limit'];
+        $issues = $DB->get_records_select('local_qtracker_issue', $sql, $sqlparams, 'id ASC', '*', $limitfrom, $limitnum);
 
         // Finally retrieve each issues information.
         $returnedissues = array();
@@ -214,7 +221,7 @@ class get_issues extends \external_api {
      * @return external_description
      * @since Moodle 2.5
      */
-    public static function get_issues_returns() {
+    public static function execute_returns() {
         return new external_single_structure(
             array(
                 'issues' => new external_multiple_structure(

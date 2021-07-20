@@ -15,35 +15,40 @@
     along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 }}
 {{!
-    @template local_qtracker/issues_pane
+    @template local_qtracker/sidebar
 
-    Issue pane template.
+    Sidebar template.
 
     Example context (json):
     {
     }
 }}
-<div id="issues-pane" class="collapse">
+<div id="qtracker-sidebar" class="collapse">
         <div class="position-relative h-100">
-                <div class="issues-pane-header border-bottom bg-white position-absolute w-100">
+                <div class="qtracker-sidebar-header border-bottom bg-white position-absolute w-100">
                     <div class="d-flex align-items-center justify-content-between">
-                            <a class="issues-pane-title bold" href="#">{{questiontitle}} #{{questionid}}</a>
+                        <a class="qtracker-sidebar-title bold" href="#">{{questiontitle}} #{{questionid}}</a>
+                        <div>
+                            {{#options}}
+                                {{>local_qtracker/dropdown}}
+                            {{/options}}
                             {{#close}}
                                 <a href="#" onclick="closeIssuesPane();return false;">
                                     {{>core/pix_icon_fontawesome}}
                                 </a>
                             {{/close}}
+                        </div>
                     </div>
                 </div>
-            <div class="issues-pane-content h-100 py-5 px-3">
+            <div class="qtracker-sidebar-content h-100 py-5 px-3">
                 <div class="loading h-100 collapse show">
                     <div class="p-5 d-flex justify-content-center h-100">
                         {{>core/loading}}
                     </div>
                 </div>
-                <div class="issues h-100 no-overflow"></div>
+                <div class="qtracker-items h-100 no-overflow"></div>
             </div>
-            <div class="issues-pane-footer border-top bg-white position-absolute w-100">
+            <div class="qtracker-sidebar-footer border-top bg-white position-absolute w-100">
                     <div class="d-flex align-items-center justify-content-between">
                         <div></div>
                         {{#close}}

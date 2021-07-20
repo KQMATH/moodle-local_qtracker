@@ -24,8 +24,26 @@
         "questions": "raw html"
     }
 }}
-<div class="qtracker-container">
-    <h1>{{#str}} questionissues, local_qtracker {{/str}}</h1>
+<div class="qtracker-container qtracker-push-pane-over">
+
+    <div class="row">
+        <div class="col">
+            <h1>{{#str}} questionissues, local_qtracker {{/str}}</h1>
+        </div>
+        <div class="col d-flex justify-content-end">
+            {{#allissuesbutton}}
+            <form method="post" action="{{{action}}}" data-action="issueaction" enctype="multipart/form-data" accept-charset="utf-8">
+                {{> local_qtracker/button}}
+            </form>
+            {{/allissuesbutton}}
+            {{#newissuebutton}}
+            <form method="post" action="{{{action}}}" data-action="issueaction" enctype="multipart/form-data" accept-charset="utf-8">
+                {{> local_qtracker/button}}
+            </form>
+            {{/newissuebutton}}
+        </div>
+    </div>
+    <br>
     <div id="questions-table-sidebar"></div>
     <div>
         <div id="questions-wrapper">
@@ -34,7 +52,7 @@
     </div>
 </div>
 {{#js}}
-require(['jquery', 'local_qtracker/questions_table'], function($, QuestionsTable) {
-    new QuestionsTable({{courseid}});
+require(['jquery', 'local_qtracker/questions_table_page'], function($, QuestionsTablPage) {
+    new QuestionsTablPage({{courseid}});
 });
 {{/js}}

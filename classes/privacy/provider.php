@@ -35,6 +35,7 @@ use core_privacy\local\request\helper;
 use core_privacy\local\request\transform;
 use core_privacy\local\request\writer;
 use dml_exception;
+use local_qtracker\issue;
 use moodle_exception;
 use question_display_options;
 use stdClass;
@@ -205,8 +206,17 @@ class provider implements
         ];
         $issues = $DB->get_records_sql($sql, $params);
 
+        $issueids = [];
         foreach ($issues as $issue) {
+            array_push($issueids, $issue->id);
             $DB->delete_records('local_qtracker_issue', ['id' => $issue->id]);
+        }
+
+        list($issueidsql, $issueidparams) = $DB->get_in_or_equal($issueids, SQL_PARAMS_NAMED);
+        $refssql = "SELECT id FROM {local_qtracker_reference} WHERE sourceid $issueidsql OR targetid $issueidsql";
+        $refs = $DB->get_records_sql($refssql, $issueidparams);
+        foreach ($refs as $ref) {
+            $DB->delete_records('local_qtracker_reference', ['id' => $ref->id]);
         }
     }
 
@@ -248,8 +258,17 @@ class provider implements
         $params += $contextparams;
         $issues = $DB->get_records_sql($sql, $params);
 
+        $issueids = [];
         foreach ($issues as $issue) {
+            array_push($issueids, $issue->id);
             $DB->delete_records('local_qtracker_issue', ['id' => $issue->id]);
+        }
+
+        list($issueidsql, $issueidparams) = $DB->get_in_or_equal($issueids, SQL_PARAMS_NAMED);
+        $refssql = "SELECT id FROM {local_qtracker_reference} WHERE sourceid $issueidsql OR targetid $issueidsql";
+        $refs = $DB->get_records_sql($refssql, $issueidparams);
+        foreach ($refs as $ref) {
+            $DB->delete_records('local_qtracker_reference', ['id' => $ref->id]);
         }
     }
 }

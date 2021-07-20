@@ -27,6 +27,10 @@ namespace local_qtracker;
 
 defined('MOODLE_INTERNAL') || die();
 
+require_once($CFG->dirroot . '/local/qtracker/lib.php');
+
+use local_qtracker\referable;
+
 /**
  * Question issue class.
  *
@@ -34,7 +38,7 @@ defined('MOODLE_INTERNAL') || die();
  * @copyright  2020 André Storhaug
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class issue {
+class issue extends referable {
 
     /**
      * @var \stdClass
@@ -42,7 +46,7 @@ class issue {
     protected $issue = null;
 
     /**
-     * @var \stdClass
+     * @var array
      */
     protected $comments = array();
 
@@ -167,20 +171,19 @@ class issue {
      *
      * @param string $description
      *
-     * @return \stdClass
+     * @return issue_comment
      */
     public function create_comment($description) {
         $comment = issue_comment::create($description, $this);
-        $comments = $this->get_comments();
-        array_push($comments, $comment);
+        array_push($this->comments, $comment);
         return $comment;
     }
 
-     /**
-      * Add a new commentto this issue.
-      *
-      * @return \stdClass
-      */
+    /**
+     * Add a new comment to this issue.
+     *
+     * @return \stdClass
+     */
     public function get_comments() {
         global $DB;
         if (empty($this->comments)) {
@@ -191,6 +194,110 @@ class issue {
             }
         }
         return $this->comments;
+    }
+
+    /**
+     * Subsube this issue under another "parent" issue.
+     * Read: "This issue is superseded by issue passed as param."
+     * @param issue $issue to subsume under
+     */
+    public function subsume(issue $issue) {
+        if ($this->is_superseded()) {
+            return false;
+        }
+        $this->make_outgoing_reference($issue, LOCAL_QTRACKER_REFERENCE_SUPERSEDED);
+        return true;
+    }
+
+    /**
+     * Supersede another issue.
+     * Read: "Issue passed as param is superseded by this issue."
+     * @param string $description
+     *
+     * @return bool Returns true if success, false otherwise
+     */
+    public function supersede_issue(issue $issue) {
+        if ($issue->is_superseded()) {
+            return false;
+        }
+        $this->make_incoming_reference($issue, LOCAL_QTRACKER_REFERENCE_SUPERSEDED);
+        $issue->close();
+        return true;
+    }
+
+    /**
+     * Returns true if issue is superseded by any issue.
+     */
+    public function is_superseded() {
+        $outrefs = $this->get_outgoing_references();
+        $refs = reference_manager::filter_references_by_type($outrefs, LOCAL_QTRACKER_REFERENCE_SUPERSEDED);
+        if (!empty($refs)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Get all parent issues (issues that this issue is superseded by)
+     */
+    public function get_parents() {
+        $parents = [];
+        $outrefs = $this->get_outgoing_references();
+        $refs = reference_manager::filter_references_by_type($outrefs, LOCAL_QTRACKER_REFERENCE_SUPERSEDED);
+        foreach ($refs as $ref) {
+            $issue = issue::load($ref->get_target_id());
+            array_push($parents, $issue);
+        }
+        return $parents;
+    }
+
+    /**
+     * Get all child issues (that have been subsumed under this issue)
+     */
+    public function get_children() {
+        $children = [];
+        $inrefs = $this->get_incoming_references();
+        $refs = reference_manager::filter_references_by_type($inrefs, LOCAL_QTRACKER_REFERENCE_SUPERSEDED);
+        foreach ($refs as $ref) {
+            array_push($children, issue::load($ref->get_source_id()));
+        }
+        return $children;
+    }
+
+    /**
+     * Remove parent issue (that supersedes this issue)
+     */
+    public function remove_parent(issue $parent) {
+        $parentref = null;
+        $outrefs = $this->get_outgoing_references();
+        $refs = reference_manager::filter_references_by_type($outrefs, LOCAL_QTRACKER_REFERENCE_SUPERSEDED);
+        foreach ($refs as $ref) {
+            if ($ref->get_target_id() === $parent->get_id()) {
+                $parentref = $ref;
+            }
+        }
+        if (is_null($parentref)) {
+            return false;
+        }
+        return $parentref->delete();
+    }
+
+    /**
+     * Remove child issue (that has been subsumed under this issue)
+     */
+    public function remove_child(issue $child) {
+        $childref = null;
+        $inrefs = $this->get_incoming_references();
+        $refs = reference_manager::filter_references_by_type($inrefs, LOCAL_QTRACKER_REFERENCE_SUPERSEDED);
+        foreach ($refs as $ref) {
+            if ($ref->get_source_id() === $child->get_id()) {
+                $childref = $ref;
+            }
+        }
+        if (is_null($childref)) {
+            return false;
+        }
+        return $childref->delete();
     }
 
     /**
@@ -227,7 +334,7 @@ class issue {
         $issueobj->title = $title;
         $issueobj->description = $description;
         $issueobj->questionid = $question->id;
-        $issueobj->questionusageid = $quba->get_id();
+        $issueobj->questionusageid = !is_null($quba) ? $quba->get_id() : null;
         $issueobj->slot = $slot;
         $issueobj->contextid = $contextid;
         $issueobj->state = 'new';
@@ -287,6 +394,14 @@ class issue {
         $comments = $this->get_comments();
         foreach ($comments as $comment) {
             $comment->delete();
+        }
+        $outrefs = $this->get_outgoing_references();
+        foreach ($outrefs as $outref) {
+            $outref->delete();
+        }
+        $inrefs = $this->get_incoming_references();
+        foreach ($inrefs as $inref) {
+            $inref->delete();
         }
         return $DB->delete_records('local_qtracker_issue', array('id' => $this->get_id()));
     }

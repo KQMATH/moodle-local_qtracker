@@ -25,19 +25,24 @@
 
 namespace local_qtracker;
 
+use core\check\performance\debugging;
+use core\message\message;
 use local_qtracker\issue;
 use local_qtracker\output\question_issue_page;
+use local_qtracker\output\email\issue_comment_email;
+use mod_capquiz\capquiz;
 
 require_once('../../config.php');
 require_once($CFG->dirroot . '/local/qtracker/lib.php');
 
-global $DB, $OUTPUT, $PAGE;
+global $DB, $OUTPUT, $PAGE, $USER;
 
 // Check for all required variables.
 $courseid = required_param('courseid', PARAM_INT);
 $issueid = required_param('issueid', PARAM_INT);
 
-if (!$course = $DB->get_record('course', array('id' => $courseid))) {
+$course = $DB->get_record('course', array('id' => $courseid));
+if (!$course) {
     print_error('invalidcourseid');
 }
 
@@ -61,7 +66,10 @@ if (optional_param('return', false, PARAM_BOOL)) {
 
 $issuesnode = $PAGE->navbar->add(
     get_string('pluginname', 'local_qtracker'),
-    null, \navigation_node::TYPE_CONTAINER, null, 'qtracker'
+    null,
+    \navigation_node::TYPE_CONTAINER,
+    null,
+    'qtracker'
 );
 $issuesnode->add(
     get_string('issues', 'local_qtracker'),
@@ -78,19 +86,66 @@ if (!$issue) {
     redirect($issuesurl);
 }
 
-// TODO: require capability for editing issues.
+/**
+ * Send comment as message.
+ */
+function send_comment($course, issue $issue, issue_comment $comment) {
+    global $DB, $USER, $PAGE;
+
+    $htmlemailrenderer = $PAGE->get_renderer('local_qtracker', 'email', 'htmlemail');
+    $textemailrenderer = $PAGE->get_renderer('local_qtracker', 'email', 'textemail');
+
+    $recipient = $DB->get_record('user', array('id' => $issue->get_userid()));
+    $postsubject = get_string('issueupdatednotify', 'local_qtracker', $issue->get_title());
+
+    $data = new issue_comment_email($course, $comment, $USER, $recipient);
+
+    $message = new \core\message\message();
+    $message->component           = 'local_qtracker';
+    $message->name                = 'issueresponse';
+    $message->userfrom            = $USER;
+    $message->userto              = $recipient;
+    $message->subject             = $postsubject;
+    $message->fullmessage         = $textemailrenderer->render($data);
+    $message->fullmessageformat   = FORMAT_HTML;
+    $message->fullmessagehtml     = $htmlemailrenderer->render($data);
+    $message->smallmessage        = '';
+    $message->notification        = 1;
+    $message->replyto             = null;
+
+    // TODO: make issue.php page handle correctly students viewing comments.
+    //$contexturl = new \moodle_url('/local/qtracker/issue.php', ['courseid' => $course->id, 'issueid' => $issue->get_id()]);
+    //$message->contexturl = $contexturl->out();
+    //$message->contexturlname = $issue->get_title();
+
+    return message_send($message);
+}
+
+
 // Process issue actions.
 $commentissue = optional_param('commentissue', false, PARAM_BOOL);
 $commenttext = optional_param('commenteditor', false, PARAM_RAW);
+$sendmessage = optional_param('sendmessage', false, PARAM_BOOL);
+
 if ($commentissue) {
-    $issue->create_comment($commenttext);
+    $comment = $issue->create_comment($commenttext);
+    if ($sendmessage) {
+        if (send_comment($course, $issue, $comment)) {
+            $comment->mark_mailed();
+        }
+    }
     redirect($PAGE->url);
 }
 
 $closeissue = optional_param('closeissue', false, PARAM_BOOL);
 if ($closeissue) {
     if ($commenttext != false) {
-        $issue->create_comment($commenttext);
+        $comment = $issue->create_comment($commenttext);
+        if ($sendmessage) {
+            if (send_comment($course, $issue, $comment)) {
+                $comment->mark_mailed();
+            }
+        }
     }
     $issue->close();
     redirect($PAGE->url);
@@ -99,6 +154,15 @@ if ($closeissue) {
 $reopenissue = optional_param('reopenissue', false, PARAM_BOOL);
 if ($reopenissue) {
     $issue->open();
+    redirect($PAGE->url);
+}
+
+$notifycommentid = optional_param('notifycommentid', null, PARAM_INT);
+if (!is_null($notifycommentid)) {
+    $comment = issue_comment::load($notifycommentid);
+    if (send_comment($course, $issue, $comment)) {
+        $comment->mark_mailed();
+    }
     redirect($PAGE->url);
 }
 

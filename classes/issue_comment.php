@@ -104,6 +104,15 @@ class issue_comment {
     }
 
     /**
+     * Returns true if the comment is mailed to the issue reporter, otherwise false.
+     *
+     * @return \stdClass
+     */
+    public function is_mailed() {
+        return $this->comment->mailed;
+    }
+
+    /**
      * Returns a plain \stdClass with the comment data.
      *
      * @return \stdClass
@@ -185,6 +194,17 @@ class issue_comment {
     public function set_description($title) {
         global $DB;
         $this->comment->description = $title;
+        $DB->update_record('local_qtracker_comment', $this->comment);
+    }
+
+    /**
+     * Marks the commennt as mailed to the issue reporter
+     *
+     * @return \stdClass
+     */
+    public function mark_mailed() {
+        global $DB;
+        $this->comment->mailed = true;
         $DB->update_record('local_qtracker_comment', $this->comment);
     }
 }

@@ -27,6 +27,7 @@ namespace local_qtracker\output;
 
 defined('MOODLE_INTERNAL') || die();
 
+use local_qtracker\output\email\issue_comment_email;
 use plugin_renderer_base;
 use templatable;
 
@@ -46,9 +47,21 @@ class renderer extends plugin_renderer_base {
      * @return string html for the page
      * @throws moodle_exception
      */
+    public function render_new_question_issue_page(new_question_issue_page $page) {
+        $data = $page->export_for_template($this);
+        return parent::render_from_template('local_qtracker/new_question_issue_page', $data);
+    }
+
+    /**
+     * Render the review page for the deletion of expired contexts.
+     *
+     * @param question_issues_page $page
+     * @return string html for the page
+     * @throws moodle_exception
+     */
     public function render_question_issues_page(question_issues_page $page) {
         $data = $page->export_for_template($this);
-        return parent::render_from_template('local_qtracker/question_issues', $data);
+        return parent::render_from_template('local_qtracker/question_issues_page', $data);
     }
 
     /**
@@ -60,7 +73,7 @@ class renderer extends plugin_renderer_base {
      */
     public function render_questions_page(questions_page $page) {
         $data = $page->export_for_template($this);
-        return parent::render_from_template('local_qtracker/questions', $data);
+        return parent::render_from_template('local_qtracker/questions_page', $data);
     }
 
     /**
@@ -75,5 +88,16 @@ class renderer extends plugin_renderer_base {
         $data = $block->export_for_template($this);
         $content .= $this->render_from_template('local_qtracker/issue_registration_block', $data);
         return $content;
+    }
+
+    /**
+     * Renders a issue comment email.
+     *
+     * @param issue_comment_email $comment The issue comment to display.
+     * @return string
+     */
+    public function render_issue_comment_email(issue_comment_email $comment) {
+        $data = $comment->export_for_template($this, $this->target === RENDERER_TARGET_TEXTEMAIL);
+        return $this->render_from_template('local_qtracker/' . $this->get_template_name(), $data);
     }
 }

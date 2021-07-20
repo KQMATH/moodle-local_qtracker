@@ -54,8 +54,9 @@ class question_issues_page implements renderable, templatable {
      *
      * @param \local_qtracker\question_issues_table $questionissuestable
      */
-    public function __construct(question_issues_table $questionissuestable) {
+    public function __construct(question_issues_table $questionissuestable, $courseid) {
         $this->questionissuestable = $questionissuestable;
+        $this->courseid = $courseid;
     }
 
     /**
@@ -75,6 +76,8 @@ class question_issues_page implements renderable, templatable {
         $questionissues = ob_get_contents();
         ob_end_clean();
         $data->questionissues = $questionissues;
+        $data->courseid = $this->courseid;
+
 
         return $data;
     }

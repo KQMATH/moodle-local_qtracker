@@ -28,7 +28,6 @@ namespace local_qtracker\external;
 defined('MOODLE_INTERNAL') || die();
 
 use \core\external\exporter;
-use \renderer_base;
 
 /**
  * Class for displaying a list of issue data.
@@ -61,9 +60,11 @@ class issue_exporter extends exporter {
             ],
             'questionusageid' => [
                 'type' => PARAM_INT,
+                'null' => NULL_ALLOWED,
             ],
             'slot' => [
                 'type' => PARAM_INT,
+                'null' => NULL_ALLOWED,
             ],
             'state' => [
                 'type' => PARAM_TEXT,
