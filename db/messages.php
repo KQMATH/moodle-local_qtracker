@@ -1,3 +1,4 @@
+
 <?php
 // This file is part of Moodle - http://moodle.org/
 //
@@ -15,7 +16,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version data
+ * This file defines message providers provided by the plugin.
  *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
@@ -23,11 +24,15 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2021072000;
-$plugin->requires = 2016120500;
-$plugin->cron = 0;
-$plugin->component = 'local_qtracker';
-$plugin->maturity = MATURITY_BETA;
-$plugin->release = '0.1.0';
+
+$messageproviders = array (
+    'issueresponse' => array (
+        'default' => array (
+            'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDOFF + MESSAGE_DEFAULT_LOGGEDIN,
+            'email' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDOFF,
+        )
+    )
+);

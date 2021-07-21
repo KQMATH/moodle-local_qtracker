@@ -52,7 +52,7 @@ class delete_issue_relation extends \external_api {
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function delete_issue_relation_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters(
             array(
                 'parentid' => new external_value(PARAM_INT, 'issue id of parent'),
@@ -69,14 +69,14 @@ class delete_issue_relation extends \external_api {
      *
      * @return array with status, the issuedata, and any warnings
      */
-    public static function delete_issue_relation($parentid, $childid) {
+    public static function execute($parentid, $childid) {
         global $PAGE, $DB;
 
         $deleted = false;
         $warnings = array();
 
         // Parameter validation.
-        $params = self::validate_parameters(self::delete_issue_relation_parameters(),
+        $params = self::validate_parameters(self::execute_parameters(),
             array(
                 'parentid' => (int) $parentid,
                 'childid' => (int) $childid,
@@ -130,7 +130,7 @@ class delete_issue_relation extends \external_api {
      * @return external_description
      * @since Moodle 2.5
      */
-    public static function delete_issue_relation_returns() {
+    public static function execute_returns() {
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),

@@ -26,7 +26,7 @@
         "action": "someAction"
     }
 }}
-<form method="post" action="{{action}}" id="comment_form_{{id}}">
+<form method="post" action="{{{action}}}" id="comment_form_{{id}}">
     <div class="d-flex flex-row">
         <span><img class="userpicture" alt="User picture" width="35" height="35" src="{{profileimageurl}}"/></span>
         <div class="ml-3 border w-100 qtracker-relative">
@@ -37,7 +37,17 @@
                     {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
                 </div>
                 <div class="ml-auto">
-                    <a id="comment_{{id}}" href="#">
+                    {{#mailed}}
+                    <span class="text-muted">
+                        {{# pix }} t/message, core {{/ pix }}
+                    </span>
+                    {{/mailed}}
+                    {{^mailed}}
+                    <a id="comment_message_{{id}}" href="#">
+                        {{# pix }} t/message, core {{/ pix }}
+                    </a>
+                    {{/mailed}}
+                    <a id="comment_delete_{{id}}" href="#">
                         {{# pix }} t/delete, core {{/ pix }}
                     </a>
                 </div>
@@ -49,42 +59,7 @@
     </div>
 </form>
 {{#js}}
-require(['jquery', 'core/modal_factory', 'core/modal_events', 'core/templates', 'core/str'], function($, ModalFactory, ModalEvents, Templates, str) {
-    let trigger = $('#comment_{{id}}');
-    let strObj = [
-        {
-            key: 'confirm',
-            component: 'local_qtracker'
-        },
-        {
-            key: 'confirmdeletecomment',
-            component: 'local_qtracker'
-        },
-        {
-            key: 'deletecomment',
-            component: 'local_qtracker'
-        }
-    ];
-    str.get_strings(strObj).then(function (strings) {
-        ModalFactory.create({
-            type: ModalFactory.types.SAVE_CANCEL,
-            title: strings[2],
-            body: strings[1],
-        }, trigger)
-        .done(function(modal) {
-            modal.setSaveButtonText(strings[0])
-            modal.getRoot().on(ModalEvents.save, function(e) {
-                // Stop the default save button behaviour which is to close the modal.
-                e.preventDefault();
-                let form = $('#comment_form_{{id}}');
-                $('<input>').attr({
-                    type: "hidden",
-                    name: "deletecommentid",
-                    value: {{id}}
-                }).appendTo(form);
-                form.submit();
-            });
-        });
-    });
+require(['jquery', 'local_qtracker/issue_comment_controls'], function($, IssueCommentControls) {
+    new IssueCommentControls({{id}});
 });
 {{/js}}

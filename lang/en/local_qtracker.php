@@ -58,6 +58,9 @@ $string['unknownqubaidnumber'] = 'Unknown question usage ID "{$a}"';
 $string['title'] = 'Title';
 $string['leavecomment'] = 'Leave a comment';
 
+$string['issueupdatednotify'] = 'Issue "{$a}" is updated';
+$string['sendmessage'] = 'Notify issue reporter';
+
 $string['issuecreated'] = 'Issue successfully created.';
 $string['issueupdated'] = 'Issue successfully updated.';
 $string['issuedeleted'] = 'Issue successfully deleted.';
@@ -90,9 +93,18 @@ $string['reopenissue'] = 'Reopen issue';
 $string['closeissue'] = 'Comment and close issue';
 $string['comment'] = 'Comment';
 
+//TODO clean up the text
+$string['commentandmail'] = 'Comment and forward mail to issue creator';
+$string['issuesubject'] = 'some subject';
+$string['commentanddm'] = 'Comment and dm issue to creator';
+$string['messageprovider:issueresponse'] = 'Response on reported question issues';
+
+
 $string['confirm'] = 'Confirm';
 $string['deletecomment'] = 'Delete comment';
 $string['confirmdeletecomment'] = 'Are you sure you want to delete this comment?';
+$string['sendcomment'] = 'Notify issue reporter';
+$string['confirmsendcomment'] = 'Are you sure you want to notify the issue reporter about this comment?';
 
 $string['preview'] = 'Preview';
 $string['edit'] = 'Edit';

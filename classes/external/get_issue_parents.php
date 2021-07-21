@@ -52,7 +52,7 @@ class get_issue_parents extends \external_api {
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function get_issue_parents_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters(
             array(
                 'issueid' => new external_value(PARAM_INT, 'issue id')
@@ -67,7 +67,7 @@ class get_issue_parents extends \external_api {
      *
      * @return array with status, the issuedata, and any warnings
      */
-    public static function get_issue_parents($issueid) {
+    public static function execute($issueid) {
         global $PAGE, $DB;
 
         $issue = array();
@@ -75,7 +75,7 @@ class get_issue_parents extends \external_api {
         $warnings = array();
 
         // Parameter validation.
-        $params = self::validate_parameters(self::get_issue_parents_parameters(),
+        $params = self::validate_parameters(self::execute_parameters(),
             array(
                 'issueid' => (int) $issueid,
             )
@@ -136,7 +136,7 @@ class get_issue_parents extends \external_api {
      * @return external_description
      * @since Moodle 2.5
      */
-    public static function get_issue_parents_returns() {
+    public static function execute_returns() {
         return new external_single_structure(
             array(
                 'parents' => new external_multiple_structure(

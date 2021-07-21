@@ -119,18 +119,27 @@ class question_issue_page implements renderable, templatable {
             $userpicture = new \user_picture($user);
             $userpicture->size = 0; // Size f2.
             $commentdetails->profileimageurl = $userpicture->get_url($PAGE)->out(false);
-
+            $commentdetails->mailed = $comment->is_mailed();
+/*
             $deleteurl = new \moodle_url('/local/qtracker/issue.php');
             $deleteurl->param('courseid', $this->courseid);
             $deleteurl->param('issueid', $this->questionissue->get_id());
             $deleteurl->param('deletecommentid', $commentdetails->id);
-            $commentdetails->deleteurl = $deleteurl;
+            $commentdetails->deleteurl = $deleteurl; */
             array_push($commentsdetails, $commentdetails);
         }
 
         $issuedetails->comments = $commentsdetails;
         $issuedetails->{$issuedetails->state} = true;
         $data->questionissue = $issuedetails;
+
+        $data->sendmessage = false;
+
+        $issueurl = new \moodle_url('/local/qtracker/issue.php');
+        $issueurl->param('courseid', $this->courseid);
+        $issueurl->param('issueid', $this->questionissue->get_id());
+        $data->action = $PAGE->url->out(false);
+
 
         // Set the user picture data.
         $user = $DB->get_record('user', array('id' => $USER->id));
@@ -179,6 +188,22 @@ class question_issue_page implements renderable, templatable {
         $asideblocks = [$linkedissues];
         $data->asideblocks = $asideblocks;
 
+
+        ///
+        $commentanddmbutton = new stdClass();
+        $commentanddmbutton->primary = false;
+        $commentanddmbutton->name = "commentanddmissue";
+        $commentanddmbutton->value = true;
+        $commentanddmbutton->label = get_string('commentanddm', 'local_qtracker');
+        $data->commentanddmbutton = $commentanddmbutton;
+
+        $commentandmailbutton = new stdClass();
+        $commentandmailbutton->primary = true;
+        $commentandmailbutton->name = "commentandmailissue";
+        $commentandmailbutton->value = true;
+        $commentandmailbutton->label = get_string('commentandmail', 'local_qtracker');
+        $data->commentandmailbutton = $commentandmailbutton;
+
         $commentbutton = new stdClass();
         $commentbutton->primary = true;
         $commentbutton->name = "commentissue";
@@ -186,7 +211,7 @@ class question_issue_page implements renderable, templatable {
         $commentbutton->label = get_string('comment', 'local_qtracker');
         $data->commentbutton = $commentbutton;
 
-
+///
         $edittitlebutton = new stdClass();
         $edittitlebutton->primary = true;
         $edittitlebutton->name = "edittitle";
@@ -194,7 +219,7 @@ class question_issue_page implements renderable, templatable {
         $edittitlebutton->value = true;
         $edittitlebutton->label = get_string('edit', 'local_qtracker');
         $data->edittitlebutton = $edittitlebutton;
-        $data->action = $PAGE->url;
+
 
         $newissuebutton = new stdClass();
         $newissuebutton->primary = true;
@@ -206,6 +231,8 @@ class question_issue_page implements renderable, templatable {
         $newissuebutton->action = $newissueurl;
         $data->newissuebutton = $newissuebutton;
 
+
+        $data->action = $PAGE->url;
 
         $question = \question_bank::load_question($this->questionissue->get_questionid());
         question_require_capability_on($question, 'use');

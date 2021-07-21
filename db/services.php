@@ -29,51 +29,47 @@ defined('MOODLE_INTERNAL') || die;
 $functions = array(
     'local_qtracker_new_issue' => array(
         'classname'   => 'local_qtracker\external\new_issue',
-        'methodname'  => 'new_issue',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Register a new question issue.',
         'type'        => 'write',
         'ajax'         => true,
-        // 'capabilities' => 'moodle/course:managegroups',
         'capabilities' => array(),   // Capabilities required by the function.
         'loginrequired' => true,
     ),
     'local_qtracker_edit_issue' => array(
         'classname'   => 'local_qtracker\external\edit_issue',
-        'methodname'  => 'edit_issue',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Edit an existing question issue.',
         'type'        => 'write',
         'ajax'         => true,
-        // 'capabilities' => 'moodle/course:managegroups',
         'capabilities' => array(),   // Capabilities required by the function.
         'loginrequired' => true,
     ),
     'local_qtracker_delete_issue' => array(
         'classname'   => 'local_qtracker\external\delete_issue',
-        'methodname'  => 'delete_issue',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Delete an existing question issue.',
         'type'        => 'write',
         'ajax'         => true,
-        // 'capabilities' => 'moodle/course:managegroups',
         'capabilities' => array(),   // Capabilities required by the function.
         'loginrequired' => true,
     ),
     'local_qtracker_get_issue' => array(
         'classname'   => 'local_qtracker\external\get_issue',
-        'methodname'  => 'get_issue',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Get an existing question issue.',
         'type'        => 'read',
         'ajax'         => true,
-        // 'capabilities' => 'moodle/course:managegroups',
         'capabilities' => array(),   // Capabilities required by the function.
         'loginrequired' => true,
     ),
     'local_qtracker_get_question' => array(
         'classname'   => 'local_qtracker\external\get_question',
-        'methodname'  => 'get_question',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Get question by id.',
         'type'        => 'read',
@@ -82,7 +78,7 @@ $functions = array(
     ),
     'local_qtracker_get_question_preview_url' => array(
         'classname'   => 'local_qtracker\external\get_question_preview_url',
-        'methodname'  => 'get_question_preview_url',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Get question preview url.',
         'type'        => 'read',
@@ -91,7 +87,7 @@ $functions = array(
     ),
     'local_qtracker_get_question_edit_url' => array(
         'classname'   => 'local_qtracker\external\get_question_edit_url',
-        'methodname'  => 'get_question_edit_url',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Get question edit url.',
         'type'        => 'read',
@@ -100,7 +96,7 @@ $functions = array(
     ),
     'local_qtracker_get_issues' => array(
         'classname'   => 'local_qtracker\external\get_issues',
-        'methodname'  => 'get_issues',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Get issues.',
         'type'        => 'read',
@@ -109,7 +105,7 @@ $functions = array(
     ),
     'local_qtracker_get_issue_parents' => array(
         'classname'   => 'local_qtracker\external\get_issue_parents',
-        'methodname'  => 'get_issue_parents',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Get issue parents.',
         'type'        => 'read',
@@ -118,7 +114,7 @@ $functions = array(
     ),
     'local_qtracker_get_issue_children' => array(
         'classname'   => 'local_qtracker\external\get_issue_children',
-        'methodname'  => 'get_issue_children',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Get issue children.',
         'type'        => 'read',
@@ -127,23 +123,21 @@ $functions = array(
     ),
     'local_qtracker_set_issue_relation' => array(
         'classname'   => 'local_qtracker\external\set_issue_relation',
-        'methodname'  => 'set_issue_relation',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Set issue relation.',
         'type'        => 'write',
         'ajax'         => true,
-        // 'capabilities' => 'moodle/course:managegroups',
         'capabilities' => array(),   // Capabilities required by the function.
         'loginrequired' => true,
     ),
     'local_qtracker_delete_issue_relation' => array(
         'classname'   => 'local_qtracker\external\delete_issue_relation',
-        'methodname'  => 'delete_issue_relation',
+        'methodname'  => 'execute',
         'classpath'   => '',
         'description' => 'Delete issue relation.',
         'type'        => 'write',
         'ajax'         => true,
-        // 'capabilities' => 'moodle/course:managegroups',
         'capabilities' => array(),   // Capabilities required by the function.
         'loginrequired' => true,
     )

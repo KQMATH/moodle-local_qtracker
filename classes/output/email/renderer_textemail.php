@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Version data
+ * Email as text renderer.
  *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
@@ -23,11 +23,25 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace local_qtracker\output\email;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2021072000;
-$plugin->requires = 2016120500;
-$plugin->cron = 0;
-$plugin->component = 'local_qtracker';
-$plugin->maturity = MATURITY_BETA;
-$plugin->release = '0.1.0';
+/**
+ * Email as text renderer.
+ *
+ * @package    local_qtracker
+ * @copyright  2021 André Storhaug
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class renderer_textemail extends \local_qtracker\output\email\renderer {
+
+    /**
+     * The template name for this renderer.
+     *
+     * @return string
+     */
+    public function get_template_name() {
+        return 'email_comment_text';
+    }
+}

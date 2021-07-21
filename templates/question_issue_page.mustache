@@ -122,18 +122,24 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="m-t-1 d-flex justify-content-end">
-                            <div class="m-r-1">
-                                {{#closebutton}}
-                                    {{> local_qtracker/button}}
-                                {{/closebutton}}
-                                {{#reopenbutton}}
-                                    {{> local_qtracker/button}}
-                                {{/reopenbutton}}
+                        <div class="m-t-1 m-l-3 d-flex justify-content-between">
+                            <div class="custom-control custom-checkbox ml-2">
+                                <input type="checkbox" name="sendmessage" class="custom-control-input dropdown-item" id="{{uniqid}}-customCheck" {{#sendmessage}} checked {{/sendmessage}} >
+                                <label class="custom-control-label" for="{{uniqid}}-customCheck">{{#str}} sendmessage, local_qtracker {{/str}}</label>
                             </div>
-                            {{#commentbutton}}
-                                {{> local_qtracker/button}}
-                            {{/commentbutton}}
+                            <div class="d-flex">
+                                <div class="m-r-1">
+                                    {{#closebutton}}
+                                        {{> local_qtracker/button}}
+                                    {{/closebutton}}
+                                    {{#reopenbutton}}
+                                        {{> local_qtracker/button}}
+                                    {{/reopenbutton}}
+                                </div>
+                                {{#commentbutton}}
+                                    {{> local_qtracker/button}}
+                                {{/commentbutton}}
+                            </div>
                         </div>
                     </form>
                 </div>

@@ -45,10 +45,11 @@ var SELECTORS = {
 /**
  * Constructor
  * @constructor
- * @param {String} selector used to find triggers for the new group modal.
- * @param {int} contextid
+ * @param {String} courseid
+ * @param {int} questionid
+ * @param {int} issueid
  *
- * Each call to init gets it's own instance of this class.
+ * Each call gets it's own instance of this class.
  */
 class QuestionIssuePage {
     courseid = null;

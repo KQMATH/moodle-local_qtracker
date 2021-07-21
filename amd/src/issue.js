@@ -32,7 +32,7 @@ define(['jquery', 'core/str', 'core/ajax'], function ($, Str, Ajax) {
      * @param {int} slot
      * @param {int} contextid
      *
-     * Each call to init gets it's own instance of this class.
+     * Each call gets it's own instance of this class.
      */
     var Issue = function (id = null, slot = null, contextid) {
         this.id = id;

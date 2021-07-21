@@ -171,7 +171,7 @@ class issue extends referable {
      *
      * @param string $description
      *
-     * @return \stdClass
+     * @return issue_comment
      */
     public function create_comment($description) {
         $comment = issue_comment::create($description, $this);
@@ -179,11 +179,11 @@ class issue extends referable {
         return $comment;
     }
 
-     /**
-      * Add a new comment to this issue.
-      *
-      * @return \stdClass
-      */
+    /**
+     * Add a new comment to this issue.
+     *
+     * @return \stdClass
+     */
     public function get_comments() {
         global $DB;
         if (empty($this->comments)) {

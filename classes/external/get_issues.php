@@ -56,7 +56,7 @@ class get_issues extends \external_api {
      * @return external_function_parameters
      * @since Moodle 2.5
      */
-    public static function get_issues_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters(
             array(
                 'criteria' => new external_multiple_structure(
@@ -93,12 +93,12 @@ class get_issues extends \external_api {
      * @return array An array of arrays containing issue profiles.
      * @since Moodle 2.5
      */
-    public static function get_issues($criteria = array(), $from, $limit) {
+    public static function execute($criteria = array(), $from, $limit) {
         global $CFG, $issue, $DB, $PAGE, $USER;
 
         require_once($CFG->dirroot . "/local/qtracker/lib.php");
         $params = self::validate_parameters(
-            self::get_issues_parameters(),
+            self::execute_parameters(),
             array(
                 'criteria' => $criteria,
                 'from' => $from,
@@ -221,7 +221,7 @@ class get_issues extends \external_api {
      * @return external_description
      * @since Moodle 2.5
      */
-    public static function get_issues_returns() {
+    public static function execute_returns() {
         return new external_single_structure(
             array(
                 'issues' => new external_multiple_structure(
