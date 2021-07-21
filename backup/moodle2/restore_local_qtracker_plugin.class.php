@@ -19,6 +19,7 @@
  *
  * @package     local_qtracker
  * @author      David Rise Knotten <david_knotten@hotmail.no>
+ * @author      André Storhaug <andr3.storhaug@gmail.com>
  * @copyright   2021 Norwegian University of Science and Technology (NTNU)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,7 +30,6 @@ defined('MOODLE_INTERNAL') || die();
  * Local qtracker restore
  *
  * @package     local_qtracker
- * @author      David Rise Knotten <david_knotten@hotmail.no>
  * @copyright   2021 Norwegian University of Science and Technology (NTNU)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -38,70 +38,107 @@ defined('MOODLE_INTERNAL') || die();
 class restore_local_qtracker_plugin extends restore_local_plugin {
 
     /**
+     * @var array $issues Stores the IDs of the newly created issues.
+     */
+    protected $issues = array();
+
+    /**
      *
      */
-    protected function define_question_plugin_structure() {
+    protected function define_course_plugin_structure() {
         $paths = array();
 
         //plugin_local_qtracker_question
         $elename = 'issue'; // This defines the postfix of 'process_*' below.
-        $elepath = $this->get_pathfor('issue');
+        $elepath = $this->get_pathfor('/issue');
         $paths[] = new restore_path_element($elename, $elepath);
+
+        $elename = 'comment'; // This defines the postfix of 'process_*' below.
+        $elepath = $this->get_pathfor('/comments/comment');
+        $paths[] = new restore_path_element($elename, $elepath);
+
+        $elename = 'reference'; // This defines the postfix of 'process_*' below.
+        $elepath = $this->get_pathfor('/references/reference');
+        $paths[] = new restore_path_element($elename, $elepath);
+
         return $paths; // And we return the interesting paths.
+    }
+
+    protected function define_module_plugin_structure() {
+        $paths = array();
+
+        $elename = 'issue';
+        $elepath = $this->get_pathfor('/issue');
+        $paths[] = new restore_path_element($elename, $elepath);
+
+        $elename = 'comment';
+        $elepath = $this->get_pathfor('/comments/comment');
+        $paths[] = new restore_path_element($elename, $elepath);
+
+        $elename = 'reference';
+        $elepath = $this->get_pathfor('/references/reference');
+        $paths[] = new restore_path_element($elename, $elepath);
+
+        return $paths;
     }
 
     public function process_issue($data) {
         global $DB;
-
         $data = (object)$data;
-        print_object($data);
+        $oldid = $data->id;
+        $data->questionid = $this->get_mappingid('question', $data->questionid);
 
-        $this->get_task()->
+        $oldcontextid = $data->contextid;
+        $newcontextid = $this->get_mappingid('context', $oldcontextid);
+        $data->userid = $this->get_mappingid('user', $data->userid);
+        if (isset($data->questionusageid)) {
+            $data->questionusageid = $this->get_mappingid('question_usage', $data->questionusageid);
+        }
+        $data->contextid = $newcontextid;
+        $newitemid = $DB->insert_record('local_qtracker_issue', $data);
 
-        $oldquestionid   = $this->get_old_parentid('question');
-        $oldcontextid   = $this->get_old_parentid('context');
+        if (!$newcontextid) {
+            // Add the array of issues we need to process later.
+            $data->id = $newitemid;
+            $data->contextid = $oldcontextid;
+            $this->issues[$data->id] = $data;
+        }
 
-        //$newquestionid   = $this->get_new_parentid('question');
-        //$questioncreated = (bool) $this->get_mappingid('question_created', $oldquestionid);
-        //$oldquestioncategoryid = $this->get_old_parentid('question_category');
-        //$newquestioncategoryid = $this->get_new_parentid('question_category');
-        //$questioncategory = $this->get_mapping('question_category', $newquestioncategoryid);
+        $this->set_mapping('local_qtracker_issue', $oldid, $newitemid);
+    }
 
-        $question = $this->get_mapping('question', $oldquestionid);
-        $context = $this->get_mapping('context', $oldcontextid);
-        $quba = $this->get_mapping('question_usage', $data->questionusageid);
+    public function process_comment($data) {
+        global $DB;
+        $data = (object)$data;
+        $oldid = $data->id;
+        $data->issueid = $this->get_mappingid('local_qtracker_issue', $data->issueid);
+        $data->userid = $this->get_mappingid('user', $data->userid);
+        $newitemid = $DB->insert_record('local_qtracker_comment', $data);
+        $this->set_mapping('local_qtracker_comment', $oldid, $newitemid);
+    }
 
+    public function process_reference($data) {
+        global $DB;
+        $data = (object)$data;
+        $oldid = $data->id;
+        $data->sourceid = $this->get_mappingid('local_qtracker_issue', $data->sourceid);
+        $data->targetid = $this->get_mappingid('local_qtracker_issue', $data->targetid);
+        $newitemid = $DB->insert_record('local_qtracker_reference', $data);
+        $this->set_mapping('local_qtracker_reference', $oldid, $newitemid);
+    }
 
-        echo '<h1>Contextid</h1>';
-        print_object($this->get_mappingid('context',$this->get_task()->get_old_contextid()));
-        print_object($this->get_mapping('context',$this->get_task()->get_old_contextid())->id);
-        //$data->questionid = $newquestionid;
-        //echo "<h1>Questioncategory</h1>";
-        //print_object($questioncategory);
-        //echo "<h1>Question</h1>";
-        //print_object($question);
-        //echo "<h1>Data</h1>";
-        //print_object($data);
-        //$DB->insert_record("local_qtracker_issue", $data);
-
-        echo '<h1>Question</h1>';
-        print_object($question);
-        echo '<h1>Context</h1>';
-        print_object($context);
-        echo '<h1>Quba</h1>';
-        print_object($quba);
-        echo '<h1></h1>';
-        //print_object();
-        echo '<h1></h1>';
-        //print_object();
-
-
-        //throw new Error("dsakd");
-        $issue = \local_qtracker\issue::create($data->title, $data->description, $question, $this->get_mapping('context',$this->get_task()->get_old_contextid())->id, $quba);
-
-        //throw new Error("sksk");
-
-        //$DB->insert_record('local_qtracker_issue', $data);
-
+    /**
+     * This function is executed after all the tasks in the plan have been finished.
+     * This must be done here because the activities have not been restored yet.
+     */
+    public function after_restore_module() {
+        global $DB;
+        // Need to go through and change the values.
+        foreach ($this->issues as $issue) {
+            $updateissue = new stdClass();
+            $updateissue->id = $issue->id;
+            $updateissue->contextid = $this->get_mappingid('context', $issue->contextid);
+            $DB->update_record('local_qtracker_issue', $updateissue);
+        }
     }
 }

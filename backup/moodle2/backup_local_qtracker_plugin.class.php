@@ -19,6 +19,7 @@
  *
  * @package     local_qtracker
  * @author      David Rise Knotten <david_knotten@hotmail.no>
+ * @author      André Storhaug <andr3.storhaug@gmail.com>
  * @copyright   2021 Norwegian University of Science and Technology (NTNU)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
@@ -29,19 +30,10 @@ defined('MOODLE_INTERNAL') || die();
  * Local qtracker backup
  *
  * @package     local_qtracker
- * @author      David Rise Knotten <david_knotten@hotmail.no>
  * @copyright   2021 Norwegian University of Science and Technology (NTNU)
  * @license     http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 class backup_local_qtracker_plugin extends backup_local_plugin {
-
-    /**
-     * Not used
-     */
-    protected function define_my_settings() {
-    }
-
-    // TODO: test for quizqtracker
 
     /**
      * Define qtracker structure from question entrypoint
@@ -49,26 +41,24 @@ class backup_local_qtracker_plugin extends backup_local_plugin {
      * @return backup_plugin_element
      * @throws base_element_struct_exception
      */
-    protected function define_question_plugin_structure() {
+    protected function define_course_plugin_structure() {
         // Define backup elements
         $plugin = $this->get_plugin_element();
         $pluginwrapper = new backup_nested_element($this->get_recommended_name());
         $qtrackerissue = new backup_nested_element('issue', ['id'], [
-            'title', 'description', 'questionusageid', 'slot',
-            'state', 'userid', 'contextid', 'timecreated'
+            'title', 'description', 'questionid', 'state', 'userid',
+            'contextid', 'timecreated',
         ]);
 
         $qtrackercommentwrapper = new backup_nested_element('comments');
         $qtrackercomment = new backup_nested_element('comment', ['id'], [
-            'description', 'userid', 'timecreated'
+            'description', 'userid', 'timecreated', 'mailed'
         ]);
 
         $qtrackerreferencewrapper = new backup_nested_element('references');
-        $qtrackerreference = new backup_nested_element('reference', [id], [
+        $qtrackerreference = new backup_nested_element('reference', ['id'], [
            'targetid', 'reftype'
         ]);
-
-        // TODO: Trenge ikkje questionusageid, slot, contextid
 
         // Build the backup tree
         $qtrackercommentwrapper->add_child($qtrackercomment);
@@ -79,15 +69,61 @@ class backup_local_qtracker_plugin extends backup_local_plugin {
         $plugin->add_child($pluginwrapper);
 
         // Define sources
-        $qtrackerreference->set_source_table('local_qtracker_reference', ['sourceid' => backup::VAR_PARENTID]);
-        $qtrackerissue->set_source_table('local_qtracker_issue', ['questionid' => backup::VAR_PARENTID]);
+        $qtrackerissue->set_source_table('local_qtracker_issue', ['contextid' => backup::VAR_CONTEXTID]);
         $qtrackercomment->set_source_table('local_qtracker_comment', ['issueid' => backup::VAR_PARENTID]);
+        $qtrackerreference->set_source_table('local_qtracker_reference', ['sourceid' => backup::VAR_PARENTID]);
 
         // Define annotations
-        // TODO: Make these work
         $qtrackerissue->annotate_ids('user','userid');
-        $qtrackerissue->annotate_ids('questionusage','questionusageid');
-        $qtrackerissue->annotate_ids('context','contextid');
+        $qtrackerissue->annotate_ids('question','questionid');
+        $qtrackercomment->annotate_ids('user','userid');
+
+        return $plugin;
+    }
+
+    /**
+     * Define qtracker structure from question entrypoint
+     *
+     * @return backup_plugin_element
+     * @throws base_element_struct_exception
+     */
+    protected function define_module_plugin_structure() {
+        // Define backup elements
+        $plugin = $this->get_plugin_element();
+        $pluginwrapper = new backup_nested_element($this->get_recommended_name());
+
+        $qtrackerissue = new backup_nested_element('issue', ['id'], [
+            'title', 'description', 'questionid', 'questionusageid', 'slot',
+            'state', 'userid', 'contextid', 'timecreated',
+        ]);
+
+        $qtrackercommentwrapper = new backup_nested_element('comments');
+        $qtrackercomment = new backup_nested_element('comment', ['id'], [
+            'description', 'userid', 'timecreated', 'mailed'
+        ]);
+
+        $qtrackerreferencewrapper = new backup_nested_element('references');
+        $qtrackerreference = new backup_nested_element('reference', ['id'], [
+           'targetid', 'reftype'
+        ]);
+
+        // Build the backup tree
+        $qtrackercommentwrapper->add_child($qtrackercomment);
+        $qtrackerreferencewrapper->add_child($qtrackerreference);
+        $qtrackerissue->add_child($qtrackerreferencewrapper);
+        $qtrackerissue->add_child($qtrackercommentwrapper);
+        $pluginwrapper->add_child($qtrackerissue);
+        $plugin->add_child($pluginwrapper);
+
+        // Define sources
+        $qtrackerissue->set_source_table('local_qtracker_issue', ['contextid' => backup::VAR_CONTEXTID]);
+        $qtrackercomment->set_source_table('local_qtracker_comment', ['issueid' => backup::VAR_PARENTID]);
+        $qtrackerreference->set_source_table('local_qtracker_reference', ['sourceid' => backup::VAR_PARENTID]);
+
+        // Define annotations
+        $qtrackerissue->annotate_ids('user','userid');
+        $qtrackerissue->annotate_ids('question','questionid');
+        $qtrackercomment->annotate_ids('user','userid');
 
         return $plugin;
     }

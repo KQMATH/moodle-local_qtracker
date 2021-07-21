@@ -48,12 +48,11 @@ class question_issues_table extends table_sql {
      * @param string $uniqueid Unique id of table.
      * @param moodle_url $url The base URL.
      */
-    public function __construct($uniqueid, $url) {
+    public function __construct($uniqueid, $url, $context, $manuallySorted) {
         global $CFG;
         parent::__construct($uniqueid);
-        // TODO: determine which context to use...
-        $context = context_system::instance();
 
+        $this->context = $context;
         // Define columns in the table.
         $this->define_table_columns();
         // Set the baseurl.
@@ -174,12 +173,25 @@ class question_issues_table extends table_sql {
      * @return array containing sql to use and an array of params.
      */
     public function setup_sql_queries() {
+        global $DB;
+
+        $contextids = explode('/', trim($this->context->path, '/'));
+        // Get all child contexts.
+        $children = $this->context->get_child_contexts();
+        foreach ($children as $c) {
+            $contextids[] = $c->id;
+        }
+
+        list($insql, $inarams) = $DB->get_in_or_equal($contextids, SQL_PARAMS_NAMED);
+
+
         // TODO: Write SQL to retrieve all rows...
-        $fields = 'DISTINCT';
-        $fields .= '*';
-        $from = '{local_qtracker_issue} qs';
-        $where = '1=1';
-        $params = array(); // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
+        $fields = 'DISTINCT ';
+        $fields .= 'qi.*';
+        $from = '{local_qtracker_issue} qi';
+        $from .= "\nJOIN {context} ctx ON qi.contextid = ctx.id";
+        $where = "\nctx.id $insql";
+        $params = $inarams;
 
         // The WHERE clause is vital here, because some parts of tablelib.php will expect to
         // add bits like ' AND x = 1' on the end, and that needs to leave to valid SQL.
