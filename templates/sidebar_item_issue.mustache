@@ -1,0 +1,61 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_qtracker/sidebar_item_issue
+
+    Issue sidebar item template.
+
+    Example context (json):
+    {
+        "profileimageurl": "https://moodle.org/pix/u/f3.png",
+        "fullname": "André Storhaug",
+        "userurl": "https://example.com/user/profile.php?id=3",
+        "timecreated": "1587655101",
+        "id": "Issue id",
+        "title": "Issue title",
+        "description": "Issue description",
+        "extraclasses": "acctive",
+        "actions": [
+            { "name": "Close", "action": "V", "disabled": false },
+            { "name": "Subsume", "action": "V", "disabled": true },
+            ]
+    }
+}}
+<div id="sidebar-issue-item" class="sidebar-item border-bottom py-3 {{extraclasses}}">
+    <div class="d-flex flex-row align-items-center">
+            <span><img class="userpicture" width="35" height="35" alt="Profile image" src="{{profileimageurl}}"/></span>
+        <div class="px-3">
+            <a class="text-muted bold" href="{{userurl}}">{{fullname}}</a>
+            <div class="text-muted">
+                {{#str}} openedissueon, local_qtracker, #{{id}} {{/str}}
+                {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
+            </div>
+        </div>
+        <div class="ml-auto px-3">
+            <h5>
+                {{>local_qtracker/issue_state_badge}}
+            </h5>
+        </div>
+        {{#actions}}
+        <!-- <form method="post" action="{{{action}}}" data-action="issueaction" enctype="multipart/form-data" accept-charset="utf-8"> -->
+            {{>local_qtracker/dropdown}}
+        <!-- </form> -->
+        {{/actions}}
+    </div>
+    <a href="{{issueurl}}" class="bold">{{title}}</a>
+    <div>{{description}}</div>
+</div>

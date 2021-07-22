@@ -1,0 +1,65 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_qtracker/issue_state_badge
+
+    Issue state badge template.
+
+    Example context (json):
+    {
+        "new": true,
+        "profileimageurl": "https://moodle.org/pix/u/f3.png",
+        "action": "someAction"
+    }
+}}
+<form method="post" action="{{{action}}}" id="comment_form_{{id}}">
+    <div class="d-flex flex-row">
+        <span><img class="userpicture" alt="User picture" width="35" height="35" src="{{profileimageurl}}"/></span>
+        <div class="ml-3 border w-100 qtracker-relative">
+            <div class="d-flex flex-row p-2 border-bottom qtracker-arrow-left qtracker-arrow-left-gray">
+                <a class="text-muted bold" href="{{userurl}}">{{fullname}}</a>&nbsp;
+                <div class="text-muted">
+                    {{#str}} commentedon, local_qtracker {{/str}}
+                    {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
+                </div>
+                <div class="ml-auto">
+                    {{#mailed}}
+                    <span class="text-muted">
+                        {{# pix }} t/message, core {{/ pix }}
+                    </span>
+                    {{/mailed}}
+                    {{^mailed}}
+                    <a id="comment_message_{{id}}" href="#">
+                        {{# pix }} t/message, core {{/ pix }}
+                    </a>
+                    {{/mailed}}
+                    <a id="comment_delete_{{id}}" href="#">
+                        {{# pix }} t/delete, core {{/ pix }}
+                    </a>
+                </div>
+            </div>
+            <div class="p-2">
+                {{{description}}}
+            </div>
+        </div>
+    </div>
+</form>
+{{#js}}
+require(['jquery', 'local_qtracker/issue_comment_controls'], function($, IssueCommentControls) {
+    new IssueCommentControls({{id}});
+});
+{{/js}}

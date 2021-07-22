@@ -1,0 +1,83 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template local_qtracker/issue_registration_block
+
+    Issue registration block template.
+
+    Context variables required for this template:
+    * action - form element name
+    * name - element id
+    * qubaid - question bank id
+    * options - list of options containing name, value, selected
+
+    For a full list of the context for this template see the course_competencies_page renderable
+
+    Example context (json):
+    {
+        "action": "https://domain.example/file.php",
+        "name": "test",
+        "hasmultiple": true,
+        "select": {
+            "id": "someId",
+            "name": "questionid",
+            "options": [
+                { "name": "Option 1", "value": "1", "selected": true },
+                { "name": "Option 2", "value": "2", "selected": false }
+                ]
+        },
+        "qubaid": "10",
+        "uniqid": "1"
+    }
+}}
+<div class="form-select">
+    <form class="needs-validation novalidate" method="post" action="{{action}}" data-action="newissue"  enctype="multipart/form-data" accept-charset="utf-8">
+        {{#hasmultiple}}
+            {{#select}}
+            <div class="form-group">
+                {{> local_qtracker/select }}
+            </div>
+            {{/select}}
+        {{/hasmultiple}}
+        {{^hasmultiple}}
+            <input type="hidden" name="slot" value="{{slot}}">
+        {{/hasmultiple}}
+            <input type="hidden" name="qubaid" value="{{qubaid}}">
+            <div class="form-group">
+                <input type="text" name="issuetitle" id="qtracker-title-{{uniqid}}" class="form-control" placeholder="{{#str}} title, local_qtracker {{/str}}">
+                <div class="invalid-feedback">
+                    {{#str}} validtitle, local_qtracker {{/str}}
+                </div>
+            </div>
+            <div class="form-group">
+                <textarea name="issuedescription" id="qtracker-description-{{uniqid}}" rows="5" class="form-control" placeholder="{{#str}} leavecomment, local_qtracker {{/str}}"></textarea>
+                <div class="invalid-feedback">
+                    {{#str}} validdescription, local_qtracker {{/str}}
+                </div>
+            </div>
+            {{#button}}
+            <div class="form-row">
+                {{>local_qtracker/button}}
+            </div>
+            {{/button}}
+    </form>
+</div>
+{{#js}}
+require(['jquery', 'local_qtracker/block_form_manager'], function($, BlockFormManager) {
+    BlockFormManager.init('[data-action=newissue]', '{{{issueids}}}', {{contextid}});
+});
+{{/js}}
