@@ -61,7 +61,7 @@
                         {{>local_qtracker/issue_state_badge}}
                     </h3>
                     {{#issuedescription}}
-                        <a class="text-dark bold m-l-1" href="{{userurl}}">{{fullname}}</a>&nbsp;
+                        <a class="text-dark bold ml-1" href="{{userurl}}">{{fullname}}</a>&nbsp;
                         <div class="text-muted">
                             {{#str}} openedissueon, local_qtracker {{/str}}
                             {{#userdate}} {{timecreated}}, {{#str}} strftimedate, core_langconfig {{/str}} {{/userdate}}
@@ -108,7 +108,7 @@
                             {{> local_qtracker/issue_description}}
                     {{/issuedescription}}
                     {{#comments}}
-                        <div class="m-y-1">
+                        <div class="my-3">
                             {{> local_qtracker/issue_comment}}
                         </div>
                     {{/comments}}
@@ -118,17 +118,17 @@
                             <span><img class="userpicture" alt="Profile image" width="35" height="35" src="{{profileimageurl}}"/></span>
                             <div class="ml-3 w-100">
                                 <div class="p-2">
-                                    <textarea id="commenteditor" name="commenteditor" rows="5"></textarea>
+                                    <textarea id="commenteditor" class="form-control" name="commenteditor" rows="5"></textarea>
                                 </div>
                             </div>
                         </div>
-                        <div class="m-t-1 m-l-3 d-flex justify-content-between">
+                        <div class="mt-3 ml-3 d-flex justify-content-between">
                             <div class="custom-control custom-checkbox ml-2">
                                 <input type="checkbox" name="sendmessage" class="custom-control-input dropdown-item" id="{{uniqid}}-customCheck" {{#sendmessage}} checked {{/sendmessage}} >
                                 <label class="custom-control-label" for="{{uniqid}}-customCheck">{{#str}} sendmessage, local_qtracker {{/str}}</label>
                             </div>
                             <div class="d-flex">
-                                <div class="m-r-1">
+                                <div class="mr-2">
                                     {{#closebutton}}
                                         {{> local_qtracker/button}}
                                     {{/closebutton}}

@@ -88,7 +88,7 @@ class questions_page implements renderable, templatable {
         $allissuesbutton->primary = true;
         $allissuesbutton->name = "newissue";
         $allissuesbutton->value = true;
-        $allissuesbutton->classes = "p-r-1";
+        $allissuesbutton->classes = "pr-2";
         $allissuesbutton->label = get_string('allissues', 'local_qtracker');
         $allissuesurl = new \moodle_url('/local/qtracker/issues.php');
         $allissuesurl->param('courseid', $this->courseid);

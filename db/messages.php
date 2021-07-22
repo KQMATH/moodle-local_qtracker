@@ -30,7 +30,7 @@ defined('MOODLE_INTERNAL') || die();
 
 $messageproviders = array (
     'issueresponse' => array (
-        'default' => array (
+        'defaults' => array (
             'popup' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDOFF + MESSAGE_DEFAULT_LOGGEDIN,
             'email' => MESSAGE_PERMITTED + MESSAGE_DEFAULT_LOGGEDOFF,
         )

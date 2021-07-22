@@ -215,7 +215,7 @@ class question_issue_page implements renderable, templatable {
         $edittitlebutton = new stdClass();
         $edittitlebutton->primary = true;
         $edittitlebutton->name = "edittitle";
-        $edittitlebutton->classes = "p-r-1 edittitle";
+        $edittitlebutton->classes = "pr-2 edittitle";
         $edittitlebutton->value = true;
         $edittitlebutton->label = get_string('edit', 'local_qtracker');
         $data->edittitlebutton = $edittitlebutton;
