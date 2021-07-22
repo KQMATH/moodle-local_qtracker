@@ -194,7 +194,7 @@ class questions_table extends table_sql {
         $from .= "\nJOIN {context} ctx ON qi.contextid = ctx.id";
         $where = "\nctx.id $insql";
         $where .= "\nGROUP BY q.id";
-        $params = $inarams; // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
+        $params = $inarams;
 
         // The WHERE clause is vital here, because some parts of tablelib.php will expect to
         // add bits like ' AND x = 1' on the end, and that needs to leave to valid SQL.

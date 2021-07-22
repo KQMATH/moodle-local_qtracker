@@ -136,3 +136,18 @@ function is_reference_type(string $type) {
     }
     return true;
 }
+
+/**
+ *
+ *
+ * @param $feature
+ * @return bool true if a feature is supported
+ */
+function local_qtracker_supports($feature) {
+    switch($feature) {
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
+        default:
+            return false;
+    }
+}
