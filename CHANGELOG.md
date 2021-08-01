@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [0.1.1] - 2021-08-02
+### Fixed
+- Fix missing context when course modules are deleted. #33
+
 ## [0.1.0] - 2021-07-22
 ### Added
 - Ability to register manual issues.
