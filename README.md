@@ -12,7 +12,7 @@ In addition to the QTracker module, a separate block-type module is needed to ad
 The QTracker functionality is normally accessed via the appropriate block plugin.
 
 ## Documentation
-Documentation is available [here](https://github.com/KQMATH/oodle-local_qtracker/wiki), including [installation instructions](https://github.com/KQMATH/moodle-local_qtracker/wiki/Installation-instructions).
+Documentation is available [here](https://github.com/KQMATH/moodle-local_qtracker/wiki), including [installation instructions](https://github.com/KQMATH/moodle-local_qtracker/wiki/Installation-instructions).
 
 ## Feedback:
 **Project lead:** Hans Georg Schaathun <hasc@ntnu.no>

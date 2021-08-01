@@ -427,4 +427,15 @@ class issue extends referable {
         $this->issue->description = $title;
         $DB->update_record('local_qtracker_issue', $this->issue);
     }
+
+    /**
+     * Sets this issues contextid to $contextid
+     *
+     * @param string $contextid
+     */
+    public function set_contextid($contextid) {
+        global $DB;
+        $this->issue->contextid = $contextid;
+        $DB->update_record('local_qtracker_issue', $this->issue);
+    }
 }
