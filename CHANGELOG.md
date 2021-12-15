@@ -6,6 +6,10 @@ and this project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+## [0.1.2] - 2021-12-15
+### Changed
+- Updated docs for only using one block for multiple activity modules.
+
 ## [0.1.1] - 2021-08-02
 ### Fixed
 - Fix missing context when course modules are deleted. #33
@@ -17,6 +21,6 @@ and this project adheres to [Semantic Versioning](https://semver.org).
 - Backup and Restore API.
 - Privacy API is implemented in order to comply with the [General Data Protection Regulation](https://en.wikipedia.org/wiki/General_Data_Protection_Regulation) (GDPR).
 
-[Unreleased]: https://github.com/KQMATH/moodle-local_qtracker/compare/v0.1.0...HEAD
-
+[Unreleased]: https://github.com/KQMATH/moodle-local_qtracker/compare/v0.1.2...HEAD
+[0.1.2]: https://github.com/KQMATH/moodle-local_qtracker/compare/v0.1.1...v0.1.2
 [0.1.1]: https://github.com/KQMATH/moodle-local_qtracker/compare/v0.1.0...v0.1.1
