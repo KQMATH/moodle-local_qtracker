@@ -5,11 +5,11 @@
 
 The QTracker system allows students to comment and ask questions about individual questions in a quiz. The idea and design follows the principles of issue tracker systems.
 
-In addition to the QTracker module, a separate block-type module is needed to add the interface to a given activity type. Such block modules have been made for
-+ Core Quiz - [Quiz QTracker](https://github.com/KQMATH/moodle-block_quizqtracker)
-+ CAPQuiz - [CAPQuiz QTracker](https://github.com/KQMATH/moodle-block_capquizqtracker)
+In addition to the QTracker module, an accompanying block module is needed to add the interface to a supported activity type. This block is available [here](https://github.com/KQMATH/moodle-block_qtracker).
 
-The QTracker functionality is normally accessed via the appropriate block plugin.
+The block currently supports the following activity modules:
+* [Moodle Quiz](https://docs.moodle.org/en/Quiz_activity)
+* [CAPQuiz](https://github.com/KQMATH/moodle-mod_capquiz)
 
 ## Documentation
 Documentation is available [here](https://github.com/KQMATH/moodle-local_qtracker/wiki), including [installation instructions](https://github.com/KQMATH/moodle-local_qtracker/wiki/Installation-instructions).
