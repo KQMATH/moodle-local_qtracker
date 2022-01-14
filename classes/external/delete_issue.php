@@ -79,10 +79,9 @@ class delete_issue extends \external_api {
             )
         );
 
-        if (!$DB->record_exists_select('local_qtracker_issue', 'id = :issueid AND userid = :userid',
+        if (!$DB->record_exists_select('local_qtracker_issue', 'id = :issueid',
             array(
-                'issueid' => $params['issueid'],
-                'userid' => $USER->id
+                'issueid' => $params['issueid']
             )
         )) {
             throw new \moodle_exception('cannotdeleteissue', 'local_qtracker', '', $params['issueid']);
