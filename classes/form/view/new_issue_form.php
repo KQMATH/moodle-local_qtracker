@@ -63,6 +63,7 @@ class new_issue_form extends \moodleform {
         $mform->addRule('questionid', get_string('required'), 'required', null, 'client');
         $mform->addRule('questionid', get_string('required'), 'nonzero', null, 'client');
         $mform->setType('questionid', PARAM_INT);
+        $mform->addHelpButton('questionid', 'newissue_questionid', 'local_qtracker');
 
         $mform->addElement('editor', 'description', get_string('description', 'local_qtracker'));
         $mform->addRule('description', get_string('required'), 'required', null, 'client');

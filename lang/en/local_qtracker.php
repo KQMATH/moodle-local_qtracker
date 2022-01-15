@@ -58,6 +58,9 @@ $string['unknownqubaidnumber'] = 'Unknown question usage ID "{$a}"';
 $string['title'] = 'Title';
 $string['leavecomment'] = 'Leave a comment';
 
+$string['newissue_questionid'] = 'Question ID';
+$string['newissue_questionid_help'] = 'Please select the id for the question you want to register a new issue for. This can be found in the URL of the question page.';
+
 $string['issueupdatednotify'] = 'Issue "{$a}" is updated';
 $string['sendmessage'] = 'Notify issue reporter';
 
