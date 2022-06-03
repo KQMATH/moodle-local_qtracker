@@ -190,7 +190,7 @@ class get_issues extends \external_api {
             self::validate_context($context);
 
             // Capability checking.
-            issue_require_capability_on($issue, 'view');
+            local_qtracker_issue_require_capability_on($issue, 'view');
 
             $renderer = $PAGE->get_renderer('core');
             $exporter = new issue_exporter($issue, ['context' => $context]);

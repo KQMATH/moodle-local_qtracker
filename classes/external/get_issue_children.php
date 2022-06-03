@@ -96,7 +96,7 @@ class get_issue_children extends \external_api {
         self::validate_context($context);
 
         // Capability checking.
-        issue_require_capability_on($issue->get_issue_obj(), 'view');
+        local_qtracker_issue_require_capability_on($issue->get_issue_obj(), 'view');
 
 
         $children = $issue->get_children();
@@ -108,7 +108,7 @@ class get_issue_children extends \external_api {
             self::validate_context($context);
 
             // Capability checking.
-            issue_require_capability_on($child->get_id(), 'view');
+            local_qtracker_issue_require_capability_on($child->get_id(), 'view');
 
             $renderer = $PAGE->get_renderer('core');
             $exporter = new issue_exporter($child->get_issue_obj(), ['context' => $context]);

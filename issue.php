@@ -174,7 +174,7 @@ if (!is_null($deletecommentid)) {
 }
 
 // Capability checking.
-issue_require_capability_on($issue->get_issue_obj(), 'view');
+local_qtracker_issue_require_capability_on($issue->get_issue_obj(), 'view');
 
 $renderer = $PAGE->get_renderer('local_qtracker');
 $questionissuepage = new question_issue_page($issue, $courseid);

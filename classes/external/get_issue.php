@@ -96,7 +96,7 @@ class get_issue extends \external_api {
         self::validate_context($context);
 
         // Capability checking.
-        issue_require_capability_on($issue->get_issue_obj(), 'view');
+        local_qtracker_issue_require_capability_on($issue->get_issue_obj(), 'view');
 
         if (empty($warnings)) {
             $issuedata['id'] = $issue->get_id();

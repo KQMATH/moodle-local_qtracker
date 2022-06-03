@@ -101,7 +101,7 @@ class edit_issue extends \external_api {
         self::validate_context($context);
 
         // Capability checking.
-        issue_require_capability_on($issue->get_issue_obj(), 'edit');
+        local_qtracker_issue_require_capability_on($issue->get_issue_obj(), 'edit');
 
         if (empty($params['issuetitle'])) {
             $warnings[] = array(
