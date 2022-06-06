@@ -42,7 +42,7 @@ class QuestionsTablePage {
 
     constructor(courseid) {
         this.courseid = courseid;
-        this.sidebar = new Sidebar('#questions-table-sidebar', false, "right", false, '40%');
+        this.sidebar = new Sidebar('#questions-table-sidebar', false, "right", false, '20%');
         this.init();
     }
 
@@ -159,7 +159,7 @@ class QuestionsTablePage {
 
     getQuestionEditUrl(courseid, questionid) {
         let returnurl = encodeURIComponent(location.pathname + location.search);
-        let editurl = url.relativeUrl('/question/question.php', {
+        let editurl = url.relativeUrl('/question/bank/editquestion/question.php', {
             courseid: courseid,
             id: questionid,
             returnurl: returnurl,

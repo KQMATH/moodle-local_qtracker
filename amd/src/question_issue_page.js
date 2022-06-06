@@ -475,7 +475,7 @@ class QuestionIssuePage {
 
     getQuestionEditUrl(courseid, questionid) {
         let returnurl = encodeURIComponent(location.pathname + location.search);
-        let editurl = url.relativeUrl('/question/question.php', {
+        let editurl = url.relativeUrl('/question/bank/editquestion/question.php', {
             courseid: courseid,
             id: questionid,
             returnurl: returnurl,
