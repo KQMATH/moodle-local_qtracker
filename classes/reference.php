@@ -136,7 +136,7 @@ class reference {
         $referenceobj = new \stdClass();
         $referenceobj->sourceid = $sourceid;
         $referenceobj->targetid = $targetid;
-        if (is_reference_type($reftype)) {
+        if (local_qtracker_is_reference_type($reftype)) {
             $referenceobj->reftype = $reftype;
         } else {
             throw new coding_exception('Not a valid reference type ' . $reftype);
@@ -167,7 +167,7 @@ class reference {
      */
     public function set_reftype($type) {
         global $DB;
-        if (is_reference_type($type)) {
+        if (local_qtracker_is_reference_type($type)) {
             $this->reference->reftype = $type;
             $DB->update_record('local_qtracker_reference', $this->reference);
         } else {

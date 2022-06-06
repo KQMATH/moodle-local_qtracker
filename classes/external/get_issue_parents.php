@@ -97,7 +97,7 @@ class get_issue_parents extends \external_api {
         self::validate_context($context);
 
         // Capability checking.
-        issue_require_capability_on($issue->get_issue_obj(), 'view');
+        local_qtracker_issue_require_capability_on($issue->get_issue_obj(), 'view');
 
 
         $parents = $issue->get_parents();
@@ -110,7 +110,7 @@ class get_issue_parents extends \external_api {
             self::validate_context($context);
 
             // Capability checking.
-            issue_require_capability_on($parent->get_id(), 'view');
+            local_qtracker_issue_require_capability_on($parent->get_id(), 'view');
 
             $renderer = $PAGE->get_renderer('core');
             $exporter = new issue_exporter($parent->get_issue_obj(), ['context' => $context]);

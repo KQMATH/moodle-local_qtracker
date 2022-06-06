@@ -374,17 +374,6 @@ class issue extends referable {
     }
 
     /**
-     * Delete this issue.
-     *
-     * @return void
-     */
-    public function comment() {
-
-        $this->comments;
-        $DB->update_record('local_qtracker_issue', $this->issue);
-    }
-
-    /**
      * Delete this issue and related comments.
      *
      * @return void
