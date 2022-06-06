@@ -112,8 +112,8 @@ class issue_registration_block implements renderable, templatable {
 
             $select = new stdClass();
             $options = array();
-            $select->name = "slot";;
-            $select->label = "Question";
+            $select->name = "slot";
+            $select->label = get_string("question");
             $select->helpicon = $this->helpicon->export_for_template($output);
 
             foreach ($this->questions as $key => $question) {
@@ -131,12 +131,11 @@ class issue_registration_block implements renderable, templatable {
 
         $data->qubaid = $this->quba->get_id();
         $data->action = $url;
-        $data->tooltip = "This is a tooltip";
 
         $button = new stdClass();
         $button->type = "submit";
         $button->classes = "col-auto";
-        $button->label = "Submit new issue";
+        $button->label = get_string('submitnewissue', 'local_qtracker');
         $data->button = $button;
         $data->issueids = json_encode($this->issueids);
         $data->contextid = $this->contextid;

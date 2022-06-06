@@ -97,15 +97,15 @@
     min-height: 360px;
 }
 
-.questions-table {
+.path-local-qtracker .questions-table {
     width: 100%;
 }
 
-.flex-grow {
+.path-local-qtracker .flex-grow {
     flex: 1 0 auto;
 }
 
-.resizer {
+.path-local-qtracker .resizer {
     border-left: 1px solid #dee2e6;
     width: 5px;
     height: 100%;
@@ -116,7 +116,7 @@
     cursor: w-resize;
 }
 
-.questiontext {
+.path-local-qtracker .questiontext {
     position: relative;
     zoom: 1;
     padding-left: .3em;

@@ -74,7 +74,7 @@ function local_qtracker_extend_navigation_course($navigation, $course, $context)
  * @param string $cap 'add', 'edit', 'view'.
  * @return boolean this user has the capability $cap for this issue $issue?
  */
-function issue_has_capability_on($issueorid, $cap) {
+function local_qtracker_issue_has_capability_on($issueorid, $cap) {
     global $USER;
 
     if (is_numeric($issueorid)) {
@@ -113,8 +113,8 @@ function issue_has_capability_on($issueorid, $cap) {
  *
  * @return boolean this user has the capability $cap for this issue $issue?
  */
-function issue_require_capability_on($issue, $cap) {
-    if (!issue_has_capability_on($issue, $cap)) {
+function local_qtracker_issue_require_capability_on($issue, $cap) {
+    if (!local_qtracker_issue_has_capability_on($issue, $cap)) {
         print_error('nopermissions', '', '', $cap);
     }
     return true;
@@ -128,7 +128,7 @@ function issue_require_capability_on($issue, $cap) {
  *
  * @return boolean this user has the capability $cap for this issue $issue?
  */
-function is_reference_type(string $type) {
+function local_qtracker_is_reference_type(string $type) {
     $reftypes = array(LOCAL_QTRACKER_REFERENCE_SUPERSEDED);
 
     if (!in_array($type, $reftypes) ) {

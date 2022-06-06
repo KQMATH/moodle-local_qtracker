@@ -110,8 +110,8 @@ class delete_issue_relation extends \external_api {
         self::validate_context($childcontext);
 
         // Capability checking.
-        issue_require_capability_on($parent->get_issue_obj(), 'edit');
-        issue_require_capability_on($child->get_issue_obj(), 'edit');
+        local_qtracker_issue_require_capability_on($parent->get_issue_obj(), 'edit');
+        local_qtracker_issue_require_capability_on($child->get_issue_obj(), 'edit');
 
         if (empty($warnings)) {
             $deleted = $parent->remove_child($child);
