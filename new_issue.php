@@ -47,7 +47,7 @@ require_login($course);
 $url = new \moodle_url('/local/qtracker/new_issue.php');
 $url->param('courseid', $courseid);
 
-$returnurl = new \moodle_url('/local/qtracker/new_issues.php');
+$returnurl = new \moodle_url('/local/qtracker/new_issue.php');
 $returnurl->param('courseid', $courseid);
 
 $PAGE->set_url($url);
