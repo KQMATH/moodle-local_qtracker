@@ -48,8 +48,9 @@ class questions_table extends table_sql {
      * @param string $uniqueid Unique id of table.
      * @param moodle_url $url The base URL.
      * @param \context_course $context
+     * @param boolean $manuallySorted set true if user has chosen a non-default sorting configuration
      */
-    public function __construct($uniqueid, $url, $context) {
+    public function __construct($uniqueid, $url, $context, $manuallySorted = false) {
         global $CFG;
         parent::__construct($uniqueid);
         // TODO: determine which context to use...
@@ -60,7 +61,7 @@ class questions_table extends table_sql {
         // Set the baseurl.
         $this->define_baseurl($url);
         // Define configs.
-        $this->define_table_configs();
+        $this->define_table_configs($manuallySorted);
         // Define SQL.
         $this->setup_sql_queries();
     }
@@ -140,11 +141,30 @@ class questions_table extends table_sql {
 
     /**
      * Define table configs.
+     * @param boolean $manuallySorted if false the default sorting will be used
      */
-    protected function define_table_configs() {
+    protected function define_table_configs($manuallySorted) {
         $this->collapsible(false);
         $this->sortable(true);
         $this->pageable(true);
+        if (!$manuallySorted) {
+            $sortdata = [
+                [
+                    'sortby' => 'new',
+                    'sortorder' => SORT_DESC,
+                ], [
+                    'sortby' => 'open',
+                    'sortorder' => SORT_DESC,
+                ], [
+                    'sortby' => 'closed',
+                    'sortorder' => SORT_DESC,
+                ], [
+                    'sortby' => 'id',
+                    'sortorder' => SORT_DESC,
+                ]
+            ];
+            $this->set_sortdata($sortdata);
+        }
     }
 
     /**
@@ -169,12 +189,12 @@ class questions_table extends table_sql {
         $fields .= "COUNT(case qi.state when 'new' then 1 else null end) AS new,
                     COUNT(case qi.state when 'open' then 1 else null end) AS open,
                     COUNT(case qi.state when 'closed' then 1 else null end) AS closed";
-        $from = '{qtracker_issue} qi';
+        $from = '{local_qtracker_issue} qi';
         $from .= "\nJOIN {question} q ON q.id = qi.questionid";
         $from .= "\nJOIN {context} ctx ON qi.contextid = ctx.id";
         $where = "\nctx.id $insql";
         $where .= "\nGROUP BY q.id";
-        $params = $inarams; // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
+        $params = $inarams;
 
         // The WHERE clause is vital here, because some parts of tablelib.php will expect to
         // add bits like ' AND x = 1' on the end, and that needs to leave to valid SQL.
@@ -206,7 +226,7 @@ class questions_table extends table_sql {
             return;
         }
 
-        // echo '<div id="questions-table-wrapper" class="push-pane-over">';
+        // echo '<div id="questions-table-wrapper" class="qtracker-push-pane-over-left">';
         // echo '<div id="questions-table-wrapper">';
         // echo '<div id="questions-table-sidebar"></div>';
         // echo '<div class="border-bottom">';

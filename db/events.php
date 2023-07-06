@@ -26,8 +26,12 @@
 defined('MOODLE_INTERNAL') || die();
 
 $observers = [
-    [
+    array(
+        'eventname'   => '\core\event\course_module_deleted',
+        'callback'    => '\local_qtracker\event\course_module_deleted_observer::course_module_deleted',
+    ),
+    array(
         'eventname'   => '\core\event\question_deleted',
         'callback'    => '\local_qtracker\event\question_deleted_observer::question_deleted',
-    ],
+    )
 ];

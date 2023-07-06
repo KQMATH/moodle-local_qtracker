@@ -32,6 +32,7 @@ global $DB, $OUTPUT, $PAGE;
 
 // Check for all required variables.
 $courseid = required_param('courseid', PARAM_INT);
+$manuallySorted = isset($_GET['tsort']);
 
 if (!$course = $DB->get_record('course', array('id' => $courseid))) {
     print_error('invalidcourseid');
@@ -50,7 +51,7 @@ $PAGE->set_heading(get_string('pluginname', 'local_qtracker'));
 echo $OUTPUT->header();
 
 // Get table renderer and display table.
-$table = new \local_qtracker\output\questions_table(uniqid(), $url, $context);
+$table = new \local_qtracker\output\questions_table(uniqid(), $url, $context, $manuallySorted);
 $renderer = $PAGE->get_renderer('local_qtracker');
 $questionspage = new \local_qtracker\output\questions_page($table, $courseid);
 echo $renderer->render($questionspage);

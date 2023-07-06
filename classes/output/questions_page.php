@@ -73,6 +73,30 @@ class questions_page implements renderable, templatable {
         global $PAGE;
         $data = new stdClass();
 
+
+        $newissuebutton = new stdClass();
+        $newissuebutton->primary = true;
+        $newissuebutton->name = "newissue";
+        $newissuebutton->value = true;
+        $newissuebutton->label = get_string('newissue', 'local_qtracker');
+        $newissueurl = new \moodle_url('/local/qtracker/new_issue.php');
+        $newissueurl->param('courseid', $this->courseid);
+        $newissuebutton->action = $newissueurl;
+        $data->newissuebutton = $newissuebutton;
+
+        $allissuesbutton = new stdClass();
+        $allissuesbutton->primary = true;
+        $allissuesbutton->name = "newissue";
+        $allissuesbutton->value = true;
+        $allissuesbutton->classes = "pr-2";
+        $allissuesbutton->label = get_string('allissues', 'local_qtracker');
+        $allissuesurl = new \moodle_url('/local/qtracker/issues.php');
+        $allissuesurl->param('courseid', $this->courseid);
+        $allissuesbutton->action = $allissuesurl;
+        $data->allissuesbutton = $allissuesbutton;
+
+
+
         ob_start();
         $this->questionstable->out(self::DEFAULT_PAGE_SIZE, true);
         $questions = ob_get_contents();

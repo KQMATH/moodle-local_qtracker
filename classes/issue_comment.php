@@ -50,7 +50,7 @@ class issue_comment {
     public function __construct($comment) {
         global $DB;
         if (is_scalar($comment)) {
-            $comment = $DB->get_record('qtracker_comment', array('id' => $comment), '*', MUST_EXIST);
+            $comment = $DB->get_record('local_qtracker_comment', array('id' => $comment), '*', MUST_EXIST);
             if (!$comment) {
                 throw new \moodle_exception('errorunexistingmodel', 'analytics', '', $comment);
             }
@@ -104,6 +104,15 @@ class issue_comment {
     }
 
     /**
+     * Returns true if the comment is mailed to the issue reporter, otherwise false.
+     *
+     * @return \stdClass
+     */
+    public function is_mailed() {
+        return $this->comment->mailed;
+    }
+
+    /**
      * Returns a plain \stdClass with the comment data.
      *
      * @return \stdClass
@@ -132,7 +141,7 @@ class issue_comment {
      */
     public static function load(int $comment) {
         global $DB;
-        $commentobj = $DB->get_record('qtracker_comment', ['id' => $comment]);
+        $commentobj = $DB->get_record('local_qtracker_comment', ['id' => $comment]);
         if ($commentobj === false) {
             return null;
         }
@@ -158,7 +167,7 @@ class issue_comment {
         $commentobj->timecreated = $time;
         // $commentobj->usermodified = $USER->id;
 
-        $id = $DB->insert_record('qtracker_comment', $commentobj);
+        $id = $DB->insert_record('local_qtracker_comment', $commentobj);
         $commentobj->id = $id;
 
         $comment = new issue_comment($commentobj);
@@ -172,7 +181,7 @@ class issue_comment {
      */
     public function delete() {
         global $DB;
-        return $DB->delete_records('qtracker_comment', array('id' => $this->get_id()));
+        return $DB->delete_records('local_qtracker_comment', array('id' => $this->get_id()));
     }
 
     /**
@@ -185,6 +194,17 @@ class issue_comment {
     public function set_description($title) {
         global $DB;
         $this->comment->description = $title;
-        $DB->update_record('qtracker_comment', $this->comment);
+        $DB->update_record('local_qtracker_comment', $this->comment);
+    }
+
+    /**
+     * Marks the commennt as mailed to the issue reporter
+     *
+     * @return \stdClass
+     */
+    public function mark_mailed() {
+        global $DB;
+        $this->comment->mailed = true;
+        $DB->update_record('local_qtracker_comment', $this->comment);
     }
 }

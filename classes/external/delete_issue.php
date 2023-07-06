@@ -37,7 +37,6 @@ use moodle_exception;
 use external_single_structure;
 use external_warnings;
 use local_qtracker\issue;
-use mysql_xdevapi\Result;
 
 /**
  * Class delete_issue
@@ -52,7 +51,7 @@ class delete_issue extends \external_api {
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function delete_issue_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters(
             array(
                 'issueid' => new external_value(PARAM_INT, 'issue id'),
@@ -67,23 +66,22 @@ class delete_issue extends \external_api {
      *
      * @return array $result containing status, the issueid and any warnings
      */
-    public static function delete_issue($issueid) {
+    public static function execute($issueid) {
         global $USER, $DB;
 
         $deleted = false;
         $warnings = array();
 
         // Parameter validation.
-        $params = self::validate_parameters(self::delete_issue_parameters(),
+        $params = self::validate_parameters(self::execute_parameters(),
             array(
                 'issueid' => (int) $issueid,
             )
         );
 
-        if (!$DB->record_exists_select('qtracker_issue', 'id = :issueid AND userid = :userid',
+        if (!$DB->record_exists_select('local_qtracker_issue', 'id = :issueid',
             array(
-                'issueid' => $params['issueid'],
-                'userid' => $USER->id
+                'issueid' => $params['issueid']
             )
         )) {
             throw new \moodle_exception('cannotdeleteissue', 'local_qtracker', '', $params['issueid']);
@@ -96,7 +94,7 @@ class delete_issue extends \external_api {
         self::validate_context($context);
 
         // Capability checking.
-        issue_require_capability_on($issue->get_issue_obj(), 'edit');
+        local_qtracker_issue_require_capability_on($issue->get_issue_obj(), 'edit');
 
         if (empty($warnings)) {
             $deleted = $issue->delete();
@@ -115,7 +113,7 @@ class delete_issue extends \external_api {
      *
      * @return external_description
      */
-    public static function delete_issue_returns() {
+    public static function execute_returns() {
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),

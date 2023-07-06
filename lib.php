@@ -27,6 +27,13 @@ defined('MOODLE_INTERNAL') || die();
 
 use local_qtracker\issue;
 
+
+/**
+ * Define constants to store the referance type
+ */
+define('LOCAL_QTRACKER_REFERENCE_SUPERSEDED', 'superseded');
+
+
 /**
  * This function extends the navigation with the report items
  *
@@ -67,11 +74,11 @@ function local_qtracker_extend_navigation_course($navigation, $course, $context)
  * @param string $cap 'add', 'edit', 'view'.
  * @return boolean this user has the capability $cap for this issue $issue?
  */
-function issue_has_capability_on($issueorid, $cap) {
+function local_qtracker_issue_has_capability_on($issueorid, $cap) {
     global $USER;
 
     if (is_numeric($issueorid)) {
-        $issue = issue::load((int)$issueorid);
+        $issue = issue::load((int)$issueorid)->get_issue_obj();
     } else if (is_object($issueorid)) {
         if (isset($issueorid->contextid) && isset($issueorid->userid)) {
             $issue = $issueorid;
@@ -106,9 +113,41 @@ function issue_has_capability_on($issueorid, $cap) {
  *
  * @return boolean this user has the capability $cap for this issue $issue?
  */
-function issue_require_capability_on($issue, $cap) {
-    if (!issue_has_capability_on($issue, $cap)) {
+function local_qtracker_issue_require_capability_on($issue, $cap) {
+    if (!local_qtracker_issue_has_capability_on($issue, $cap)) {
         print_error('nopermissions', '', '', $cap);
     }
     return true;
+}
+
+/**
+ * Check if reference type is valid.
+ *
+ * @param mixed $issue object or id. If an object is passed, it should include ->contextid and ->userid.
+ * @param string $cap 'add', 'edit', 'view'.
+ *
+ * @return boolean this user has the capability $cap for this issue $issue?
+ */
+function local_qtracker_is_reference_type(string $type) {
+    $reftypes = array(LOCAL_QTRACKER_REFERENCE_SUPERSEDED);
+
+    if (!in_array($type, $reftypes) ) {
+        return false;
+    }
+    return true;
+}
+
+/**
+ *
+ *
+ * @param $feature
+ * @return bool true if a feature is supported
+ */
+function local_qtracker_supports($feature) {
+    switch($feature) {
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
+        default:
+            return false;
+    }
 }

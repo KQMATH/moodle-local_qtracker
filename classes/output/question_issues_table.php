@@ -48,12 +48,11 @@ class question_issues_table extends table_sql {
      * @param string $uniqueid Unique id of table.
      * @param moodle_url $url The base URL.
      */
-    public function __construct($uniqueid, $url) {
+    public function __construct($uniqueid, $url, $context, $manuallySorted) {
         global $CFG;
         parent::__construct($uniqueid);
-        // TODO: determine which context to use...
-        $context = context_system::instance();
 
+        $this->context = $context;
         // Define columns in the table.
         $this->define_table_columns();
         // Set the baseurl.
@@ -70,8 +69,15 @@ class question_issues_table extends table_sql {
      * @return string HTML content to go inside the td.
      */
     public function col_id($data) {
+        global $COURSE;
+
         if ($data->id) {
-            return $data->id;
+            $issueid = $data->id;
+            $url = new \moodle_url('/local/qtracker/issue.php');
+            $url->param('courseid', $COURSE->id);
+            $url->param('issueid', $issueid);
+            $id = \html_writer::link($url, $data->id);
+            return $id;
         } else {
             return '-';
         }
@@ -96,8 +102,15 @@ class question_issues_table extends table_sql {
      * @return string HTML content to go inside the td.
      */
     protected function col_title($data) {
+        global $COURSE;
         if ($data->title) {
-            return $data->title;
+            $issueid = $data->id;
+            $url = new \moodle_url('/local/qtracker/issue.php');
+            $url->param('courseid', $COURSE->id);
+            $url->param('issueid', $issueid);
+            $title = \html_writer::link($url, $data->title);
+            return $title;            // need to change it to correct link.
+            // return '<a href="/user/profile.php?id='.$data->questionid.'">'.$data->title.'</a>';
         } else {
             return '-';
         }
@@ -160,12 +173,25 @@ class question_issues_table extends table_sql {
      * @return array containing sql to use and an array of params.
      */
     public function setup_sql_queries() {
+        global $DB;
+
+        $contextids = explode('/', trim($this->context->path, '/'));
+        // Get all child contexts.
+        $children = $this->context->get_child_contexts();
+        foreach ($children as $c) {
+            $contextids[] = $c->id;
+        }
+
+        list($insql, $inarams) = $DB->get_in_or_equal($contextids, SQL_PARAMS_NAMED);
+
+
         // TODO: Write SQL to retrieve all rows...
-        $fields = 'DISTINCT';
-        $fields .= '*';
-        $from = '{qtracker_issue} qs';
-        $where = '1=1';
-        $params = array(); // TODO: find a way to only get the correct contexts.. For now just get everything (keep this empty)...
+        $fields = 'DISTINCT ';
+        $fields .= 'qi.*';
+        $from = '{local_qtracker_issue} qi';
+        $from .= "\nJOIN {context} ctx ON qi.contextid = ctx.id";
+        $where = "\nctx.id $insql";
+        $params = $inarams;
 
         // The WHERE clause is vital here, because some parts of tablelib.php will expect to
         // add bits like ' AND x = 1' on the end, and that needs to leave to valid SQL.

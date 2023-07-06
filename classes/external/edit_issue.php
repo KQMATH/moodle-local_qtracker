@@ -52,12 +52,12 @@ class edit_issue extends \external_api {
      * Returns description of method parameters
      * @return external_function_parameters
      */
-    public static function edit_issue_parameters() {
+    public static function execute_parameters() {
         return new external_function_parameters(
             array(
                 'issueid' => new external_value(PARAM_INT, 'issue id'),
                 'issuetitle' => new external_value(PARAM_TEXT, 'issue title'),
-                'issuedescription' => new external_value(PARAM_TEXT, 'issue description'),
+                'issuedescription' => new external_value(PARAM_RAW, 'issue description'),
             )
         );
     }
@@ -71,14 +71,14 @@ class edit_issue extends \external_api {
      *
      * @return array with status, issueid and any warnings
      */
-    public static function edit_issue($issueid, $issuetitle, $issuedescription) {
+    public static function execute($issueid, $issuetitle, $issuedescription) {
         global $USER, $DB;
 
         $added = false;
         $warnings = array();
 
         // Parameter validation.
-        $params = self::validate_parameters(self::edit_issue_parameters(),
+        $params = self::validate_parameters(self::execute_parameters(),
             array(
                 'issueid' => (int) $issueid,
                 'issuetitle' => $issuetitle,
@@ -86,10 +86,9 @@ class edit_issue extends \external_api {
             )
         );
 
-        if (!$DB->record_exists_select('qtracker_issue', 'id = :issueid AND userid = :userid',
+        if (!$DB->record_exists_select('local_qtracker_issue', 'id = :issueid',
             array(
-                'issueid' => $params['issueid'],
-                'userid' => $USER->id
+                'issueid' => $params['issueid']
             )
         )) {
             throw new \moodle_exception('cannoteditissue', 'local_qtracker', '', $params['issueid']);
@@ -102,7 +101,7 @@ class edit_issue extends \external_api {
         self::validate_context($context);
 
         // Capability checking.
-        issue_require_capability_on($issue->get_issue_obj(), 'edit');
+        local_qtracker_issue_require_capability_on($issue->get_issue_obj(), 'edit');
 
         if (empty($params['issuetitle'])) {
             $warnings[] = array(
@@ -140,7 +139,7 @@ class edit_issue extends \external_api {
      *
      * @return external_description
      */
-    public static function edit_issue_returns() {
+    public static function execute_returns() {
         return new external_single_structure(
             array(
                 'status' => new external_value(PARAM_BOOL, 'status: true if success'),

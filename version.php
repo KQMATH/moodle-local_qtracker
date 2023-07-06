@@ -19,15 +19,15 @@
  *
  * @package    local_qtracker
  * @author     André Storhaug <andr3.storhaug@gmail.com>
- * @copyright  2020 NTNU
+ * @copyright  2021 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2020092200;
+$plugin->version = 2022060600;
 $plugin->requires = 2016120500;
 $plugin->cron = 0;
 $plugin->component = 'local_qtracker';
 $plugin->maturity = MATURITY_BETA;
-$plugin->release = '0.1.0';
+$plugin->release = '0.1.4';

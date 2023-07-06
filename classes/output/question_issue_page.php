@@ -39,7 +39,9 @@ use templatable;
 use local_qtracker\issue;
 use local_qtracker\external\issue_exporter;
 use local_qtracker\external\issue_comment_exporter;
+use local_qtracker\external\reference_exporter;
 use local_qtracker\form\view\question_details_form;
+use local_qtracker\reference_manager;
 
 /**
  * Class containing data for question issue page.
@@ -90,7 +92,10 @@ class question_issue_page implements renderable, templatable {
         $issuedescription = new stdClass();
         $user = $DB->get_record('user', array('id' => $issuedetails->userid));
         $issuedescription->fullname = $user->username;
-        $issuedescription->userurl = "http://lol.no";
+        $userurl = new \moodle_url('/user/view.php');
+        $userurl->param('id', $user->id);
+        $userurl->param('course', $this->courseid);
+        $issuedescription->userurl = $userurl;
         $userpicture = new \user_picture($user);
         $userpicture->size = 0; // Size f2.
         $issuedescription->profileimageurl = $userpicture->get_url($PAGE)->out(false);
@@ -114,18 +119,27 @@ class question_issue_page implements renderable, templatable {
             $userpicture = new \user_picture($user);
             $userpicture->size = 0; // Size f2.
             $commentdetails->profileimageurl = $userpicture->get_url($PAGE)->out(false);
-
+            $commentdetails->mailed = $comment->is_mailed();
+/*
             $deleteurl = new \moodle_url('/local/qtracker/issue.php');
             $deleteurl->param('courseid', $this->courseid);
             $deleteurl->param('issueid', $this->questionissue->get_id());
             $deleteurl->param('deletecommentid', $commentdetails->id);
-            $commentdetails->deleteurl = $deleteurl;
+            $commentdetails->deleteurl = $deleteurl; */
             array_push($commentsdetails, $commentdetails);
         }
 
         $issuedetails->comments = $commentsdetails;
         $issuedetails->{$issuedetails->state} = true;
         $data->questionissue = $issuedetails;
+
+        $data->sendmessage = false;
+
+        $issueurl = new \moodle_url('/local/qtracker/issue.php');
+        $issueurl->param('courseid', $this->courseid);
+        $issueurl->param('issueid', $this->questionissue->get_id());
+        $data->action = $PAGE->url->out(false);
+
 
         // Set the user picture data.
         $user = $DB->get_record('user', array('id' => $USER->id));
@@ -147,13 +161,78 @@ class question_issue_page implements renderable, templatable {
             $data->closebutton = $closebutton;
         }
 
+        $triggericon = new stdClass();
+        $triggericon->key = "fa-cog";
+        $triggericon->title = "Options";
+        $triggericon->alt = "Show options";
+        $triggericon->extraclasses = "";
+        $triggericon->unmappedIcon = false;
+
+        $linkedissues = new stdClass();
+        $linkedissues->id = 'linkedissues';
+        $linkedissues->search = true;
+        $linkedissues->label = get_string('subsumedissues', 'local_qtracker');
+        $linkedissues->header = get_string('subsumedescription', 'local_qtracker');
+        //$linkedissues->items = $links;
+        $linkedissues->trigger = $triggericon;
+
+        /*$tags = new stdClass();
+        $tags->id = 'tags';
+        $tags->label = get_string('tags', 'local_qtracker');
+        $tags->header = get_string('tagsdescription', 'local_qtracker');
+        $tags->items = [$simtag, $simtag2, $simtag3, $simtag4, ];
+        $tags->trigger = $triggericon;
+        $asideblocks = [$linkedissues, $tags];
+        */
+
+        $asideblocks = [$linkedissues];
+        $data->asideblocks = $asideblocks;
+
+
+        ///
+        $commentanddmbutton = new stdClass();
+        $commentanddmbutton->primary = false;
+        $commentanddmbutton->name = "commentanddmissue";
+        $commentanddmbutton->value = true;
+        $commentanddmbutton->label = get_string('commentanddm', 'local_qtracker');
+        $data->commentanddmbutton = $commentanddmbutton;
+
+        $commentandmailbutton = new stdClass();
+        $commentandmailbutton->primary = true;
+        $commentandmailbutton->name = "commentandmailissue";
+        $commentandmailbutton->value = true;
+        $commentandmailbutton->label = get_string('commentandmail', 'local_qtracker');
+        $data->commentandmailbutton = $commentandmailbutton;
+
         $commentbutton = new stdClass();
         $commentbutton->primary = true;
         $commentbutton->name = "commentissue";
         $commentbutton->value = true;
         $commentbutton->label = get_string('comment', 'local_qtracker');
-        $commentbutton->id = 11;
         $data->commentbutton = $commentbutton;
+
+///
+        $edittitlebutton = new stdClass();
+        $edittitlebutton->primary = true;
+        $edittitlebutton->name = "edittitle";
+        $edittitlebutton->classes = "pr-2 edittitle";
+        $edittitlebutton->value = true;
+        $edittitlebutton->label = get_string('edit', 'local_qtracker');
+        $data->edittitlebutton = $edittitlebutton;
+
+
+        $newissuebutton = new stdClass();
+        $newissuebutton->primary = true;
+        $newissuebutton->name = "newissue";
+        $newissuebutton->value = true;
+        $newissuebutton->label = get_string('newissue', 'local_qtracker');
+        $newissueurl = new \moodle_url('/local/qtracker/new_issue.php');
+        $newissueurl->param('courseid', $this->courseid);
+        $newissuebutton->action = $newissueurl;
+        $data->newissuebutton = $newissuebutton;
+
+
+        $data->action = $PAGE->url;
 
         $question = \question_bank::load_question($this->questionissue->get_questionid());
         question_require_capability_on($question, 'use');
@@ -166,13 +245,14 @@ class question_issue_page implements renderable, templatable {
         $editurl = new \moodle_url('/question/question.php');
         $editurl->param('id', $question->id);
         $editurl->param('courseid', $this->courseid);
+        $returnurl = $PAGE->url->out_as_local_url(false);
+        $editurl->param('returnurl', $returnurl);
         $questiondata->edit_url = $editurl;
 
         $form = new question_details_form($question, $PAGE->url);
         $questiondata->questiontext = $form->render();
         $data->question = $questiondata;
-        $data->closeissue = get_string('closeissue', 'local_qtracker');
-        $data->commentandcloseisue = get_string('commentandcloseissue', 'local_qtracker');
+        $data->courseid = $this->courseid;
 
         // Setup text editor.
         $editor = editors_get_preferred_editor(FORMAT_HTML);
