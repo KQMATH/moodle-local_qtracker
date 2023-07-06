@@ -93,7 +93,8 @@ $string['newissue'] = 'New issue';
 $string['allissues'] = 'All issues';
 
 $string['reopenissue'] = 'Reopen issue';
-$string['closeissue'] = 'Comment and close issue';
+$string['closeissue'] = 'Close issue';
+$string['commentandcloseissue'] = 'Comment and close issue';
 $string['comment'] = 'Comment';
 
 //TODO clean up the text
