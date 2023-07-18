@@ -176,16 +176,18 @@ class question_issue_page implements renderable, templatable {
         //$linkedissues->items = $links;
         $linkedissues->trigger = $triggericon;
 
-        /*$tags = new stdClass();
+        $tags = new stdClass();
         $tags->id = 'tags';
+        $tags->search = true;
         $tags->label = get_string('tags', 'local_qtracker');
         $tags->header = get_string('tagsdescription', 'local_qtracker');
-        $tags->items = [$simtag, $simtag2, $simtag3, $simtag4, ];
+        $tags->items = [$simtag, $simtag2, $simtag3, $simtag4];
         $tags->trigger = $triggericon;
-        $asideblocks = [$linkedissues, $tags];
-        */
 
-        $asideblocks = [$linkedissues];
+
+        $asideblocks = [$tags, $linkedissues];
+
+        //$asideblocks = [$linkedissues];
         $data->asideblocks = $asideblocks;
 
 
