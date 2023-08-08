@@ -65,6 +65,11 @@ function local_qtracker_extend_navigation_course($navigation, $course, $context)
         $CFG->wwwroot . '/local/qtracker/view.php',
         $params
     ), navigation_node::TYPE_SETTING, null, 'issues');
+
+    $qtrackernode->add(get_string('tags', 'local_qtracker'), new moodle_url(
+        $CFG->wwwroot . '/local/qtracker/tags.php',
+        $params
+    ), navigation_node::TYPE_SETTING, null, 'tags');
 }
 
 /**

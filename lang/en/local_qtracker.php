@@ -85,6 +85,10 @@ $string['name'] = 'Name';
 
 $string['tags'] = 'Tags';
 $string['linkedissues'] = 'Linked issues';
+$string['newtag'] = 'New tag';
+$string['tagid'] = 'Tag ID';
+$string['label'] = 'Label';
+$string['color'] = 'Color';
 
 $string['new'] = 'New';
 $string['open'] = 'Open';
