@@ -6,10 +6,11 @@ and this project adheres to [Semantic Versioning](https://semver.org).
 
 ## [Unreleased]
 
+- Fixed typo #54 (new_issues.php -> new_issue.php)
 
 ## [0.1.4] - 2022-06-06
 ### Fixed
-- Fix Moodle colpliance violations.
+- Fix Moodle compliance violations.
 
 ## [0.1.3] - 2022-01-15
 ### Added
