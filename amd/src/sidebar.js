@@ -67,12 +67,12 @@ class Sidebar {
         }
         if (e.matches) {
             /* the viewport is 768px pixels wide or more */
-            $('#qtracker-sidebar').css('width', 'calc(' + this.width + ' - -1.25rem)');
-            $('.qtracker-push-pane-over').css('padding-' + this.getSide(), 'calc(' + this.width + ' - -' + this.margin + ')');
+            //$('#qtracker-sidebar').css('width', 'calc(' + this.width + ' - -1.25rem)');
+            //$('.qtracker-push-pane-over').css('padding-' + this.getSide(), 'calc(' + this.width + ' - -' + this.margin + ')');
         } else {
             /* the viewport is more than 768px pixels wide or less */
-            $('#qtracker-sidebar').css('width', '100%');
-            $('.qtracker-push-pane-over').css('padding-' + this.getSide(), '0');
+            //$('#qtracker-sidebar').css('width', '100%');
+            //$('.qtracker-push-pane-over').css('padding-' + this.getSide(), '0');
         }
     }
 
@@ -105,7 +105,7 @@ class Sidebar {
 
         //let self = this;
         await Templates.render('local_qtracker/sidebar', context).then((html, js) => {
-            Templates.replaceNodeContents(this.container, html, js);
+            Templates.appendNodeContents(this.container, html, js);
             this.setVisibility(!this.hidden);
             this.setLoading(this.loading);
             this.setSide(this.side);
@@ -190,19 +190,21 @@ class Sidebar {
 
     setVisibility(show = true) {
         if (show) {
-            $('.qtracker-push-pane-over').css('padding-' + this.getSide(), 'calc(' + this.width + ' - -' + this.margin + ')');
+            //$('.qtracker-push-pane-over').css('padding-' + this.getSide(), 'calc(' + this.width + ' - -' + this.margin + ')');
             $('#qtracker-sidebar').addClass('show');
+            $('#page').addClass('qtracker-show-drawer-' + this.side);
             this.screenTest(this.mql);
         } else {
-            $('.qtracker-push-pane-over').css('padding-' + this.getSide(), '0');
+            //$('.qtracker-push-pane-over').css('padding-' + this.getSide(), '0');
             $('#qtracker-sidebar').removeClass('show');
+            $('#page').removeClass('qtracker-show-drawer-' + this.side);
         }
         this.hidden = !show;
         this.visible = show;
     }
 
     togglePane() {
-        $('.qtracker-container').toggleClass('qtracker-push-pane-over');
+        //$('.qtracker-container').toggleClass('qtracker-push-pane-over');
         $('#qtracker-sidebar').toggleClass("show");
         this.hidden = !this.hidden;
     }

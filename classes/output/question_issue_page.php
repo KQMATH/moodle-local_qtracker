@@ -240,9 +240,9 @@ class question_issue_page implements renderable, templatable {
         $questiondata = new stdClass();
         $questiondata->questionid = $question->id;
         $questiondata->questionname = $question->name;
-        $questiondata->preview_url = question_preview_url($question->id, null, null, null, null, $context);
+        $questiondata->preview_url = \qbank_previewquestion\helper::question_preview_url($question->id, null, null, null, null, $context);
 
-        $editurl = new \moodle_url('/question/question.php');
+        $editurl = new \moodle_url('/question/bank/editquestion/question.php');
         $editurl->param('id', $question->id);
         $editurl->param('courseid', $this->courseid);
         $returnurl = $PAGE->url->out_as_local_url(false);
